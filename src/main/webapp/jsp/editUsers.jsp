@@ -1,3 +1,4 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
     <title>Edit Users</title>
@@ -28,7 +29,7 @@
                             <a href="#">Home</a>
                         </li>
                         <li>
-                            <a href="/approveUsers">Approve Users</a>
+                            <a href="/editUsers">Edit Users</a>
                         </li>
                         <li>
                             <a href="#">Invite Admins</a>
@@ -56,43 +57,55 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <h1 class="text-inverse">Edit Accounts</h1>
-                    <div>
-                        <table id="table" class="table table-bordered" style="background-color: ghostwhite">
-                            <thead>
-                            <tr>
+                    <form name="f" action="/editUsers" method="post" modelAttribute="users">
+                        <h1>Edit Accounts</h1>
 
-                                <th data-field="name">Account User</th>
-                                <th data-field="role">User Role</th>
-                                <th data-field="state" data-check-input="true">Delete</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <c:forEach items="${list}" var="user">
 
-                                    <td>
-                                        <label class="form-check-label">
-                                                ${user}.getUsername
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <label class="form-check-label">
-                                                ${user}.getRole
-                                        </label>
-                                    </td>>
-                                    <td>
-                                        <input class="form-check-input" type="checkbox" value="">
-                                    </td>
+                        <div>
+                            <table id="table" class="table table-bordered" style="background-color: ghostwhite">
+                                <thead>
+                                <tr>
+                                    <th data-field="name">Account User</th>
+                                    <th data-field="role">User Role</th>
+                                    <th data-field="state" data-check-input="true">Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach items="${users}" var="user">
+                                <tr>
+                                        <td>
+                                            <label class="form-check-label">
+                                                <input type="text" name="username" size="35" value=${user.username}>
+
+
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <select>
+                                                <c:choose>
+                                                    <c:when test="${user.role =='ROLE_ADMIN'}">
+                                                        <option value="ROLE_ADMIN" selected="selected">ROLE_ADMIN</option>
+                                                        <option value="ROLE_ADVANCE">ROLE_ADVANCE</option>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <option value="ROLE_ADMIN">ROLE_ADMIN</option>
+                                                        <option value="ROLE_ADVANCE" selected="selected">ROLE_ADVANCE</option>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input class="form-check-input" type="checkbox" value="">
+                                        </td>
+                                </tr>
                                 </c:forEach>
+                                </tbody>
+                            </table>
 
-                            </tr>
-                            </tbody>
-                        </table>
-
-                    </div>
-                    <input type="submit" value="Approve">
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        </div>
+                        <input type="submit" value="Apply">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </form>
                 </div>
             </div>
         </div>
