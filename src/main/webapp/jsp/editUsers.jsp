@@ -66,6 +66,7 @@
                                 <thead>
                                 <tr>
                                     <th data-field="name">Account User</th>
+                                    <th data-field="newName">New Email</th>
                                     <th data-field="role">User Role</th>
                                     <th data-field="state" data-check-input="true">Delete</th>
                                 </tr>
@@ -73,30 +74,31 @@
                                 <tbody>
                                 <c:forEach items="${users}" var="user">
                                 <tr>
-                                        <td>
-                                            <label class="form-check-label">
-                                                <input type="text" name="username" size="35" value=${user.username}>
-
-
-                                            </label>
-                                        </td>
-                                        <td>
-                                            <select>
-                                                <c:choose>
-                                                    <c:when test="${user.role =='ROLE_ADMIN'}">
-                                                        <option value="ROLE_ADMIN" selected="selected">ROLE_ADMIN</option>
-                                                        <option value="ROLE_ADVANCE">ROLE_ADVANCE</option>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <option value="ROLE_ADMIN">ROLE_ADMIN</option>
-                                                        <option value="ROLE_ADVANCE" selected="selected">ROLE_ADVANCE</option>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input class="form-check-input" type="checkbox" value="">
-                                        </td>
+                                    <td>
+                                        <c:out value ="${user.username}"/>
+                                    </td>
+                                    <td>
+                                        <label class="form-check-label">
+                                            <input type="text" name="username" size="35">
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <select>
+                                            <c:choose>
+                                                <c:when test="${user.role =='ROLE_ADMIN'}">
+                                                    <option value="ROLE_ADMIN" selected="selected">ROLE_ADMIN</option>
+                                                    <option value="ROLE_ADVANCE">ROLE_ADVANCE</option>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <option value="ROLE_ADMIN">ROLE_ADMIN</option>
+                                                    <option value="ROLE_ADVANCE" selected="selected">ROLE_ADVANCE</option>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" value="">
+                                    </td>
                                 </tr>
                                 </c:forEach>
                                 </tbody>
