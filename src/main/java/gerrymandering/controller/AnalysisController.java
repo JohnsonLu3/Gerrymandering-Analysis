@@ -1,6 +1,7 @@
 package gerrymandering.controller;
 
 import gerrymandering.api.ApiResponse;
+import gerrymandering.measure.MeasureResults;
 import gerrymandering.model.GeoJson;
 import gerrymandering.service.ConfigurationService;
 import gerrymandering.service.GerrymanderMeasureService;
@@ -73,13 +74,15 @@ public class AnalysisController {
 			return new ApiResponse(true, result);
 	}
 
-	@RequestMapping(value = "/runMeasures", method = RequestMethod.POST)
+	@RequestMapping(value = "/runMeasures", method = RequestMethod.GET)
 	@ResponseBody
-	public String runMeasures(
-			@RequestParam(value="stateName", required=false, defaultValue="New York") String stateName) {
-		String ret = "";
-		// TODO: call AnalysisService.runMeasures(stateName)
-		// TODO: use Jackson to change results into json
-		return ret;
+	public ApiResponse runMeasures(
+			@RequestParam(value="stateName") String stateName,
+			@RequestParam(value="year") Integer electionYear) {
+		List<MeasureResults> result = gerrymanderMeasureService.runStateWideMeasures(stateName, electionYear);
+		if(result == null)
+			return new ApiResponse(false);
+		else
+			return new ApiResponse(true, result);
 	}
 }

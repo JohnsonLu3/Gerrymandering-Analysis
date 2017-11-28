@@ -43,11 +43,12 @@ public class LopsidedTest implements Measure {
 		Double pvalue = null;
 		if(state.getElectedParty() == Party.Democrat){
 		    pvalue = tTest(percents.get(Party.Democrat), percents.get(Party.Republican));
-		    passOrFail = exceedsThreshold(pvalue, CommonConstants.TTEST_THRESHOLD);
+		    passOrFail = !exceedsThreshold(pvalue, CommonConstants.TTEST_THRESHOLD);
 		}
 
 		results.addTestResult(passOrFail);
 		results.setPvalue(pvalue);
+		results.setThreshold(CommonConstants.TTEST_THRESHOLD);
 		return results;
 	}
 }
