@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import gerrymandering.common.CommonConstants;
 import gerrymandering.common.Party;
 import gerrymandering.common.PopulationGroup;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -35,7 +33,7 @@ public class State extends MultiDistrictRegion implements Serializable {
                joinColumns = @JoinColumn(name = "StateId", referencedColumnName = "Id"),
 	           inverseJoinColumns = @JoinColumn(name = "BoundaryId", referencedColumnName = "Id"))
 	private List<Boundary> boundaries = new ArrayList<>();
-    @Transient
+	@Transient
 	private List<SuperDistrict> superDistricts = new ArrayList<>();
 
 	public State() {

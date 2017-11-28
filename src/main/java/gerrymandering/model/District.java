@@ -3,8 +3,6 @@ package gerrymandering.model;
 import gerrymandering.common.CommonConstants;
 import gerrymandering.common.Party;
 import gerrymandering.common.PopulationGroup;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -102,11 +100,21 @@ public class District extends BipartisanRegion implements Serializable {
 
     @Override
     public Party getElectedParty() {
-        return Collections.max(
-                getVotes().entrySet(),
-                (a, b) ->
-                    a.getValue() > b.getValue() ? 1 : -1
-               ).getKey();
+        Party elected = votes
+                        .entrySet()
+                        .stream()
+                        .filter(entry -> {return entry.getValue().getVoteCount() == -1;})
+                        .map(Map.Entry::getKey)
+                        .findFirst()
+                        .orElse(null);
+        if(elected == null){
+            elected = Collections.max(
+                    getVotes().entrySet(),
+                    (a, b) ->
+                            a.getValue() > b.getValue() ? 1 : -1
+            ).getKey();
+        }
+        return elected;
     }
 
     @Override

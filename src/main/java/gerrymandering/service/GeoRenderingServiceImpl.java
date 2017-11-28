@@ -1,6 +1,9 @@
 package gerrymandering.service;
 
-import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 import gerrymandering.common.CommonConstants;
 import gerrymandering.model.*;
 import org.springframework.stereotype.Service;
