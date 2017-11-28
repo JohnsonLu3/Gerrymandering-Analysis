@@ -11,7 +11,7 @@ import java.util.List;
  * Created by yisuo on 11/9/17.
  */
 public interface GerrymanderMeasureService {
-    public List<MeasureResults> runStateWideMeasures(State state);
+    public List<MeasureResults> runStateWideMeasures(String stateName, Integer electionYear);
 
     public List<MeasureResults> runHR3057Measures(SuperDistrict superDistrict);
 
