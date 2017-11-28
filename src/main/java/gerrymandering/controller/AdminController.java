@@ -18,12 +18,12 @@ public class AdminController {
 
     @RequestMapping("/index")
     public String index() {
-        return "indexView";
+        return "redirect:/www/index.html";
     }
 
     @RequestMapping("/login")
     public String login(){
-        return "adminLogin";
+        return "loginView";
     }
 
     @RequestMapping("/admin")

@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title> Register Account</title>
+    <title>Edit Users</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -61,20 +61,28 @@
                         <table id="table" class="table table-bordered" style="background-color: ghostwhite">
                             <thead>
                             <tr>
-                                <th data-field="state" data-check-input="true">enable</th>
+
                                 <th data-field="name">Account User</th>
+                                <th data-field="role">User Role</th>
+                                <th data-field="state" data-check-input="true">Delete</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
                                 <c:forEach items="${list}" var="user">
-                                    <td>
-                                        <input class="form-check-input" type="checkbox" value="">
-                                    </td>
+
                                     <td>
                                         <label class="form-check-label">
                                                 ${user}.getUsername
                                         </label>
+                                    </td>
+                                    <td>
+                                        <label class="form-check-label">
+                                                ${user}.getRole
+                                        </label>
+                                    </td>>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" value="">
                                     </td>
                                 </c:forEach>
 

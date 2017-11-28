@@ -101,12 +101,13 @@ public class RegistrationController {
                 System.out.println("SAVING authorities to DB");
                 authoritiesService.saveAuthorities(authorities);
 
-                sendEmail(user, request);
+                if(!sendEmail(user, request)){
+                    return "error";
+                }
 
                 return "registrationSent";
             }
         }
-
         return "registration";
 
     }
@@ -115,7 +116,7 @@ public class RegistrationController {
 
         try{
             String subject = "Gerrymandering Analysis Registration Confirmation";
-            String emailBody = "Click this link to activate your account";
+            String emailBody = "Hello, You have registered on Gerrymandering Analysis. Please click this link to activate your account ";
             String link = request.getScheme() + "://" + request.getServerName() + "/registrationConfirmed?key=" + user.getActivationKey();
 
             SimpleMailMessage emailToSend = new SimpleMailMessage();
