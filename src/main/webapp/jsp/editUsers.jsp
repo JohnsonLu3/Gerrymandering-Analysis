@@ -97,14 +97,17 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="submit" value="Delete">
-                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                        <form name="f" action="/deleteUser" method="post" modelAttribute="users">
+                                            <input type="hidden" name="id" value="${user.id}" />
+                                            <input type="submit" name ="deleteButton" value="Delete">
+                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                        </form>
                                     </td>
                                 </tr>
                                 </c:forEach>
                                 </tbody>
                             </table>
-                            <input type="submit" value="Save">
+                            <input type="submit" name ="saveButton"value="Save">
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         </div>
 

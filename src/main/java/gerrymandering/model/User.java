@@ -6,7 +6,7 @@ import javax.persistence.*;
 public class User {
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
-        private int id;
+        private long id;
         @Column(name = "username")
         private String username;
         @Column(name = "password")
@@ -20,11 +20,11 @@ public class User {
         private String role;
 
 
-        public int getId() {
+        public long getId() {
             return id;
         }
 
-        public void setId(int id) {
+        public void setId(long id) {
             this.id = id;
         }
 

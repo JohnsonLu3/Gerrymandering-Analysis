@@ -1,5 +1,6 @@
 package gerrymandering.controller;
 
+import com.sun.prism.shader.Solid_TextureYV12_AlphaTest_Loader;
 import gerrymandering.model.Authorities;
 import gerrymandering.model.User;
 import gerrymandering.service.AuthoritiesService;
@@ -48,24 +49,34 @@ public class EditUsersController {
     public ModelAndView saveChanges(WebRequest request, Model model, @ModelAttribute("user")User user) {
 
         for (String id : request.getParameterValues("id")) {
-            int userId = Integer.parseInt(id);
+            long userId = Integer.parseInt(id);
             String username = request.getParameter("username_" + id);
-            String role = request.getParameter("role");
+            String role = request.getParameter("role_" + id);
 
             User userToUpdate = userService.findById(userId);
 
-
-            Authorities auth = authoritiesService.findByUsername(userToUpdate.getUsername());
-            if(auth != null && !role.equals(auth.getRole())){
-                auth.setRole(role);
-                authoritiesService.saveAuthorities(auth);
-            }
-
+//            Authorities auth = authoritiesService.findByUsername(userToUpdate.getUsername());
+//            if(auth != null && !role.equals(auth.getRole())){
+//                auth.setRole(role);
+//                authoritiesService.saveAuthorities(auth);
+//            }
             if(!username.equals("")){
                 userToUpdate.setUsername(username);
                 userService.saveUser(userToUpdate);
             }
+        }
+        return showEditUsers(request, model);
+    }
 
+    @RequestMapping(value="/deleteUser", method = RequestMethod.POST)
+    public ModelAndView deleteUser(WebRequest request, Model model, @ModelAttribute("user")User user) {
+        long id = -1;
+        if(user != null){
+            id = user.getId();
+        }
+
+        if(id != -1){
+            userService.deleteUserById(id);
         }
 
         return showEditUsers(request, model);

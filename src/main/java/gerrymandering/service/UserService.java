@@ -25,12 +25,17 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findById(int Id) {
-        return userRepository.findById(Id);
+    public User findById(long id) {
+        return userRepository.findById(id);
     }
 
     public User findByActivationKey(String activationKey){
         return userRepository.findByActivationKey(activationKey);
+    }
+
+
+    public void deleteUserById(long id){
+        userRepository.delete(id);
     }
 
     public void saveUser(User user) {
