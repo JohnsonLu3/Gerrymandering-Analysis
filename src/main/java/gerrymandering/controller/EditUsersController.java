@@ -7,6 +7,7 @@ import gerrymandering.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,10 +38,36 @@ public class EditUsersController {
             }
         }
 
-
         ModelAndView editUsers = new ModelAndView("editUsers");
         editUsers.addObject("users", users);
 
         return editUsers;
+    }
+
+    @RequestMapping(value="/saveChanges", method = RequestMethod.POST)
+    public ModelAndView saveChanges(WebRequest request, Model model, @ModelAttribute("user")User user) {
+
+        for (String id : request.getParameterValues("id")) {
+            int userId = Integer.parseInt(id);
+            String username = request.getParameter("username_" + id);
+            String role = request.getParameter("role");
+
+            User userToUpdate = userService.findById(userId);
+
+
+            Authorities auth = authoritiesService.findByUsername(userToUpdate.getUsername());
+            if(auth != null && !role.equals(auth.getRole())){
+                auth.setRole(role);
+                authoritiesService.saveAuthorities(auth);
+            }
+
+            if(!username.equals("")){
+                userToUpdate.setUsername(username);
+                userService.saveUser(userToUpdate);
+            }
+
+        }
+
+        return showEditUsers(request, model);
     }
 }

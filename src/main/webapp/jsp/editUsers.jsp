@@ -57,9 +57,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <form name="f" action="/editUsers" method="post" modelAttribute="users">
+                    <form name="f" action="/saveChanges" method="post" modelAttribute="users">
                         <h1>Edit Accounts</h1>
-
 
                         <div>
                             <table id="table" class="table table-bordered" style="background-color: ghostwhite">
@@ -68,7 +67,7 @@
                                     <th data-field="name">Account User</th>
                                     <th data-field="newName">New Email</th>
                                     <th data-field="role">User Role</th>
-                                    <th data-field="state" data-check-input="true">Delete</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -79,11 +78,12 @@
                                     </td>
                                     <td>
                                         <label class="form-check-label">
-                                            <input type="text" name="username" size="35">
+                                            <input type="hidden" name="id" value="${user.id}" />
+                                            <input name="username_${user.id}" size="35" />
                                         </label>
                                     </td>
                                     <td>
-                                        <select>
+                                        <select name="role_${user.id}">
                                             <c:choose>
                                                 <c:when test="${user.role =='ROLE_ADMIN'}">
                                                     <option value="ROLE_ADMIN" selected="selected">ROLE_ADMIN</option>
@@ -97,16 +97,17 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <input class="form-check-input" type="checkbox" value="">
+                                        <input type="submit" value="Delete">
+                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                     </td>
                                 </tr>
                                 </c:forEach>
                                 </tbody>
                             </table>
-
+                            <input type="submit" value="Save">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         </div>
-                        <input type="submit" value="Apply">
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
                     </form>
                 </div>
             </div>
