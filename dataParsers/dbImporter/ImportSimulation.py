@@ -84,17 +84,83 @@ def importSimulation():
         percent = 0.2
 
         for i in range(K):                          # Randomly select N districts from the district table for that year K times
-            randomDistrictsId = []
-            s = " SELECT   Districts.Id " \
-                + " FROM   Districts , States " \
-                + " WHERE  Districts.StateId = States.Id"\
-                + " AND    States.Year = " + str(item[1])\
-                + " ORDER BY RAND() LIMIT + " + str(N)
-            for row in session.execute(s):
-                randomDistrictsId.append(row[0])    # add random districts
+            var randomDemPercent
+            var randomRepPercent
+            simulatedDemSeats = 0 
+            simulatedRepSeats = 0 
+
+            simulatedDemPercent = "SELECT SUM(V.voteCount) / " \
+                                  + "(SELECT SUM(voteCount) " \
+                                  + "FROM Votes " \
+                                  + "INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
+                                  + "INNER JOIN States ON Districts.StateId = States.Id " \
+                                  + "WHERE States.Year = " + str(item[1]) \
+                                  + " AND States.Id = " + str(item[0]) \
+                                  + " AND Votes.Party = \"Democrat\") " \
+                                  + "FROM " \
+                                  + "(SELECT voteCount " \
+                                  + "FROM Votes " \
+                                  + "INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
+                                  + "INNER JOIN States ON Districts.StateId = States.Id " \
+                                  + "WHERE States.Year = 2016 " \
+                                  + "AND Votes.Party = \"Democrat\" " \
+                                  + "ORDER BY RAND() LIMIT " + str(N) + " AS V"
+
+            simulatedRepPercent = "SELECT SUM(V.voteCount) / " \
+                                  + "(SELECT SUM(voteCount) " \
+                                  + "FROM Votes " \
+                                  + "INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
+                                  + "INNER JOIN States ON Districts.StateId = States.Id " \
+                                  + "WHERE States.Year = " + str(item[1]) \
+                                  + " AND States.Id = " + str(item[0]) \
+                                  + " AND Votes.Party = \"Democrat\") " \
+                                  + "FROM " \
+                                  + "(SELECT voteCount " \
+                                  + "FROM Votes " \
+                                  + "INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
+                                  + "INNER JOIN States ON Districts.StateId = States.Id " \
+                                  + "WHERE States.Year = 2016 " \
+                                  + "AND Votes.Party = \"Republican\" " \
+                                  + "ORDER BY RAND() LIMIT " + str(N) + ") AS V"
+
+            for row in session.execute(simulatedDemPercent):
+                randomDemPercent = row[0]    # add random districts percent for Democrats
+            for row in session.execute(simulatedRepPercent):
+                randomRepPercent = row[0] # add random district percent for Republicans
 
             # if any combination of N districts are within 0.2% of the
             # actual total percent votes of the party, save the number of seats won by each party.
+            demVotePercent = " SELECT SUM(voteCount / " \
+                             + " (SELECT SUM(voteCount) " \
+                             + " FROM Votes " \
+                             + " INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
+                             + " INNER JOIN States ON Districts.StateId = States.Id " \
+                             + " WHERE States.Year = "  + str(item[1]) \
+                             + " AND States.Id = " + str(item[0]) + ")" \
+                             + " AND Votes.Party = \"Democrat\"" \
+                             + " FROM Votes " \
+                             + " INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
+                             + " INNER JOIN States ON Districts.StateId = States.Id " \
+                             + " WHERE States.Year = " + str(item[1]) \
+                             + " AND States.Id = " + str(item[0]) \
+                             + " AND Votes.Party = \"Democrat\";"
+
+            repVotePercent = " SELECT SUM(voteCount / " \
+                             + " (SELECT SUM(voteCount) " \
+                             + " FROM Votes " \
+                             + " INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
+                             + " INNER JOIN States ON Districts.StateId = States.Id " \
+                             + " WHERE States.Year = "  + str(item[1]) \
+                             + " AND States.Id = " + str(item[0]) + ")" \
+                             + " AND Votes.Party = \"Republican\"" \
+                             + " FROM Votes " \
+                             + " INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
+                             + " INNER JOIN States ON Districts.StateId = States.Id " \
+                             + " WHERE States.Year = " + str(item[1]) \
+                             + " AND States.Id = " + str(item[0]) \
+                             + " AND Votes.Party = \"Republican\";"
+                             
+            if(-0.2 <= randomRepPercent- repVotePercent <= 0.2 && -0.2 <= randomDemPercent - demVotePercent <= 0.2):
 
     # By the end of the simulation, calculate the mean of the seats for each party.
     # Save the mean to the Simulations table.
