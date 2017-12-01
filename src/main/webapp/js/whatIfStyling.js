@@ -1,7 +1,6 @@
 function initMapStyle(map) {
 	map.data.setStyle(function(feature) {
 		var color = 'blue';
-
 		if (feature.getProperty('isColorful')) {
 			color = feature.getProperty('color');
 		}

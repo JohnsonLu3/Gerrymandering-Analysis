@@ -28,6 +28,10 @@
         </fieldset>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
+
+    <form name="f" action="/www/index.html">
+        <button type="submit" class="btn">Back</button>
+    </form>
 </div>
 </body>
 </html>

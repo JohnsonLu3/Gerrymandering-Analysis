@@ -1,12 +1,14 @@
 package gerrymandering.controller;
 
 import gerrymandering.api.ApiResponse;
+import gerrymandering.measure.MeasureResults;
 import gerrymandering.model.GeoJson;
 import gerrymandering.service.ConfigurationService;
 import gerrymandering.service.GerrymanderMeasureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.time.Year;
+import java.util.List;
 
 @RestController
 public class AnalysisController {
@@ -17,8 +19,9 @@ public class AnalysisController {
 
 	@RequestMapping(value = "/loadMap", method = RequestMethod.GET)
 	@ResponseBody
-	public ApiResponse loadMap(){
-		GeoJson result = configurationService.generateUSGeoJson();
+	public ApiResponse loadMap(
+            @RequestParam(value="year") Integer electionYear){
+		GeoJson result = configurationService.generateUSGeoJson(electionYear);
 		if(result == null)
 			return new ApiResponse(false);
 		else
@@ -31,6 +34,7 @@ public class AnalysisController {
 			@RequestParam(value="stateName") String stateName,
 			@RequestParam(value="year") Integer electionYear){
 	    GeoJson response = gerrymanderMeasureService.selectState(stateName, Year.of(electionYear));
+	    response.addAllMeasureResults(gerrymanderMeasureService.runStateWideMeasures(stateName, electionYear));
 	    if(response == null)
 	    	return new ApiResponse(false);
 	    else
@@ -51,15 +55,35 @@ public class AnalysisController {
 			return new ApiResponse(true, response);
 	}
 
-	@RequestMapping(value = "/runMeasures", method = RequestMethod.POST)
+	@RequestMapping(value = "/allYears", method = RequestMethod.GET)
 	@ResponseBody
-	public String runMeasures(
-			@RequestParam(value="stateName", required=false, defaultValue="New York") String stateName) {
-		String ret = "";
-		// TODO: call AnalysisService.runMeasures(stateName)
-		// TODO: use Jackson to change results into json
-		return ret;
+	public ApiResponse getAllYears(){
+		List<Integer> result = configurationService.getAllYears();
+		if(result == null)
+			return new ApiResponse(false);
+		else
+			return new ApiResponse(true, result);
 	}
 
+	@RequestMapping(value = "/allStates", method = RequestMethod.GET)
+	@ResponseBody
+	public ApiResponse getAllStates(){
+		List<String> result = configurationService.getAllStateNames();
+		if(result == null)
+			return new ApiResponse(false);
+		else
+			return new ApiResponse(true, result);
+	}
 
+	@RequestMapping(value = "/runMeasures", method = RequestMethod.GET)
+	@ResponseBody
+	public ApiResponse runMeasures(
+			@RequestParam(value="stateName") String stateName,
+			@RequestParam(value="year") Integer electionYear) {
+		List<MeasureResults> result = gerrymanderMeasureService.runStateWideMeasures(stateName, electionYear);
+		if(result == null)
+			return new ApiResponse(false);
+		else
+			return new ApiResponse(true, result);
+	}
 }

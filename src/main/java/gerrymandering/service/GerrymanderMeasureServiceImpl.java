@@ -1,7 +1,7 @@
 package gerrymandering.service;
 
 import gerrymandering.common.CommonConstants;
-import gerrymandering.measure.MeasureResults;
+import gerrymandering.measure.*;
 import gerrymandering.model.District;
 import gerrymandering.model.GeoJson;
 import gerrymandering.model.State;
@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by yisuo on 11/14/17.
@@ -29,8 +31,21 @@ public class GerrymanderMeasureServiceImpl implements GerrymanderMeasureService 
     private GeoRenderingService geoJson;
 
     @Override
-    public List<MeasureResults> runStateWideMeasures(State state) {
-        return null;
+    public List<MeasureResults> runStateWideMeasures(String stateName, Integer electionYear) {
+        List<State> found = states.findByStateNameAndYear(stateName, electionYear);
+        if(found.size() == 0)
+            return null;
+        else{
+            List<Measure> stateWideMeasures = new ArrayList<>();
+            stateWideMeasures.add(new LopsidedTest());
+            stateWideMeasures.add(new EfficiencyGapTest());
+            stateWideMeasures.add(new ConsistentAdvantageTest());
+
+            return stateWideMeasures
+                    .stream()
+                    .map(m -> m.runMeasure(found.get(CommonConstants.FIRST_ELEMENT)))
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
