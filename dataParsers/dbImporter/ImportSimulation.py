@@ -10,7 +10,7 @@ connection_string = ''
 engine = None
 Session = None
 session = None
-#conn = None
+conn = None
 metadata = None
 Base = None
 
@@ -39,7 +39,7 @@ def connectToDB():
     engine = create_engine(connection_string, echo=False)
     Session = sessionmaker(bind=engine)
     session = Session()
-    #conn = engine.connect()
+    conn = engine.connect()
     metadata = MetaData()
     metadata.reflect(bind=engine)
     Base = automap_base()
@@ -58,7 +58,7 @@ def main():
     connectToDB()
     totalDistrictCount = getDistrictCount()
     importSimulation()
-    session.commit()
+    #session.commit()
     return
 
 def getDistrictCount():
@@ -79,15 +79,17 @@ def importSimulation():
 
     for item in stateDistricts:
         N = item[2]
-        K = -1                  # What is K?
+        K = 10000                  # What is K?
 
         percent = 0.2
 
         for i in range(K):                          # Randomly select N districts from the district table for that year K times
-            var randomDemPercent
-            var randomRepPercent
-            simulatedDemSeats = 0 
-            simulatedRepSeats = 0 
+            randomDemPercent  = 0
+            randomRepPercent  = 0
+            repVotePercent    = 0
+            demVotePercent    = 0
+            simulatedDemSeats = 0
+            simulatedRepSeats = 0
 
             simulatedDemPercent = "SELECT SUM(V.voteCount) / " \
                                   + "(SELECT SUM(voteCount) " \
@@ -130,7 +132,7 @@ def importSimulation():
 
             # if any combination of N districts are within 0.2% of the
             # actual total percent votes of the party, save the number of seats won by each party.
-            demVotePercent = " SELECT SUM(voteCount / " \
+            s = " SELECT SUM(voteCount / " \
                              + " (SELECT SUM(voteCount) " \
                              + " FROM Votes " \
                              + " INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
@@ -144,8 +146,10 @@ def importSimulation():
                              + " WHERE States.Year = " + str(item[1]) \
                              + " AND States.Id = " + str(item[0]) \
                              + " AND Votes.Party = \"Democrat\";"
+            for row in session.execute(s):
+                demVotePercent = row[0]
 
-            repVotePercent = " SELECT SUM(voteCount / " \
+            s = " SELECT SUM(voteCount / " \
                              + " (SELECT SUM(voteCount) " \
                              + " FROM Votes " \
                              + " INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
@@ -159,9 +163,11 @@ def importSimulation():
                              + " WHERE States.Year = " + str(item[1]) \
                              + " AND States.Id = " + str(item[0]) \
                              + " AND Votes.Party = \"Republican\";"
-                             
-            if(-0.2 <= randomRepPercent- repVotePercent <= 0.2 && -0.2 <= randomDemPercent - demVotePercent <= 0.2):
+            for row in session.execute(s):
+                repVotePercent = row[0]
 
+            if -1 * percent<= randomRepPercent - int(repVotePercent) <= percent and -1 * percent <= randomDemPercent - int(demVotePercent) <= percent:
+                pass
     # By the end of the simulation, calculate the mean of the seats for each party.
     # Save the mean to the Simulations table.
 
