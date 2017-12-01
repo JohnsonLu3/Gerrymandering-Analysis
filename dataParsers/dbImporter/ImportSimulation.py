@@ -91,39 +91,41 @@ def importSimulation():
             simulatedDemSeats = 0
             simulatedRepSeats = 0
 
-            simulatedDemPercent = "SELECT SUM(V.voteCount) / " \
-                                  + "(SELECT SUM(voteCount) " \
-                                  + "FROM Votes " \
-                                  + "INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
-                                  + "INNER JOIN States ON Districts.StateId = States.Id " \
-                                  + "WHERE States.Year = " + str(item[1]) \
-                                  + " AND States.Id = " + str(item[0]) \
-                                  + " AND Votes.Party = \"Democrat\") " \
-                                  + "FROM " \
-                                  + "(SELECT voteCount " \
-                                  + "FROM Votes " \
-                                  + "INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
-                                  + "INNER JOIN States ON Districts.StateId = States.Id " \
-                                  + "WHERE States.Year = 2016 " \
-                                  + "AND Votes.Party = \"Democrat\" " \
-                                  + "ORDER BY RAND() LIMIT " + str(N) + " AS V"
+            simulatedDem = "SELECT SUM(V.voteCount) / " \
+                           + "(SELECT SUM(voteCount) " \
+                           + "FROM Votes " \
+                           + "INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
+                           + "INNER JOIN States ON Districts.StateId = States.Id " \
+                           + "WHERE States.Year = " + str(item[1]) \
+                           + " AND States.Id = " + str(item[0]) \
+                           + " AND Votes.Party = \"Democrat\") " \
+                           + ", COUNT(*) AS demSeats " \
+                           + "FROM " \
+                           + "(SELECT voteCount " \
+                           + "FROM Votes " \
+                           + "INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
+                           + "INNER JOIN States ON Districts.StateId = States.Id " \
+                           + "WHERE States.Year = " + str(item[1]) + " " \
+                           + "AND Votes.Party = \"Democrat\" " \
+                           + "ORDER BY RAND() LIMIT " + str(N) + " AS V"
 
-            simulatedRepPercent = "SELECT SUM(V.voteCount) / " \
-                                  + "(SELECT SUM(voteCount) " \
-                                  + "FROM Votes " \
-                                  + "INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
-                                  + "INNER JOIN States ON Districts.StateId = States.Id " \
-                                  + "WHERE States.Year = " + str(item[1]) \
-                                  + " AND States.Id = " + str(item[0]) \
-                                  + " AND Votes.Party = \"Democrat\") " \
-                                  + "FROM " \
-                                  + "(SELECT voteCount " \
-                                  + "FROM Votes " \
-                                  + "INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
-                                  + "INNER JOIN States ON Districts.StateId = States.Id " \
-                                  + "WHERE States.Year = 2016 " \
-                                  + "AND Votes.Party = \"Republican\" " \
-                                  + "ORDER BY RAND() LIMIT " + str(N) + ") AS V"
+            simulatedRep = "SELECT SUM(V.voteCount) / " \
+                           + "(SELECT SUM(voteCount) " \
+                           + "FROM Votes " \
+                           + "INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
+                           + "INNER JOIN States ON Districts.StateId = States.Id " \
+                           + "WHERE States.Year = " + str(item[1]) \
+                           + " AND States.Id = " + str(item[0]) \
+                           + " AND Votes.Party = \"Democrat\") " \
+                           + ", COUNT(*) AS repSeats " \
+                           + "FROM " \
+                           + "(SELECT voteCount " \
+                           + "FROM Votes " \
+                           + "INNER JOIN Districts ON Votes.DistrictId = Districts.Id " \
+                           + "INNER JOIN States ON Districts.StateId = States.Id " \
+                           + "WHERE States.Year = " + str(item[1]) + " " \
+                           + "AND Votes.Party = \"Republican\" " \
+                           + "ORDER BY RAND() LIMIT " + str(N) + ") AS V"
 
             for row in session.execute(simulatedDemPercent):
                 randomDemPercent = row[0]    # add random districts percent for Democrats
