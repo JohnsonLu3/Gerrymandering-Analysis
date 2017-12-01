@@ -210,8 +210,32 @@ def importSimulation():
             if -1 * percent<= randomRepPercent - int(repVotePercent) <= percent and -1 * percent <= randomDemPercent - int(demVotePercent) <= percent:
                 # By the end of the simulation, calculate the mean of the seats for each party.
 
+                TotalDemSeats = 0
+                for demSeat in "DEM SEAT ARRAY":
+                    TotalDemSeats = TotalDemSeats + demSeat
+
+                meanSeats = TotalDemSeats / item[2]
+                # Save the mean to the Simulations table.
+                i = "INSERT Simulations(StateId, meanSeats, party) " \
+                    + " VALUES(" \
+                    + item[0] + " " + meanSeats + " " + 'Democrat' \
+                    + ")"
+
+                session.execute(i)
+
+                TotalRepSeats = 0
+                for repSeat in "DEM SEAT ARRAY":
+                    TotalrepSeats = TotalRepSeats + repSeat
+
+                meanSeats = TotalrepSeats / item[2]
                 # Save the mean to the Simulations table.
                 pass
+                i = "INSERT Simulations(StateId, meanSeats, party) " \
+                    + " VALUES(" \
+                    + item[0] + " " + meanSeats + " " + 'Democrat' \
+                    + ")"
+
+                session.execute(i)
     return
 
 def buildStateDistrictTuples():
