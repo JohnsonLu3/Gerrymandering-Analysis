@@ -191,7 +191,6 @@ def buildStateDistrictTuples():
 
     return stateAndDistricts
 
-
 if __name__ == "__main__":
     main()
 
