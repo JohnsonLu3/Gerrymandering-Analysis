@@ -34,6 +34,7 @@ public class AnalysisController {
 			@RequestParam(value="stateName") String stateName,
 			@RequestParam(value="year") Integer electionYear){
 	    GeoJson response = gerrymanderMeasureService.selectState(stateName, Year.of(electionYear));
+	    response.addAllMeasureResults(gerrymanderMeasureService.runStateWideMeasures(stateName, electionYear));
 	    if(response == null)
 	    	return new ApiResponse(false);
 	    else
