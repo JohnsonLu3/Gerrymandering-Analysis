@@ -234,3 +234,6 @@ function selectDistrictByClickHandler(map,event,areaInfoWindow,demVotesArray,rep
     	});
     	areaInfoWindow.open(map);		
 }
+
+
+

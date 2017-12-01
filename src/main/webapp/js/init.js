@@ -25,6 +25,7 @@ var areaInfoWindow;
 var selectedState;
 var selectedYear;
 var selectedPair;
+var selectedMinority;
 var districtVoteSum;
 var districtNum;
 

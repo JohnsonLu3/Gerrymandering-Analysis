@@ -1,9 +1,11 @@
 function initMapStyle(map) {
 	map.data.setStyle(function(feature) {
 		var color = 'blue';
+
 		if (feature.getProperty('isColorful')) {
 			color = feature.getProperty('color');
 		}
+		/*
 		var geom = feature.getGeometry();
 		if(geom.getType() == "Polygon") {
 			var poly = new google.maps.Polygon({paths: geom.getAt(0).getArray()});
@@ -11,6 +13,7 @@ function initMapStyle(map) {
 				color = 'green';
 			}
 		}
+		*/
 		return /** @type {google.maps.Data.StyleOptions} */({
 			clickable: true,
 			fillColor: color,
@@ -22,7 +25,7 @@ function initMapStyle(map) {
 
 	function resetStyle() {
 		/**
- 		* Make Polygon at center of map red and make everything else grey. 
+ 		* Make Polygon at center of map green and make everything else grey. 
  		* 
  		* containsLocation() from the Google Maps API Geometry Library is the key function here
  		* but it only accepts a Latlng and a Polygon
@@ -39,7 +42,9 @@ function initMapStyle(map) {
  		* console.log(feature.getGeometry()) is your friend, should reveal solution
  		* The Google Maps API Reference Documentation contains useful information not in the Guides
 		**/
+		/*
 		map.data.setStyle(function(feature) {
+			
 			var color; //= 'grey'; // Make everything grey by default
 			if (feature.getProperty('isColorful')) {
 				color = feature.getProperty('color');
@@ -52,27 +57,18 @@ function initMapStyle(map) {
 				}
 			}
 			//else if(multipolygon) {access polygon array}
-			/*
-			else if(geom.getType()=="MultiPolygon"){
-            	var polygonArray = geom.getArray();
-            	var retrievedPolygon;
-            	for(var i =0; i <polygonArray.length;i++){
-            	  	retrievedPolygon=polygonArray[i];
-             		if(google.maps.geometry.poly.containsLocation(map.getCenter(), retrievedPolygon)) { 
-						color = 'green'; // If feature contains center of map, highlight it
-					}             
-            	}
-          	}
-          	*/
-			return ({/** @type {google.maps.Data.StyleOptions} */
+			
+			return ({
 				clickable: true,
 				fillColor: color,
 				strokeColor: color,
 				strokeWeight: 2
 			});
 		});
+		*/
 	}
-function colorSelectedStateDistricts(data,stateFP){
+function colorSelectedStateDistricts(eventFeature){//function colorSelectedStateDistricts(data,stateFP){
+	/*
 	map.data.setStyle(function(feature) {
 		var color ;//= 'grey';
 		var winnerArray =data.map((e)=>{
@@ -86,7 +82,7 @@ function colorSelectedStateDistricts(data,stateFP){
 				if(feature.getProperty('CD115FP')==j+1){
 					if(winnerArray[j]=="R"){
 						color='red';
-						return /** @type {google.maps.Data.StyleOptions} */({
+						return({
 							clickable: true,
 							fillColor: color,
 							strokeColor: color,
@@ -94,7 +90,7 @@ function colorSelectedStateDistricts(data,stateFP){
 						});
 					}else if(winnerArray[j]=="D"){
 						color='blue';
-						return /** @type {google.maps.Data.StyleOptions} */({
+						return({
 							clickable: true,
 							fillColor: color,
 							strokeColor: color,
@@ -106,20 +102,20 @@ function colorSelectedStateDistricts(data,stateFP){
 		}
 				
 	});
+	*/
+	map.data.setStyle(function(feature) {
+			var color= 'grey'; // Make everything grey by default
+			var strokeColor= 'blue';
+			if(feature.getProperty('STATEFP')==eventFeature.getProperty('STATEFP')){
+				//need to find a way to access district id's
+				//if(feature.getProperty('CD115FP')==){ 
+					return ({/** @type {google.maps.Data.StyleOptions} */
+						clickable: true,
+						fillColor: color,
+						strokeColor: strokeColor,
+						strokeWeight: 2
+					});
+				//}    			
+		    } 		
+		});
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
