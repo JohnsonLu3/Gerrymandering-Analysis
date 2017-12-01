@@ -5,6 +5,8 @@ import gerrymandering.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service("UserService")
 public class UserService {
@@ -19,12 +21,21 @@ public class UserService {
         return userRepository.findByUsername(email);
     }
 
-    public User findById(String Id) {
-        return userRepository.findById(Id);
+    public Iterable<User> findAll(){
+        return userRepository.findAll();
+    }
+
+    public User findById(long id) {
+        return userRepository.findById(id);
     }
 
     public User findByActivationKey(String activationKey){
         return userRepository.findByActivationKey(activationKey);
+    }
+
+
+    public void deleteUserById(long id){
+        userRepository.delete(id);
     }
 
     public void saveUser(User user) {

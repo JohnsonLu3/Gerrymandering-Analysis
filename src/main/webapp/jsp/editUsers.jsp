@@ -1,6 +1,7 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
-    <title> Register Account</title>
+    <title>Edit Users</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -28,7 +29,7 @@
                             <a href="#">Home</a>
                         </li>
                         <li>
-                            <a href="/approveUsers">Approve Users</a>
+                            <a href="/editUsers">Edit Users</a>
                         </li>
                         <li>
                             <a href="#">Invite Admins</a>
@@ -56,35 +57,61 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <h1 class="text-inverse">Edit Accounts</h1>
-                    <div>
-                        <table id="table" class="table table-bordered" style="background-color: ghostwhite">
-                            <thead>
-                            <tr>
-                                <th data-field="state" data-check-input="true">enable</th>
-                                <th data-field="name">Account User</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <c:forEach items="${list}" var="user">
+                    <form name="f" action="/saveChanges" method="post" modelAttribute="users">
+                        <h1>Edit Accounts</h1>
+
+                        <div>
+                            <table id="table" class="table table-bordered" style="background-color: ghostwhite">
+                                <thead>
+                                <tr>
+                                    <th data-field="name">Account User</th>
+                                    <th data-field="newName">New Email</th>
+                                    <th data-field="role">User Role</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach items="${users}" var="user">
+                                <tr>
                                     <td>
-                                        <input class="form-check-input" type="checkbox" value="">
+                                        <c:out value ="${user.username}"/>
                                     </td>
                                     <td>
                                         <label class="form-check-label">
-                                                ${user}.getUsername
+                                            <input type="hidden" name="id" value="${user.id}" />
+                                            <input name="username_${user.id}" size="35" />
                                         </label>
                                     </td>
+                                    <td>
+                                        <select name="role_${user.id}">
+                                            <c:choose>
+                                                <c:when test="${user.role =='ROLE_ADMIN'}">
+                                                    <option value="ROLE_ADMIN" selected="selected">ROLE_ADMIN</option>
+                                                    <option value="ROLE_ADVANCE">ROLE_ADVANCE</option>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <option value="ROLE_ADMIN">ROLE_ADMIN</option>
+                                                    <option value="ROLE_ADVANCE" selected="selected">ROLE_ADVANCE</option>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <form name="f" action="/deleteUser" method="post" modelAttribute="users">
+                                            <input type="hidden" name="id" value="${user.id}" />
+                                            <input type="submit" name ="deleteButton" value="Delete">
+                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                        </form>
+                                    </td>
+                                </tr>
                                 </c:forEach>
+                                </tbody>
+                            </table>
+                            <input type="submit" name ="saveButton"value="Save">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        </div>
 
-                            </tr>
-                            </tbody>
-                        </table>
-
-                    </div>
-                    <input type="submit" value="Approve">
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </form>
                 </div>
             </div>
         </div>

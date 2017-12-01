@@ -1,5 +1,7 @@
 package gerrymandering.controller;
 
+import gerrymandering.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
+import gerrymandering.model.User;
 
 import java.util.Map;
 
@@ -16,14 +19,18 @@ import java.util.Map;
 @Controller
 public class AdminController {
 
+    @Autowired
+    UserService userService;
+
+
     @RequestMapping("/index")
     public String index() {
-        return "indexView";
+        return "redirect:/www/index.html";
     }
 
     @RequestMapping("/login")
     public String login(){
-        return "adminLogin";
+        return "loginView";
     }
 
     @RequestMapping("/admin")
@@ -32,21 +39,24 @@ public class AdminController {
     }
 
 
-    @RequestMapping(value = "/approveUsers", method = RequestMethod.GET)
-    public String showRegistrationForm(WebRequest request, Model model) {
-        return "approveUsers";
-    }
-
-
-
-
     @RequestMapping(value = "/changeEmail", method = RequestMethod.POST)
     public String changeEmail(@RequestParam String oldEmail, @RequestParam String newEmail){
+
+        User user = userService.findByUsername(oldEmail);
+        user.setUsername(newEmail);
+
+        userService.saveUser(user);
+
         return "";
     }
 
     @RequestMapping(value = "/changePw", method = RequestMethod.POST)
     public String changePassword(@RequestParam String email, @RequestParam String pw){
+
+        User user = userService.findByUsername(email);
+        user.setPassword(pw);
+
+        userService.saveUser(user);
         return "";
     }
 

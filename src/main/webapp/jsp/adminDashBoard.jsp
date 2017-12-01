@@ -24,7 +24,7 @@
                                 <a href="#">Home</a>
                             </li>
                             <li>
-                                <a href="/approveUsers">Approve Users</a>
+                                <a href="/editUsers">Edit Users</a>
                             </li>
                             <li>
                                 <a href="#">Invite Admins</a>
