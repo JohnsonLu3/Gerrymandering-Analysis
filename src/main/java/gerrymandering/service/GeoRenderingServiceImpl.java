@@ -1,9 +1,6 @@
 package gerrymandering.service;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.*;
 import gerrymandering.common.CommonConstants;
 import gerrymandering.model.*;
 import org.springframework.stereotype.Service;
@@ -21,6 +18,7 @@ import java.util.stream.Collectors;
 @Service("geoRenderingService")
 public class GeoRenderingServiceImpl implements GeoRenderingService {
     private GeoJSONWriter writer = new GeoJSONWriter();
+    GeometryFactory factory = new GeometryFactory();
 
     @Override
     public GeoJson buildGeoJson(List<State> states) {
@@ -58,6 +56,7 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
         Map<String, Object> properties = new HashMap<>();
         properties.put("StateId", state.getStateId());
         properties.put("StateName", state.getStateName());
+        properties.put("Area", getArea(state));
         addElectionData(state, properties);
         addCentroid(state, properties);
         return buildFeature(state.getBoundaries(), properties);
@@ -67,6 +66,7 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
         Map<String, Object> properties = new HashMap<>();
         properties.put("StateId", district.getState().getStateId());
         properties.put("DistrictNo", district.getDistrictNo());
+        properties.put("Area", getArea(district));
         addElectionData(district, properties);
         addCentroid(district, properties);
         return buildFeature(district.getBoundaries(), properties);
@@ -108,5 +108,25 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
 
         properties.put("CenterX", mainArea.getX());
         properties.put("CenterY", mainArea.getY());
+    }
+
+    public Double getArea(GeoRegion region){
+        return region
+                .getBoundaries()
+                .stream()
+                .map(boundary -> boundary.getShape().getCoordinates())
+                .map(coordinates -> convertLatLongToCartisian(coordinates))
+                .map(coordinates -> factory.createPolygon(coordinates))
+                .mapToDouble(polygon -> polygon.getArea())
+                .sum();
+    }
+
+    private Coordinate[] convertLatLongToCartisian(Coordinate[] latlng){
+        return Arrays.stream(latlng)
+                .map(coordinate ->
+                        new Coordinate(coordinate.x * CommonConstants.EARTH_DEGREE_LENGTH
+                                * Math.cos(Math.toRadians(coordinate.y)),
+                                coordinate.y * CommonConstants.EARTH_DEGREE_LENGTH))
+                .toArray(size -> new Coordinate[size]);
     }
 }

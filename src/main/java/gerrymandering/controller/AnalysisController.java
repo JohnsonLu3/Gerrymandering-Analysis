@@ -1,5 +1,8 @@
 package gerrymandering.controller;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
 import gerrymandering.api.ApiResponse;
 import gerrymandering.measure.MeasureResults;
 import gerrymandering.model.GeoJson;
@@ -85,5 +88,15 @@ public class AnalysisController {
 			return new ApiResponse(false);
 		else
 			return new ApiResponse(true, result);
+	}
+
+	@RequestMapping(value = "/testArea", method = RequestMethod.GET)
+	@ResponseBody
+	public ApiResponse testArea(){
+		GeometryFactory factory = new GeometryFactory();
+		Coordinate[] coordinates = {new Coordinate(4, 10), new Coordinate(9,7), new Coordinate(11, 2), new Coordinate(2, 2), new Coordinate(4, 10)};
+		Polygon test = factory.createPolygon(coordinates);
+		Double area = test.getArea();
+		return new ApiResponse(true, area);
 	}
 }
