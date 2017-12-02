@@ -313,7 +313,9 @@ function backToOriginalDistrictView(){//////////////////////////////////////////
 function backToOriginalCountryView(){///////////////////////////////////////////////////////////////// new function
 	
 	if(selectedState != null){
-        selectedState.features.forEach(feature => {map.data.remove(feature)});
+		selectedState.features.forEach(feature => {map.data.remove(feature)});
+		selectedState.listener.remove();
+		selectedState=null;     
     }
 	
     map.setZoom(setting.countryZoom);
