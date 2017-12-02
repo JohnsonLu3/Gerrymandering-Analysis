@@ -33,13 +33,18 @@ var margin = {top: 20, right: 20, bottom: 30, left: 90},
 // setup x
     xScale = d3.scale.ordinal().rangeRoundBands([0, width], 1),
     xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-
+var districtsWonByDemocratVotePercentageArray=[];
+var districtsWonByRepublicanVotePercentageArray=[];
 // setup y
 var yValue = function (e) {
-        if(e.properties.ElectedParty === "Democrat")
+        if(e.properties.ElectedParty === "Democrat"){
+        	districtsWonByDemocratVotePercentageArray.push(e.properties.PercentVotes.Democrat);
             return e.properties.PercentVotes.Democrat;
-        else if(e.properties.ElectedParty === "Republican")
+        }
+        else if(e.properties.ElectedParty === "Republican"){
+        	districtsWonByRepublicanVotePercentageArray.push(e.properties.PercentVotes.Republican);
             return e.properties.PercentVotes.Republican;
+        }
     }, // data -> value
     yScale = d3.scale.linear().range([height, 0]), // value -> display
     yMap = function (d) {
@@ -687,74 +692,16 @@ function displayLopsidedWinsResultDescription(data) {
 
 //Start of Consistent Advantage Methods
 function displayConsistentAdvantageTestResults(data, svg) {
-    calculateConsistentAdvantageMean_Median(data);
+    
     initConsistentAdvantageSVGContainer(data, svg);
     findConsistentAdvantageStateWinner(data);
     democratWinsConsistentAdvantageSVG(data, svg);
     republicanWinsConsistentAdvantageSVG(data, svg);
+    calculateConsistentAdvantageMean_Median(data);
     displayMeanMedian(svg);
     displayConsistentAdvantageResultDescription(data);
 }
 
-function calculateConsistentAdvantageMean_Median(data) {
-    //returns an array of the "Dem Vote % " values
-    districts = data.json.features;
-    demVotePercentage = districts.map((e) => {
-        return e.properties.PercentVotes.Democrat;
-    });
-    democratVotePercentageSum = demVotePercentage.reduce(function (total, amount) {
-        return total + amount;
-    }, 0);
-    democratVotePercentageMean = democratVotePercentageSum / demVotePercentage.length;
-    //returns an array of the "DemVotes " values
-    democratVotesArray = districts.map((e) => {
-        return e.properties.Votes.Democrat;
-    });
-    //calculates the sum of all the elements in the array
-    democratVotesSum = democratVotesArray.reduce(function (total, amount) {
-        return total + amount;
-    }, 0);
-    democratVotesMean = democratVotesSum / democratVotesArray.length;
-    //repeat finding the mean and median for the republicans
-    repVotePercentage = districts.map((e) => {
-        return e.properties.PercentVotes.Republican;
-    });
-    republicanVotePercentageSum = repVotePercentage.reduce(function (total, amount) {
-        return total + amount;
-    }, 0);
-    republicanVotePercentageMean = republicanVotePercentageSum / repVotePercentage.length;
-    republicanVotesArray = districts.map((e) => {
-        return e.properties.Votes.Republican;
-    });
-    republicanVotesSum = republicanVotesArray.reduce(function (total, amount) {
-        return total + amount;
-    }, 0);
-    republicanVotesMean = republicanVotesSum / republicanVotesArray.length;
-    //A sorted list is needed before locating the median
-    demVotePercentage.sort();
-    repVotePercentage.sort();
-    if (demVotePercentage.length % 2 == 0) {
-        var elementA = (demVotePercentage.length / 2) - 1;
-        var elementB = elementA + 1;
-        var elementSum = demVotePercentage[elementA] + demVotePercentage[elementB];
-        democratPercentageMedian = elementSum / 2;
-    } else {
-        var element = parseInt(demVotePercentage.length / 2);
-        democratPercentageMedian = demVotePercentage[element];
-    }
-    if (repVotePercentage.length % 2 == 0) {
-        var elementA = (repVotePercentage.length / 2) - 1;
-        var elementB = elementA + 1;
-        var elementSum = repVotePercentage[elementA] + repVotePercentage[elementB];
-        republicanPercentageMedian = elementSum / 2;
-    } else {
-        var element = parseInt(repVotePercentage.length / 2);
-        republicanPercentageMedian= repVotePercentage[element];
-    }
-    console.log("consistentAdvantage -democratVotesMean: " + democratVotesMean);
-    console.log("consistentAdvantage -median: " + median);
-    console.log("consistentAdvantage -republicanVotesMean" + republicanVotesMean);
-}
 
 function initConsistentAdvantageSVGContainer(data, svg) {
     //remove the chart that was previously rendered and replace it with
@@ -899,6 +846,71 @@ function republicanWinsConsistentAdvantageSVG(data, svg) {
             });
     }
 }
+
+function calculateConsistentAdvantageMean_Median(data) {
+    //returns an array of the "Dem Vote % " values
+    //var districtsWonByDemocratVotePercentageArray=[];
+	//var districtsWonByRepublicanVotePercentageArray=[];
+    districts = data.json.features;
+    
+    democratVotePercentageSum = districtsWonByDemocratVotePercentageArray.reduce(function (total, amount) {
+        return total + amount;
+    }, 0);
+    democratVotePercentageMean = democratVotePercentageSum / districtsWonByDemocratVotePercentageArray.length;
+    //returns an array of the "DemVotes " values
+    democratVotesArray = districts.map((e) => {
+        return e.properties.Votes.Democrat;
+    });
+    //calculates the sum of all the elements in the array
+    democratVotesSum = democratVotesArray.reduce(function (total, amount) {
+        return total + amount;
+    }, 0);
+    democratVotesMean = democratVotesSum / democratVotesArray.length;
+    //repeat finding the mean and median for the republicans
+    
+    republicanVotePercentageSum = districtsWonByRepublicanVotePercentageArray.reduce(function (total, amount) {
+        return total + amount;
+    }, 0);
+    republicanVotePercentageMean = republicanVotePercentageSum / districtsWonByRepublicanVotePercentageArray.length;
+    republicanVotesArray = districts.map((e) => {
+        return e.properties.Votes.Republican;
+    });
+    republicanVotesSum = republicanVotesArray.reduce(function (total, amount) {
+        return total + amount;
+    }, 0);
+    republicanVotesMean = republicanVotesSum / republicanVotesArray.length;
+    //A sorted list is needed before locating the median
+    districtsWonByDemocratVotePercentageArray.sort();
+    districtsWonByRepublicanVotePercentageArray.sort();
+    if (districtsWonByDemocratVotePercentageArray.length % 2 == 0) {
+        var elementA = (districtsWonByDemocratVotePercentageArray.length / 2) - 1;
+        var elementB = elementA + 1;
+        var elementSum = districtsWonByDemocratVotePercentageArray[elementA] + districtsWonByDemocratVotePercentageArray[elementB];
+        democratPercentageMedian = elementSum / 2;
+    } else {
+        var element = parseInt(districtsWonByDemocratVotePercentageArray.length / 2);
+        democratPercentageMedian = districtsWonByDemocratVotePercentageArray[element];
+    }
+    if (districtsWonByRepublicanVotePercentageArray.length % 2 == 0) {
+        var elementA = (districtsWonByRepublicanVotePercentageArray.length / 2) - 1;
+        var elementB = elementA + 1;
+        var elementSum = districtsWonByRepublicanVotePercentageArray[elementA] + districtsWonByRepublicanVotePercentageArray[elementB];
+        republicanPercentageMedian = elementSum / 2;
+    } else {
+        var element = parseInt(districtsWonByRepublicanVotePercentageArray.length / 2);
+        republicanPercentageMedian= districtsWonByRepublicanVotePercentageArray[element];
+    }
+    console.log("consistentAdvantage -democratVotesMean: " + democratVotesMean);
+    console.log("consistentAdvantage -median: " + median);
+    console.log("consistentAdvantage -republicanVotesMean" + republicanVotesMean);
+}
+
+function displayMeanMedian(svg){
+	  createLine(svg,"Republican Mean",republicanVotePercentageMean,"red",400,5,0.5);
+	  createLine(svg,"Republican Median",republicanPercentageMedian,"crimson",400,5,0.5);
+	  createLine(svg,"Democratic Mean",democratVotePercentageMean,"blue",400,5,0.5);
+	  createLine(svg,"Democratic Median",democratPercentageMedian,"darkblue",400,5,0.5);
+}
 function createLine(svg,displayedElement,yScaleAmount,color,width,height,fillOpacity){
 
 	var lineYMap = function (d) {
@@ -928,12 +940,6 @@ function createLine(svg,displayedElement,yScaleAmount,color,width,height,fillOpa
                     	.style("opacity", 0);
             	});
 
-}
-function displayMeanMedian(svg){
-	  createLine(svg,"Republican Mean",republicanVotePercentageMean,"red",400,5,0.5);
-	  createLine(svg,"Republican Median",republicanPercentageMedian,"crimson",400,5,0.5);
-	  createLine(svg,"Democratic Mean",democratVotePercentageMean,"blue",400,5,0.5);
-	  createLine(svg,"Democratic Median",democratPercentageMedian,"darkblue",400,5,0.5);
 }
 function displayConsistentAdvantageResultDescription(data) {
 	passfail = document.getElementById('consistent-advantage-pass-fail');
