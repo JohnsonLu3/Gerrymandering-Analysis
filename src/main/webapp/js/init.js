@@ -9,6 +9,7 @@ const setting = {
 };
 
 var map;
+var clickedFeature;
 //var searchGeocoder;
 var searchBox;
 var input;
@@ -47,8 +48,12 @@ var yValue = function (e) {
     yAxis = d3.svg.axis().scale(yScale).orient("left");
 var democratVotesMean = 0;
 var democratVotesSum = 0;
+var democratVotePercentageSum=0;
+var democratVotePercentageMean=0;
 var republicanVotesMean = 0;
 var republicanVotesSum = 0;
+var republicanVotePercentageSum=0;
+var republicanVotePercentageMean=0;
 var median = 0;
 //set up values for Republican Won districts
 var republicanValues = function (e) {
@@ -93,7 +98,7 @@ var median = 0;
 var sum = 0;
 var republicanSum = 0;
 var counter;
-var demVotePercentage;
+//var demVotePercentage;
 var democratWonState = 0;
 var republicanWonState = 0;
 var demVotesArray;
@@ -108,7 +113,7 @@ var winnerArray;
 
 //efficiency gap variables
 var counter;
-var demVotePercentage;
+//var demVotePercentage;
 var democratWonState = 0;
 var republicanWonState = 0;
 var demVotesArray;
@@ -190,24 +195,6 @@ function initializeMap() {
 
 /* functions for all respective handlers*/
 function resetStyle() {
-    /**
-     * Make Polygon at center of map red and make everything else grey.
-     *
-     * containsLocation() from the Google Maps API Geometry Library is the key function here
-     * but it only accepts a Latlng and a Polygon
-     *
-     * Since after the user searches for a state, the map centers on it, that state will contain
-     * the center of the map (map.getCenter(), which returns a Latlng)
-     * Possible exception is Hawaii
-     *
-     * To obtain a Polygon from a feature:
-     * First obtain Geometry with feature.getGeometry()
-     * Then if Geometry is Polygon (not MultiPolygon), the Polygon will be in
-     * feature.getGeometry().getAt(0).getArray();
-     * Open issue: how to handle features with MultiPolygon geometry
-     * console.log(feature.getGeometry()) is your friend, should reveal solution
-     * The Google Maps API Reference Documentation contains useful information not in the Guides
-     **/
     map.data.setStyle(function (feature) {
         var fillColor = null;
         var strokeColor = 'grey';
@@ -245,18 +232,18 @@ function enableHover(){
 function enableStateSelect() {
     map.data.addListener('click', function (event) {
         var feature = event.feature;
-        var stateName = feature.getProperty('StateName');
+        clickedFeature = event.feature; ///////////////////////////////////////////////////////////////// new line
+        var stateName = feature.getProperty('StateName');        
         var voteSums = {
             votes: feature.getProperty('Votes'),
             totalVotes: feature.getProperty('TotalVotes'),
             percentVotes: feature.getProperty('PercentVotes')
         };
-
         if (stateName
             && (selectedState != null
             && feature.getProperty('StateId') != selectedState.features[0].getProperty('StateId'))
             || selectedState == null) {
-            center = {lat: feature.getProperty('CenterY'), lng: feature.getProperty('CenterX')};
+            center = {lat: feature.getProperty('CenterY'), lng: feature.getProperty('CenterX')};        	
             loadStateJson(stateName, selectedYear, function(response){
                 if (response.success === true) {
                     renderState(stateName, response.response.json, center);
@@ -265,15 +252,13 @@ function enableStateSelect() {
                     displayVoteSums(voteSums);
                 }
             });
-        }
+        }        
     });
-
     map.data.addListener('addfeature', function(event){
         var feature = event.feature;
         map.data.overrideStyle(feature, {zIndex: setting.districtZoom});
     });
 }
-
 function enableDistrictSelect(selected) {
     var features = selected.features;
     return map.data.addListener('click', function(event){
@@ -290,6 +275,50 @@ function enableDistrictSelect(selected) {
             }
         });
     });
+}
+
+function backToOriginalDistrictView(){///////////////////////////////////////////////////////////////// new function
+        console.log("In backToOriginalDistrictView() function ");
+        var stateName = clickedFeature.getProperty('StateName');
+        var voteSums = {
+            votes: clickedFeature.getProperty('Votes'),
+            totalVotes: clickedFeature.getProperty('TotalVotes'),
+            percentVotes: clickedFeature.getProperty('PercentVotes')
+        };
+        console.log("stateName:"+stateName);
+        console.log("selectedState:"+selectedState);
+        console.log("clickedFeature.getProperty('StateId'):"+clickedFeature.getProperty('StateId'));
+        console.log("selectedState.features[0].getProperty('StateId'):"+selectedState.features[0].getProperty('StateId'));
+
+        if (stateName
+            && (selectedState != null
+            && clickedFeature.getProperty('StateId') == selectedState.features[0].getProperty('StateId'))
+            || selectedState == null) {
+        	console.log("In major if statement for backToOriginalDistrictView() function ");
+            center = {lat: clickedFeature.getProperty('CenterY'), lng: clickedFeature.getProperty('CenterX')};
+            loadStateJson(stateName, selectedYear, function(response){
+                if (response.success === true) {
+                	console.log("In loadStateJson function for backToOriginalDistrictView() function ");
+                    renderState(stateName, response.response.json, center);
+                }
+            });
+        }
+    map.data.addListener('addfeature', function(event){
+        var feature = event.feature;
+        map.data.overrideStyle(feature, {zIndex: setting.districtZoom});
+    });
+}
+function backToOriginalCountryView(){///////////////////////////////////////////////////////////////// new function
+	
+	if(selectedState != null){
+        selectedState.features.forEach(feature => {map.data.remove(feature)});
+    }
+	
+    map.setZoom(setting.countryZoom);
+    
+}
+function backToOriginalStateView(){///////////////////////////////////////////////////////////////// new function
+	map.setZoom(setting.stateZoom);
 }
 
 function renderState(stateName, stateJson, center) {
@@ -512,10 +541,10 @@ function findLopsidedWinsStateWinner(data) {
     });
     for (var k = 0; k < winnerArray.length; k++) {
         if (winnerArray[k] == "Republican") {
-            demDistrictCount = demDistrictCount + 1;
+        	repDistrictCount = repDistrictCount + 1;
         }
         else if (winnerArray[k] == "Democrat") {
-            repDistrictCount = repDistrictCount + 1;
+        	demDistrictCount = demDistrictCount + 1;
         }
     }
     if (demDistrictCount > repDistrictCount) {
@@ -659,28 +688,51 @@ function displayConsistentAdvantageTestResults(data, svg) {
     findConsistentAdvantageStateWinner(data);
     democratWinsConsistentAdvantageSVG(data, svg);
     republicanWinsConsistentAdvantageSVG(data, svg);
-    displayConsistentAdvantageResultDescription();
+    displayConsistentAdvantageResultDescription(data);
 }
 
 function calculateConsistentAdvantageMean_Median(data) {
     //returns an array of the "Dem Vote % " values
-    demVotePercentage = data.map((e) => {
-        return e['Dem Vote %'];
+    districts = data.json.features;
+    demVotePercentage = districts.map((e) => {
+        return e.properties.PercentVotes.Democrat;
     });
-    console.log("data" + data);
-    //calculates the sum of all the elements in the array
-    sum = demVotePercentage.reduce(function (total, amount) {
+    democratVotePercentageSum = demVotePercentage.reduce(function (total, amount) {
         return total + amount;
     }, 0);
-    mean = sum / demVotePercentage.length;
-    var difference;
-    for (var i = 0; i < demVotePercentage.length; i++) {
-        difference = 1 - demVotePercentage[i];
-        republicanSum = republicanSum + difference;
-    }
-    republicanMean = republicanSum / demVotePercentage.length;
+    democratVotePercentageMean = democratVotePercentageSum / demVotePercentage.length;
+    //returns an array of the "DemVotes " values
+    democratVotesArray = districts.map((e) => {
+        return e.properties.Votes.Democrat;
+    });
+    //calculates the sum of all the elements in the array
+    democratVotesSum = democratVotesArray.reduce(function (total, amount) {
+        return total + amount;
+    }, 0);
+    democratVotesMean = democratVotesSum / democratVotesArray.length;
+    //repeat finding the mean and median for the republicans
+
+    repVotePercentage = districts.map((e) => {
+        return e.properties.PercentVotes.Republican;
+    });
+    republicanVotePercentageSum = repVotePercentage.reduce(function (total, amount) {
+        return total + amount;
+    }, 0);
+    republicanVotePercentageMean = republicanVotePercentageSum / repVotePercentage.length;
+
+    republicanVotesArray = districts.map((e) => {
+        return e.properties.Votes.Republican;
+    });
+
+    republicanVotesSum = republicanVotesArray.reduce(function (total, amount) {
+        return total + amount;
+    }, 0);
+
+    republicanVotesMean = republicanVotesSum / republicanVotesArray.length;
     //A sorted list is needed before locating the median
     demVotePercentage.sort();
+    repVotePercentage.sort();
+
     if (demVotePercentage.length % 2 == 0) {
         var elementA = (demVotePercentage.length / 2) - 1;
         var elementB = elementA + 1;
@@ -690,6 +742,9 @@ function calculateConsistentAdvantageMean_Median(data) {
         var element = parseInt(demVotePercentage.length / 2);
         median = demVotePercentage[element];
     }
+    console.log("consistentAdvantage -democratVotesMean: " + democratVotesMean);
+    console.log("consistentAdvantage -median: " + median);
+    console.log("consistentAdvantage -republicanVotesMean" + republicanVotesMean);
 }
 
 function initConsistentAdvantageSVGContainer(data, svg) {
@@ -697,12 +752,15 @@ function initConsistentAdvantageSVGContainer(data, svg) {
 
     //retrieve the column that only holds the "Dem Vote %" values of each row related to the chosen state
     //returns an array of the "Dem Vote % " values
-    demVotePercentage = data.map((e) => {
-        return e['Dem Vote %'];
+    maxPercentVotes = data.json.features.map(e => {
+        demVotes = e.properties.PercentVotes.Democrat;
+        repVotes = e.properties.PercentVotes.Republican;
+        return Math.max(...[demVotes, repVotes]);
     });
-    console.log("data" + data);
-    xScale.domain([0, d3.max(data, xValue) + 0.2]);
-    yScale.domain([0, d3.max(data, yValue)]);
+
+    console.log("data passed into initConsistentAdvantageSVGContainer method:" + data);
+    xScale.domain(["Democrat", "Republican"]);
+    yScale.domain([0, d3.max(maxPercentVotes)]);
     // x-axis appended to HTML "g" element with the specified text "Vote Percentage"
     svg.append("g")
         .attr("class", "x axis")
@@ -713,7 +771,7 @@ function initConsistentAdvantageSVGContainer(data, svg) {
         .attr("x", width)
         .attr("y", -6)
         .style("text-anchor", "end")
-        .text("Vote Percentage");
+        .text("Parties");
     // y-axis appended to HTML "g" element with the specified text "Vote Shares"
     svg.append("g")
         .attr("class", "y axis")
@@ -729,34 +787,46 @@ function initConsistentAdvantageSVGContainer(data, svg) {
 
 function findConsistentAdvantageStateWinner(data) {
     //find overall winner of state through retrieving the values 'Winner' column in each row relevant to the chosen state
-    winnerArray = data.map((e) => {
-        return e['Winner'];
+    districts = data.json.features;
+    winnerArray = districts.map((e) => {
+        return e.properties.ElectedParty;
     });
-    for (var i = 0; i < winnerArray.length; i++) {
-        if (winnerArray[i] == "D") {
-            demDistrictCount = demDistrictCount + 1;
-        } else if (winnerArray[i] == "R") {
-            repDistrictCount = repDistrictCount + 1;
+    for (var k = 0; k < winnerArray.length; k++) {
+        if (winnerArray[k] == "Republican") {
+        	repDistrictCount = repDistrictCount + 1;
+        }
+        else if (winnerArray[k] == "Democrat") {
+        	demDistrictCount = demDistrictCount + 1;
         }
     }
-    console.log("demDistrictCount: " + demDistrictCount);
-    console.log("repDistrictCount: " + repDistrictCount);
     if (demDistrictCount > repDistrictCount) {
         democratWonState = 1;
-    } else if (demDistrictCount < repDistrictCount) {
+    }
+    else if (demDistrictCount < repDistrictCount) {
         republicanWonState = 1;
     }
+    console.log("findConsistentAdvantageStateWinner-demDistrictCount: " + demDistrictCount);
+    console.log("findConsistentAdvantageStateWinner-repDistrictCount: " + repDistrictCount);
+    console.log("findConsistentAdvantageStateWinner-democratWonState: " + democratWonState);
+    console.log("findConsistentAdvantageStateWinner-republicanWonState" + republicanWonState);
 }
 
 function democratWinsConsistentAdvantageSVG(data, svg) {
+	districts = data.json.features;
     if (democratWonState == 1) {
         svg.selectAll(".dot")
-            .data(data)
+            .data(districts)
             .enter().append("circle")
             .attr("class", "dot")
             .attr("r", 3.5)
-            .attr("cx", xMap)
-            .attr("cy", yMap)
+            .attr("cx", function(d){
+            	console.log(typeof  d.properties.PercentVotes.Democrat);
+            	console.log(d.properties.PercentVotes.Democrat);
+            	return xScale(d.properties.ElectedParty);
+        	})
+            .attr("cy", function(d){
+            	return yMap(d);
+        	})
             .style("fill", function (d) {
                 return c[1];
             })
@@ -764,14 +834,14 @@ function democratWinsConsistentAdvantageSVG(data, svg) {
                 tooltip.transition()
                     .duration(200)
                     .style("opacity", .9);
-                if (d.Winner == "D") {
-                    tooltip.html("District:" + d["AreaNumber"] + "<br/>Dem Vote %:" + xValue(d)
-                        + "<br/> Dem Votes: " + yValue(d))
+                if (d.properties.ElectedParty == "Democrat") {
+                    tooltip.html("District:" + d.properties.DistrictNo + "<br/>Dem Vote %:" + d.properties.PercentVotes.Democrat
+                        + "<br/> Dem Votes: " + d.properties.Votes.Democrat)
                         .style("left", (d3.event.pageX + 5) + "px")
                         .style("top", (d3.event.pageY - 28) + "px");
-                } else if (d.Winner == "R") {
-                    tooltip.html("District:" + d["AreaNumber"] + "<br/> Dem Vote %:" + xValue(d)
-                        + "<br/> Rep Votes: " + republicanValues(d))
+                } else if (d.properties.ElectedParty == "Republican") {
+                    tooltip.html("District:" +  d.properties.DistrictNo + "<br/> Dem Vote %:" + d.properties.PercentVotes.Democrat
+                        + "<br/> Rep Votes: " + d.properties.Votes.Republican)
                         .style("left", (d3.event.pageX + 5) + "px")
                         .style("top", (d3.event.pageY - 28) + "px");
                 }
@@ -782,17 +852,25 @@ function democratWinsConsistentAdvantageSVG(data, svg) {
                     .style("opacity", 0);
             });
     }
+    
 }
 
 function republicanWinsConsistentAdvantageSVG(data, svg) {
+	districts = data.json.features;
     if (republicanWonState == 1) {
         svg.selectAll(".dot")
-            .data(data)
+            .data(districts)
             .enter().append("circle")
             .attr("class", "dot")
             .attr("r", 3.5)
-            .attr("cx", xMap)
-            .attr("cy", yMap)
+            .attr("cx", function(d){
+            	console.log(typeof  d.properties.PercentVotes.Democrat);
+            	console.log(d.properties.PercentVotes.Democrat);
+            	return xScale(d.properties.ElectedParty);
+        	})
+            .attr("cy", function(d){
+            	return yMap(d);
+        	})
             .style("fill", function (d) {
                 return c[0];
             })
@@ -800,8 +878,8 @@ function republicanWinsConsistentAdvantageSVG(data, svg) {
                 tooltip.transition()
                     .duration(200)
                     .style("opacity", .9);
-                tooltip.html("District:" + d["AreaNumber"] + "<br/> Dem Vote %:" + xValue(d)
-                    + "<br/> Rep Votes: " + republicanValues(d))
+                tooltip.html("District:" + d.properties.DistrictNo + "<br/> Dem Vote %:" + d.properties.PercentVotes.Democrat
+                    + "<br/> Rep Votes: " + d.properties.Votes.Republican)//republicanValues(d)
                     .style("left", (d3.event.pageX + 5) + "px")
                     .style("top", (d3.event.pageY - 28) + "px");
             })
@@ -813,16 +891,24 @@ function republicanWinsConsistentAdvantageSVG(data, svg) {
     }
 }
 
-function displayConsistentAdvantageResultDescription() {
+function displayConsistentAdvantageResultDescription(data) {
+	passfail = document.getElementById('consistent-advantage-pass-fail');
+	if(data.measureResults[2].testResult == true){
+        passfail.innerHTML = "PASS";
+        passfail.className = "text-success";
+    }
+    else{
+        passfail.innerHTML = "FAIL";
+        passfail.className = "text-danger";
+    }
     //displays the test result description based on the overall winner of the state as well as the chosen state and year combination
     if (democratWonState == 1) {
-        document.getElementById("consistentAdvantageAnalysis").innerHTML = "In " + selectedPair[0][1] + "'s " + selectedPair[1][1] + " election, Republicans won their districts with an average of " + republicanMean + "% percent of the vote, and Democrats won their districts with an average of " + mean + "% percent of the vote. The median for the Democrats was " + median + "%. The difference between the two parties’ win margins indicates " + selectedPair[0][1] + " may be gerrymandered to gain an advantage for Democrats. <br><br>";
+        document.getElementById("consistentAdvantageAnalysis").innerHTML = "In " + selectedState.name + "'s " + selectedYear + " election, Republicans won their districts with an average of " + republicanVotePercentageMean + "% percent of the vote, and Democrats won their districts with an average of " + democratVotePercentageMean  + "% percent of the vote. The median for the Democrats was " + median + "%. The difference between the two parties’ win margins was "+data.measureResults[2].meanMedianDifference+" and indicates " + selectedState.name + " may " + (data.measureResults[2].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Democrats. <br><br>";
+    }if (republicanWonState == 1) {
+        document.getElementById("consistentAdvantageAnalysis").innerHTML = "In " + selectedState.name + "'s " + selectedYear + " election, Republicans won their districts with an average of " + republicanVotePercentageMean + "% percent of the vote, and Democrats won their districts with an average of " + democratVotePercentageMean + "% percent of the vote. The median for the Democrats was " + median + "%. The difference between the two parties’ win margins was "+ data.measureResults[2].meanMedianDifference+" and indicates " + selectedState.name + " may " + (data.measureResults[2].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Republicans. <br><br>";
     }
-    if (republicanWonState == 1) {
-        document.getElementById("consistentAdvantageAnalysis").innerHTML = "In " + selectedPair[0][1] + "'s " + selectedPair[1][1] + " election, Republicans won their districts with an average of " + republicanMean + "% percent of the vote, and Democrats won their districts with an average of " + mean + "% percent of the vote. The median for the Democrats was " + median + "%. The difference between the two parties’ win margins indicates " + selectedPair[0][1] + " may be gerrymandered to gain an advantage for Republicans. <br><br>";
-    }
+    
 }
-
 //Start of Efficiency Gap Methods
 function displayEfficiencyGapTestResults(data, svg2) {
     findEfficiencyGapStateWinner(data);
@@ -831,44 +917,47 @@ function displayEfficiencyGapTestResults(data, svg2) {
     appendEfficiencyGapAxis(svg2);
     initEfficiencyGapBarChart(svg2);
     colorEfficiencyGapByWastedVotes(svg2);
-    displayEfficiencyGapResultDescription();
+    displayEfficiencyGapResultDescription(data);
 }
 
 function findEfficiencyGapStateWinner(data) {
     //find overall winner of state through retrieving the values 'Winner' column in each row relevant to the chosen state
-    winnerArray = data.map((e) => {
-        return e['Winner'];
+    districts = data.json.features;
+    winnerArray = districts.map((e) => {
+        return e.properties.ElectedParty;
     });
-    for (var i = 0; i < winnerArray.length; i++) {
-        if (winnerArray[i] == "D") {
-            demDistrictCount = demDistrictCount + 1;
+    for (var k = 0; k < winnerArray.length; k++) {
+        if (winnerArray[k] == "Republican") {
+        	repDistrictCount = repDistrictCount + 1;
         }
-        else if (winnerArray[i] == "R") {
-            repDistrictCount = repDistrictCount + 1;
+        else if (winnerArray[k] == "Democrat") {
+        	demDistrictCount = demDistrictCount + 1;
         }
     }
-    console.log("demDistrictCount:" + demDistrictCount);
-    console.log("repDistrictCount:" + repDistrictCount);
     if (demDistrictCount > repDistrictCount) {
         democratWonState = 1;
     }
     else if (demDistrictCount < repDistrictCount) {
         republicanWonState = 1;
     }
+    console.log("findEfficiencyGapStateWinner-demDistrictCount: " + demDistrictCount);
+    console.log("findEfficiencyGapStateWinner-repDistrictCount: " + repDistrictCount);
+    console.log("findEfficiencyGapStateWinner-democratWonState: " + democratWonState);
+    console.log("findEfficiencyGapStateWinner-republicanWonState" + republicanWonState);
 }
 
 function setDataSetForEfficiencyGapChart() {
     if (democratWonState == 1) {
-        usedToWinDemVotes = demVoteSum;
-        wastedDemVotes = demVoteSum / 2;
-        usedToWinRepVotes = repVoteSum;
-        wastedRepVotes = repVoteSum;
+        usedToWinDemVotes = democratVotesSum;
+        wastedDemVotes = democratVotesSum / 2;
+        usedToWinRepVotes = republicanVotesSum;
+        wastedRepVotes = republicanVotesSum;
     }
     if (republicanWonState == 1) {
-        usedToWinRepVotes = repVoteSum;
-        wastedRepVotes = repVoteSum / 2;
-        usedToWinDemVotes = demVoteSum;
-        wastedDemVotes = demVoteSum;
+        usedToWinRepVotes = republicanVotesSum;
+        wastedRepVotes = republicanVotesSum / 2;
+        usedToWinDemVotes = democratVotesSum;
+        wastedDemVotes = democratVotesSum;
     }
     dataset = [
         {label: "Total Votes", "Democrat": usedToWinDemVotes, "Republican": usedToWinRepVotes},
@@ -898,7 +987,99 @@ function setEfficiencyGapChartDomains() {
         });
     })]);
 }
+function appendEfficiencyGapAxis(svg2){
+    // x-axis appended to HTML "g" element with the specified text "Democrat Vote Percentage"
+    svg2.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height2 + ")")
+        .call(x_Axis);
+        // y-axis appended to HTML "g" element with the specified text "Vote Shares"
+    svg2.append("g")
+        .attr("class", "y axis")
+        .call(y_Axis)
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Vote Shares");
+    }
+    function initEfficiencyGapBarChart(svg2){
+        // appends bars to chart while rendering each bars' color property through the
+            // color2 function that chooses 2 colors for the 2 respective parties and the r value that holds
+            // the radius of each circle
+            var bar = svg2.selectAll(".bar")
+              .data(dataset)
+              .enter().append("g")
+              .attr("class", "rect")
+              .attr("transform", function(d) {
+                return "translate(" + x_1(d.label) + ",0)";
+              });
+            bar.selectAll("rect")
+              .data(function(d) { 
+                return d.valores; 
+              })
+             .enter().append("rect")
+             .attr("width", x_2.rangeBand())
+             .attr("x", function(d) { 
+               return x_2(d.name);
+              })
+             .attr("y", function(d) { 
+                return y_1(d.value);
+              })
+              .attr("value", function(d){
+                return d.name;
+              })
+              .attr("height", function(d) { 
+                  return height2 - y_1(d.value);
+              })
+              .style("fill", function(d) {
+                return color2(d.name);
+              });
+    }
+    function colorEfficiencyGapByWastedVotes(svg2){
+        // draw legend colored rectangles to identify which party wasted the displayed votes
+            var legend2 = svg2.selectAll(".legend")
+              .data(options.slice())
+              .enter().append("g")
+              .attr("class", "legend")
+              .attr("transform", function(d, i) { 
+                return "translate(0," + i * 20 + ")"; 
+              });
+            
+            legend2.append("rect")
+              .attr("x", width3 - 18)
+              .attr("width", 18)
+              .attr("height", 18)
+              .style("fill", color2);
 
+            legend2.append("text")
+              .attr("x", width3 - 24)
+              .attr("y", 9)
+              .attr("dy", ".35em")
+              .style("text-anchor", "end")
+              .text(function(d) {
+                return d; 
+              });
+    }
+    function displayEfficiencyGapResultDescription(data){
+    	passfail = document.getElementById('efficiency-gap-pass-fail');
+    	if(data.measureResults[1].testResult == true){
+        	passfail.innerHTML = "PASS";
+        	passfail.className = "text-success";
+    	}
+    	else{
+        	passfail.innerHTML = "FAIL";
+        	passfail.className = "text-danger";
+    	}
+          //displays the test result description based on the overall winner of the state as well as the chosen state and year combination            
+        if(democratWonState==1){
+            document.getElementById("efficiencyGapAnalysis").innerHTML = "In "+selectedState.name+"'s "+selectedYear+" election, Republicans won their districts with "+ usedToWinRepVotes+ " votes, and Democrats won their districts with "+ usedToWinDemVotes+ " votes. The Republicans unfortunately lost and therefore wasted all of their votes, while the Democrats wasted "+wastedDemVotes +" due to their win. The legislative threshhold was "+data.measureResults[1].legislativeThreshold+" and the efficiency gap was "+data.measureResults[1].efficiencyGap+". The difference between these two values indicates "+selectedState.name +" may " + (data.measureResults[1].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Democrats. <br><br>";
+        }
+        if(republicanWonState==1){
+           document.getElementById("efficiencyGapAnalysis").innerHTML = "In "+selectedState.name+"'s "+selectedYear+" election, Republicans won their districts with "+ usedToWinRepVotes+ " votes, and Democrats won their districts with "+ usedToWinDemVotes+ " votes.  The Democrats unfortunately lost and therefore wasted all of their votes, while the Republicans wasted "+wastedRepVotes +" due to their win. The legislative threshhold was "+data.measureResults[1].legislativeThreshold+" and the efficiency gap was "+data.measureResults[1].efficiencyGap+". The difference between these two values indicates "+selectedState.name +" may " + (data.measureResults[1].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Republicans. <br><br>";
+        }             
+    }
 function renderMeasureResults(filteredData){
     // remove old results and add the new graph canvas to the body of the webpage
     var svg1_Removal = d3.select("#visual"); //lopsided wins chart
@@ -923,8 +1104,8 @@ function renderMeasureResults(filteredData){
         .append("g")
         .attr("transform", "translate(" + margin2.left2 + "," + margin2.top2 + ")");
     displayLopsidedTestResults(filteredData, svg1);
-    // displayConsistentAdvantageTestResults(filteredData, svg);
-    // displayEfficiencyGapTestResults(filteredData, svg2);
+    displayConsistentAdvantageTestResults(filteredData, svg);
+    displayEfficiencyGapTestResults(filteredData, svg2);
 }
 
 function initAutocomplete() {

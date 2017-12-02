@@ -185,6 +185,7 @@
             </div>
           </div>
           <div>
+            
             <div>
             <form action="">
               <input id="population" type="radio" onclick="initPopulationDensityMap()" value="Population Density Map"> Population Density Map
@@ -193,14 +194,29 @@
             <div>
             <select id="minorityPopulation" onChange="selectMinorityByDropDown(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
               <option value="98">White</option>
-              <option value="7122">Black or African American</option>
-              <option value="142">American Indian and Alaska Native</option>
+              <option value="7122">Black</option>
+              <option value="142">AmericanIndian</option>
               <option value="142">Asian</option>
-              <option value="142">Native Hawaiian and Other Pacific Islander</option>
-              <option value="142">Some other race</option>
-              <option value="142">Two or more races</option>
-              <option value="142">Hispanic or Latino (of any race)</option>
+              <option value="142">PacificIslander</option>
+              <option value="142">Other</option>
+              <option value="142">Mixed</option>
+              <option value="142">Hispanic</option>
             </select>
+            </div>
+            <div>
+            <form action="">
+              <input id="originalDistricts" type="radio" onclick="backToOriginalDistrictView()" value="original Districts">Back to Original District Color Scheme
+            </form>
+            </div>
+            <div>
+            <form action="">
+              <input id="originalCountryView" type="radio" onclick="backToOriginalCountryView()" value="originalCountryView">Back to Original Country View
+            </form>
+            </div>
+            <div>
+            <form action="">
+              <input id="originalStateView" type="radio" onclick="backToOriginalStateView()" value="originalStateView">Back to Original State View
+            </form>
             </div>
           </div>
         </div>
@@ -263,7 +279,7 @@ The remaining members of the victim party are then "cracked"so that they compris
            <div class="col-md-6" id="vis"></div>   
            <div class="col-md-6">
             <h1 class="text-primary">Consistent Advantage</h1>
-            <h2 class="text-danger">FAIL</h2>
+            <h2 id="consistent-advantage-pass-fail" class="text-danger"></h2>
             <p id="consistentAdvantageAnalysis"></p>
             <a class="btn btn-lg btn-primary" href="./learn_tests.html">Read More</a>
           </div>
@@ -311,7 +327,7 @@ The remaining members of the victim party are then "cracked"so that they compris
         </div>
         <div class="col-md-6">
             <h1 class="text-primary">Did your state make the standard?</h1>
-            <h1 class="text-success">PASS</h1>
+            <h2 id="efficiency-gap-pass-fail" class="text-danger"></h2>
             <p id="efficiencyGapAnalysis"></p>
             <a class="btn btn-primary" href="./Learn more_how tests work.html">Read More</a>
           </div>
