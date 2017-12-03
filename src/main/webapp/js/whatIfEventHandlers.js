@@ -1,10 +1,19 @@
 var areaInfoWindow;
 var listOfSuperDistricts=[];//list of super-districts - each super-district is a list of features
 var currentSuperDistrictIndex = null;
-var colorFillArray=['orange','green','purple','red','blue','black'];
-var colorFillArrayLength=0;
 var startingNewSuperDistrict=false;
 var clickHistory = [];
+var previousColor = null;
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    console.log("Color: " + color);
+    return color;
+}
 
 function selectDistrictByClickListener(map,data,areaInfoWindow) {
 	// When the user clicks, set 'isColorful', and change color of district.
@@ -44,8 +53,9 @@ function superDistrictListener(map, selected){
     var features = selected.features;
     return map.data.addListener('click', function(event){
         features.some(feature => {
-            if(feature.getProperty('DistrictNo') === event.feature.getProperty('DistrictNo')){
-                superDistrictHandler(map,event.feature, false);
+            if(feature.getProperty('DistrictNo') === event.feature.getProperty('DistrictNo') &&
+                !feature.getProperty('isSuperDistrict')){
+                superDistrictHandler(map, event.feature, false);
             }
         });
     });
@@ -54,8 +64,8 @@ function superDistrictListener(map, selected){
 function superDistrictHandler(map,eventFeature,undo){
     var selectedDistrictGeom = eventFeature.getGeometry();
     var boundaryPtInList=false;
-    if(listOfSuperDistricts.length==0){
-    	startingNewSuperDistrict=true;
+    if(listOfSuperDistricts.length==0 || startingNewSuperDistrict == true){
+        startingNewSuperDistrict = true;
     	addDistrictFeature(map,eventFeature,undo);
     }
     else{
@@ -71,11 +81,21 @@ function superDistrictHandler(map,eventFeature,undo){
             //see if selected district's points are contained in the polygons of the districts that are already in the currentSuperDistrict
 			currentSuperDistrict.forEach(districtFeature => {
 				var geom = districtFeature.getGeometry();
-				var poly = new google.maps.Polygon({paths: geom.getAt(0).getArray()});
-                selectedDistrictGeom.forEachLatLng(function(LatLng){
-                	if(google.maps.geometry.poly.containsLocation(LatLng, poly)){
-                		boundaryPtInList = true;
+				var polygons = [];
+				if(geom.getType() === "MultiPolygon"){
+				    for(i = 0;i < geom.getLength();i++){
+				    	p = geom.getAt(i);
+				    	polygons.push(new google.maps.Polygon({paths: p.getAt(0).getArray()}));
 					}
+				}
+				else if(geom.getType() === "Polygon"){
+                    polygons.push(new google.maps.Polygon({paths: geom.getAt(0).getArray()}));
+				}
+                selectedDistrictGeom.forEachLatLng(function(LatLng){
+                	polygons.forEach(poly => {
+                        if(google.maps.geometry.poly.containsLocation(LatLng, poly))
+                            boundaryPtInList = true;
+					});
 				});
 			});
             if(boundaryPtInList==true){
@@ -102,6 +122,23 @@ function locateSelectedDistrict(feature){
         });
 	});
     return {found: found, superdistrictIndex: superDistrictIndex, districtIndex: districtIndex};
+}
+
+function locateSuperDistrict(feature){
+	var districtNos = feature.getProperty("Districts");
+    var superDistrictIndex = 0;
+    var found = false;
+    listOfSuperDistricts.some((superdistrict, si) => {
+        superdistrict.some((district, di) => {
+            if(district.getProperty('DistrictNo') === districtNos[0])
+            {
+                superDistrictIndex = si;
+                found = true;
+                return true;
+            }
+        });
+    });
+    return {found: found, superdistrictIndex: superDistrictIndex};
 }
 
 function addDistrictFeature(map,eventFeature,undo){
@@ -146,6 +183,12 @@ function undoHandler(map){
         		superDistrictHandler(map, feature, true);
 			});
 		}
+		else if(history.type === 'super'){
+        	createSuperDistrictHandler(map, true);
+		}
+		else if(history.type === 'show'){
+		    showDistrictHandler(map, history.feature, true);
+		}
 	}
 }
 
@@ -165,91 +208,65 @@ function removeDistrictFeature(map, eventFeature, undo){
 }
 
 function createSuperDistrictListener(map){
-	document.getElementById("createButton").addEventListener('click', function() {		
-		createSuperDistrictHandler(map);	
+	document.getElementById("createButton").addEventListener('click', function(){
+		createSuperDistrictHandler(map, false);
+	});
+
+	map.data.addListener('click', function(event){
+        if(event.feature.getProperty('isSuperDistrict'))
+        	showDistrictHandler(map, event.feature, false);
 	});
 }
-function createSuperDistrictHandler(map){
-	//var newSuperDistrict=[]; -------------------------------------------------------------------------------
-	startingNewSuperDistrict=true;
-	var id_In_List=0;
-	var currentDistrictFeature;
-	var featuresInThisSuperDistrict=[];
-	
-	console.log("listOfSuperDistricts.length before adding new super-district:"+listOfSuperDistricts.length);
-	if(listOfSuperDistricts.length==0){
-		//listOfSuperDistricts.push(newSuperDistrict);--------------------------------------------------------------------------
-		console.log("added first superdistrict array that is currently empty");
-		map.data.setStyle(function(feature) {
-			var color= 'grey'; // Make everything grey by default
-			var strokeColor= 'blue';
-			if(feature.getProperty('Name')==selectedState){
-				//need to find a way to access district id's
-				//if(feature.getProperty('CD115FP')==){ 
-					return ({/** @type {google.maps.Data.StyleOptions} */
-						clickable: true,
-						fillColor: color,
-						strokeColor: strokeColor,
-						strokeWeight: 2
-					});
-				//}    			
-		    }
 
-		});
-	}else if(listOfSuperDistricts.length!=0){
-		
-		colorFillArrayLength=colorFillArrayLength+1;// global control of how the added districts will be colored when clicked
-		var firstSuperDistrict=listOfSuperDistricts[0];
-    	var firstFeature=firstSuperDistrict[0];
-
-		map.data.setStyle(function(feature) {
-			var currentColorIndex =0;
-			for(var j=0;j<listOfSuperDistricts.length;j++){// for each loop, the districts have the same fill color
-				var currentSuperDistrict=listOfSuperDistricts[j];
-				console.log("currentColorLength=colorFillArray.length:"+colorFillArray.length);						
-				if(currentSuperDistrict.length==0){
-					continue;
-				}else{
-					var color=colorFillArray[currentColorIndex];
-					for(var i=0; i <currentSuperDistrict.length;i++){
-    					currentDistrictFeature=currentSuperDistrict[i];
-    					if(feature.getProperty('CD115FP')==currentDistrictFeature.getProperty('CD115FP')){
-    						featuresInThisSuperDistrict.push(feature);  						
-							var goldStrokeColor='gold';
-							return ({
-								clickable: true,
-								fillColor: color,
-								strokeColor: goldStrokeColor,
-								strokeWeight: 2
-							});								
-    					}    		   		
-    				}
-    				currentColorIndex=currentColorIndex+1;
-				}
-   			}
-   			//featuresInThisSuperDistrict now has all districts that have ever been added to any of the existing superdistricts
-   			if(feature.getProperty('STATEFP')==firstFeature.getProperty('STATEFP')){
-				for(var i=0; i<featuresInThisSuperDistrict.length;i++){
-					if(feature.getProperty('CD115FP')==featuresInThisSuperDistrict[i].getProperty('CD115FP')){
-						id_In_List=1;//district was already rendered its assigned superdistrict color and gold border
-					}
-				}
-				if(id_In_List==0){
-					var color= 'grey'; // Make everything grey by default
-					var strokeColor= 'blue';					
-					return ({
-						clickable: true,
-						fillColor: color,
-						strokeColor: strokeColor,
-						strokeWeight: 2
-					});
-				}
-			}
-   			
-		});
-		
-	}	
+function createSuperDistrictHandler(map, undo){
+	console.log("Create super district fired!")
+    var currentSuperdistrict = listOfSuperDistricts[currentSuperDistrictIndex];
+	map.data.toGeoJson(function(json){
+        console.log(json);
+        selected = json
+				.features
+				.filter(feature =>
+                    feature.properties.DistrictNo != undefined &&
+                    isSelected(feature.properties.DistrictNo, currentSuperdistrict)
+                );
+        var combined = combineDistricts(selected);
+        features = map.data.addGeoJson(combined);
+        features[0].setProperty("isSuperDistrict", true);
+        if(!undo)
+            previousColor = getRandomColor();
+        map.data.overrideStyle(features[0],
+            {fillColor: previousColor, strokeColor: 'black', zIndex: setting.superDistrictZoom, fillOpacity: 1.0});
+        labelSuperDistrict(features[0], currentSuperdistrict);
+        startingNewSuperDistrict = true;
+        if(!undo)
+            clickHistory.push({type: 'super', feature: features[0]});
+	});
 }
+
+function showDistrictHandler(map, feature, undo){
+    var location = locateSuperDistrict(feature);
+    if(location.found == true)
+    	currentSuperDistrictIndex = location.superdistrictIndex;
+    console.log("currentSuperDistrictIndex: " + currentSuperDistrictIndex);
+    map.data.remove(feature);
+    startingNewSuperDistrict = false;
+    if(!undo)
+        clickHistory.push({type: 'show', feature: feature});
+}
+
+function labelSuperDistrict(feature, districts){
+    var districtNos = districts.map(d => {return d.getProperty('DistrictNo');});
+    feature.setProperty("Districts", districtNos);
+}
+
+function isSelected(districtNo, selected){
+    for(i = 0;i < selected.length;i++){
+    	if(selected[i].getProperty('DistrictNo') == districtNo)
+    		return true;
+	}
+	return false;
+}
+
 function saveSuperDistrictListener(map){
 	document.getElementById("saveButton").addEventListener('click', function() {
 		saveSuperDistrictHandler(map);	
@@ -298,4 +315,10 @@ function cancelSuperDistrictHandler(map){
 
     map.setCenter(setting.center);
     map.setZoom(setting.countryZoom);
+}
+
+function combineDistricts(superdistrict){
+	var combined = turf.union(...superdistrict);
+	combined.properties = {};
+	return combined;
 }

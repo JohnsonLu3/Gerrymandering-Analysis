@@ -43,6 +43,7 @@ dependencies {
 	compile("org.springframework.security:spring-security-core:4.2.3.RELEASE")
 	compile("org.springframework.security:spring-security-web:4.2.3.RELEASE")
 	compile("org.springframework.security:spring-security-config:4.2.3.RELEASE")
+	compile("org.jgrapht:jgrapht-core:1.1.0")
 	compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
 
 	testCompile("junit:junit")

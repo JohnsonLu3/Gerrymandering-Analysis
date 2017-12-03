@@ -3,6 +3,7 @@ const setting = {
     countryZoom: 2,
     stateZoom: 5,
     districtZoom: 6,
+    superDistrictZoom: 10,
     defaultYear: 2016,
     strokeDefault: 2,
     strokeHovered: 4,
@@ -59,6 +60,7 @@ function initializeMap() {
     undoListener(map);
     resetSuperDistrictListener(map);
     cancelSuperDistrictListener(map);
+    createSuperDistrictListener(map);
 }
 
 function initSearchbox(){
@@ -161,11 +163,6 @@ function enableStateSelect() {
             });
         }
     });
-
-    map.data.addListener('addfeature', function(event){
-        var feature = event.feature;
-        map.data.overrideStyle(feature, {zIndex: setting.districtZoom});
-    });
 }
 
 function enableDistrictSelect(selected) {
@@ -194,7 +191,9 @@ function startSuperDistrictBuild(stateName, stateJson, center){
     }
     selectedState = {name: stateName, features: map.data.addGeoJson(stateJson)};
     selectedState.features.forEach(feature => {
-        map.data.overrideStyle(feature, {fillColor: 'grey', strokeColor: 'black', fillOpacity: 1.0, strokeOpacity: 1.0});
+        map.data.overrideStyle(feature,
+            {fillColor: 'grey', strokeColor: 'black', fillOpacity: 1.0, strokeOpacity: 1.0,
+             zIndex: setting.districtZoom});
     });
     selectedState.listener = superDistrictListener(map, selectedState);
     dynamicZoom(selectedState.features);
