@@ -144,8 +144,10 @@ var x_2 = d3.scale.ordinal();
 var y_1 = d3.scale.linear()
     .range([height2, 0]);
 var colorRange2 = d3.scale.category20();
+
 var color2 = d3.scale.ordinal()
     .range(colorRange2.range());
+
 //distinguish what will be used to scale the x axis and its orientation
 var x_Axis = d3.svg.axis()
     .scale(x_1)
@@ -398,7 +400,7 @@ function initStatesDropdown(allStatesJson){
 
 function selectStateByDropDown(element) {
     var stateName = element.options[element.selectedIndex].text;
-    processStateByName(stateName);
+    processStateByName(stateName);    
     d3.json("/loadState?stateName=" + stateName + "&year=" + selectedYear, function (filteredData) {
         //get specific rows from data that pertain to the user's selection
     });
@@ -417,8 +419,9 @@ function selectYearByDropDown(element) {
             dataType: "json",
             success: function(data){
                 if(data.success === true){
+                	alert("All states being refreshed - this may take a few seconds.");
                     geojson = data.response.json;
-                    map.data.addGeoJson(geojson);
+                    map.data.addGeoJson(geojson);                    
                     map.setZoom(setting.countryZoom);
                     resetStyle();
                     enableStateSelect();
@@ -456,7 +459,7 @@ function processStateByName(stateName){
 }
 
 function displayStateWithDescription(stateName) {
-    console.log(stateName === "North Carolina");
+    
     if (stateName === "New York") {
         document.getElementById("selection").innerHTML = "State Chosen for " + stateName + ":" +
             "<p><br/>New York, one of the 13 original colonies, joined the Union in July 1788. However, the state did not choose electors in the first election due to an internal dispute. In the 1810 Census, New York became the nation’s most populous state, and had the most electoral votes from the 1812 election until the 1972 election, when it relinquished that distinction to California. <br><br>Like many other Northeastern states, New York’s electoral clout has diminished in recent years. In fact it has lost 2 or more electoral votes after the last 7 Censuses. Texas surpassed New York in electoral votes in 2004, and Florida will almost certainly do so after the next Census. New York has been primarily a “blue” state ever since the Great Depression, only siding with a losing Republican when it chose its then-current governor Thomas E. Dewey over Harry S. Truman in 1948. In 2016, Hillary Clinton easily defeated Donald Trump by 22% in the state.<br></p>";
@@ -478,7 +481,7 @@ function displayVoteSums(voteSums) {
 
 //Start of Lopsided Wins Methods
 function displayLopsidedTestResults(data, svg1) {
-    calculateLopsidedWinsMean_Median(data);
+    calculateLopsidedWinsMean(data);
     findLopsidedWinsStateWinner(data);
     assignLopsidedWinsScales(data);
     appendLopsidedWinsXAxis(svg1);
@@ -488,14 +491,10 @@ function displayLopsidedTestResults(data, svg1) {
     displayLopsidedWinsResultDescription(data);
 }
 
-function calculateLopsidedWinsMean_Median(data) {
+function calculateLopsidedWinsMean(data) {
     //retrieve the column that only holds the "Dem Vote %" values of each row related to the chosen state
     //returns an array of the "Dem Vote % " values
     districts = data.json.features;
-    demVotePercentage = districts.map((e) => {
-        return e.properties.PercentVotes.Democrat;
-    });
-    //retrieve the column that only holds the "DemVotes" values of each row related to the chosen state
     //returns an array of the "DemVotes " values
     democratVotesArray = districts.map((e) => {
         return e.properties.Votes.Democrat;
@@ -506,11 +505,6 @@ function calculateLopsidedWinsMean_Median(data) {
     }, 0);
     democratVotesMean = democratVotesSum / democratVotesArray.length;
     //repeat finding the mean and median for the republicans
-
-    repVotePercentage = districts.map((e) => {
-        return e.properties.PercentVotes.Republican;
-    });
-
     republicanVotesArray = districts.map((e) => {
         return e.properties.Votes.Republican;
     });
@@ -520,19 +514,7 @@ function calculateLopsidedWinsMean_Median(data) {
     }, 0);
 
     republicanVotesMean = republicanVotesSum / republicanVotesArray.length;
-    //A sorted list is needed before locating the median
-    demVotePercentage.sort();
-    repVotePercentage.sort();
-
-    if (demVotePercentage.length % 2 == 0) {
-        var elementA = (demVotePercentage.length / 2) - 1;
-        var elementB = elementA + 1;
-        var elementSum = demVotePercentage[elementA] + demVotePercentage[elementB];
-        median = elementSum / 2;
-    } else {
-        var element = parseInt(demVotePercentage.length / 2);
-        median = demVotePercentage[element];
-    }
+    
     console.log("democratVotesMean: " + democratVotesMean);
     console.log("median: " + median);
     console.log("republicanVotesMean" + republicanVotesMean);
@@ -683,10 +665,10 @@ function displayLopsidedWinsResultDescription(data) {
     }
     //displays the test result description based on the overall winner of the state as well as the chosen state and year combination
     if (democratWonState == 1) {
-        document.getElementById("lopsidedWinsAnalysis").innerHTML = "In " + selectedState.name + "'s " + selectedYear  + " election, Republicans won their districts with an average of " + republicanVotesMean + " votes, and Democrats won their districts with an average of " + democratVotesMean + " votes. The median for the Democrat vote percentage was " + median + "%. The difference between the two parties’ win margins indicates " + selectedState.name  + " may " + (data.measureResults[0].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Democrats. <br><br>";
+        document.getElementById("lopsidedWinsAnalysis").innerHTML = "In " + selectedState.name + "'s " + selectedYear  + " election, Republicans won their districts with an average of " + republicanVotesMean + " votes, and Democrats won their districts with an average of " + democratVotesMean + " votes. The t-test performed compares the win margins of the two parties. In states that are gerrymandered, the party that benefits from the gerrymander will win many seats by small margins, while the opposing party wins a few seats by overwhelming margins. The p-value calculated for this simulation was "+data.measureResults[0].pvalue+" and the legislative threshhold for this particular test was "+data.measureResults[0].threshold+". The difference between the two parties’ win margins indicates " + selectedState.name  + " may " + (data.measureResults[0].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Democrats. <br><br>";
     }
     if (republicanWonState == 1) {
-        document.getElementById("lopsidedWinsAnalysis").innerHTML = "In " + selectedState.name  + "'s " + selectedYear  + " election, Republicans won their districts with an average of " + republicanVotesMean + " votes, and Democrats won their districts with an average of " + democratVotesMean + " votes. The median for the Democrat vote percentage was " + median + "%. The difference between the two parties’ win margins indicates " + selectedState.name  + " may " + (data.measureResults[0].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Republicans. <br><br>";
+        document.getElementById("lopsidedWinsAnalysis").innerHTML = "In " + selectedState.name  + "'s " + selectedYear  + " election, Republicans won their districts with an average of " + republicanVotesMean + " votes, and Democrats won their districts with an average of " + democratVotesMean + " votes. The t-test performed compares the win margins of the two parties. In states that are gerrymandered, the party that benefits from the gerrymander will win many seats by small margins, while the opposing party wins a few seats by overwhelming margins. The p-value calculated for this simulation was "+data.measureResults[0].pvalue+" and the legislative threshhold for this particular test was "+data.measureResults[0].threshold+". The difference between the two parties’ win margins indicates " + selectedState.name  + " may " + (data.measureResults[0].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Republicans. <br><br>";
     }
 }
 
@@ -851,16 +833,16 @@ function republicanWinsConsistentAdvantageSVG(data, svg) {
 
 function calculateConsistentAdvantageMean_Median(data) {
     //returns an array of the "Dem Vote % " values
-    //var districtsWonByDemocratVotePercentageArray=[];
-	//var districtsWonByRepublicanVotePercentageArray=[];
     districts = data.json.features;
     demVotePercentage = districts.map((e) => {
         return e.properties.PercentVotes.Democrat;
     });
+
     democratVotePercentageSum = demVotePercentage.reduce(function (total, amount) {
         return total + amount;
     }, 0);
     democratVotePercentageMean = democratVotePercentageSum / demVotePercentage.length;
+
     //returns an array of the "DemVotes " values
     democratVotesArray = districts.map((e) => {
         return e.properties.Votes.Democrat;
@@ -870,14 +852,17 @@ function calculateConsistentAdvantageMean_Median(data) {
         return total + amount;
     }, 0);
     democratVotesMean = democratVotesSum / democratVotesArray.length;
+
     //repeat finding the mean and median for the republicans
     repVotePercentage = districts.map((e) => {
         return e.properties.PercentVotes.Republican;
     });
+
     republicanVotePercentageSum = repVotePercentage.reduce(function (total, amount) {
         return total + amount;
     }, 0);
     republicanVotePercentageMean = republicanVotePercentageSum / repVotePercentage.length;
+
     republicanVotesArray = districts.map((e) => {
         return e.properties.Votes.Republican;
     });
@@ -886,10 +871,18 @@ function calculateConsistentAdvantageMean_Median(data) {
     }, 0);
     republicanVotesMean = republicanVotesSum / republicanVotesArray.length;
     //A sorted list is needed before locating the median
-    demVotePercentage.sort();
-    repVotePercentage.sort();
+    demVotePercentage.sort(function(a, b){return a - b});//demVotePercentage.sort();
+    console.log("demVotePercentage.length:"+demVotePercentage.length);
+    for(var i =0; i<demVotePercentage.length;i++){
+    	console.log("demVotePercentage["+i+"]:"+demVotePercentage[i]);
+    }
+    repVotePercentage.sort(function(a, b){return a - b});//repVotePercentage.sort();
+    console.log("repVotePercentage.length:"+repVotePercentage.length);
+    for(var i =0; i<repVotePercentage.length;i++){
+    	console.log("repVotePercentage["+i+"]:"+repVotePercentage[i]);
+    }
     if (demVotePercentage.length % 2 == 0) {
-        var elementA = (demVotePercentage.length / 2) - 1;
+        var elementA = parseInt(demVotePercentage.length / 2) - 1;
         var elementB = elementA + 1;
         var elementSum = demVotePercentage[elementA] + demVotePercentage[elementB];
         democratPercentageMedian = elementSum / 2;
@@ -898,7 +891,7 @@ function calculateConsistentAdvantageMean_Median(data) {
         democratPercentageMedian = demVotePercentage[element];
     }
     if (repVotePercentage.length % 2 == 0) {
-        var elementA = (repVotePercentage.length / 2) - 1;
+        var elementA = parseInt(repVotePercentage.length / 2) - 1;
         var elementB = elementA + 1;
         var elementSum = repVotePercentage[elementA] + repVotePercentage[elementB];
         republicanPercentageMedian = elementSum / 2;
@@ -962,9 +955,9 @@ function displayConsistentAdvantageResultDescription(data) {
     }
     //displays the test result description based on the overall winner of the state as well as the chosen state and year combination
     if (democratWonState == 1) {
-        document.getElementById("consistentAdvantageAnalysis").innerHTML = "In " + selectedState.name + "'s " + selectedYear + " election, Republicans won their districts with an average of " + republicanVotePercentageMean + "% percent of the vote, and Democrats won their districts with an average of " + democratVotePercentageMean  + "% percent of the vote. The median for the Democrats was " + democratPercentageMedian + "%, while the median for the Republicans was "+republicanPercentageMedian+"%. The difference between the two parties’ win margins was "+data.measureResults[2].meanMedianDifference+" and indicates " + selectedState.name + " may " + (data.measureResults[2].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Democrats. <br><br>";
+        document.getElementById("consistentAdvantageAnalysis").innerHTML = "In " + selectedState.name + "'s " + selectedYear + " election, Republicans won their districts with an average of " + republicanVotePercentageMean + "% percent of the vote, and Democrats won their districts with an average of " + democratVotePercentageMean  + "% percent of the vote. The median for the Democrats was " + democratPercentageMedian + "%, while the median for the Republicans was "+republicanPercentageMedian+"%. The mean-median difference compares the median Democratic vote share across all districts to the average (arithmetic mean) Democratic vote share. The mean-median difference simulated by this test was "+data.measureResults[2].meanMedianDifference+" and indicates " + selectedState.name + " may " + (data.measureResults[2].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Democrats. <br><br>";
     }if (republicanWonState == 1) {
-        document.getElementById("consistentAdvantageAnalysis").innerHTML = "In " + selectedState.name + "'s " + selectedYear + " election, Republicans won their districts with an average of " + republicanVotePercentageMean + "% percent of the vote, and Democrats won their districts with an average of " + democratVotePercentageMean + "% percent of the vote. The median for the Democrats was " + democratPercentageMedian + "%, while the median for the Republicans was"+republicanPercentageMedian+"%. The difference between the two parties’ win margins was "+ data.measureResults[2].meanMedianDifference+" and indicates " + selectedState.name + " may " + (data.measureResults[2].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Republicans. <br><br>";
+        document.getElementById("consistentAdvantageAnalysis").innerHTML = "In " + selectedState.name + "'s " + selectedYear + " election, Republicans won their districts with an average of " + republicanVotePercentageMean + "% percent of the vote, and Democrats won their districts with an average of " + democratVotePercentageMean + "% percent of the vote. The median for the Democrats was " + democratPercentageMedian + "%, while the median for the Republicans was"+republicanPercentageMedian+"%. The mean-median difference compares the median Republican vote share across all districts to the average (arithmetic mean) Republican vote share. The mean-median difference simulated by this test was "+ data.measureResults[2].meanMedianDifference+" and indicates " + selectedState.name + " may " + (data.measureResults[2].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Republicans. <br><br>";
     }
     
 }
