@@ -544,6 +544,10 @@ function findLopsidedWinsStateWinner(data) {
     winnerArray = districts.map((e) => {
         return e.properties.ElectedParty;
     });
+    repDistrictCount=0;
+    demDistrictCount=0;
+    democratWonState=0;
+    republicanWonState=0;
     for (var k = 0; k < winnerArray.length; k++) {
         if (winnerArray[k] == "Republican") {
         	repDistrictCount = repDistrictCount + 1;
@@ -981,6 +985,11 @@ function findEfficiencyGapStateWinner(data) {
     winnerArray = districts.map((e) => {
         return e.properties.ElectedParty;
     });
+
+    repDistrictCount=0;
+    demDistrictCount=0;
+    democratWonState=0;
+    republicanWonState=0;
     for (var k = 0; k < winnerArray.length; k++) {
         if (winnerArray[k] == "Republican") {
         	repDistrictCount = repDistrictCount + 1;
