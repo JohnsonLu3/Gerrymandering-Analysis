@@ -1,5 +1,6 @@
 package gerrymandering.measure;
 
+import gerrymandering.common.Party;
 import gerrymandering.model.MultiDistrictRegion;
 import gerrymandering.model.State;
 
@@ -37,7 +38,13 @@ public class ConsistentAdvantageTest implements Measure {
 	    State state = (State) region;
 	    ConsistentAdvantageResults results = new ConsistentAdvantageResults();
 	    Double meanMedianDifference = meanMedianDifference(state);
-	    Boolean testResult = meanMedianDifference >= 0 ? true : false;
+	    Boolean testResult = true;
+	    if(state.getElectedParty() == Party.Democrat && meanMedianDifference > 0)
+	        testResult = false;
+	    else if(state.getElectedParty() == Party.Republican && meanMedianDifference < 0)
+	    	testResult = false;
+	    else
+	    	testResult = true;
 	    results.addTestResult(testResult);
 	    results.setMeanMedianDifference(meanMedianDifference);
 	    return results;

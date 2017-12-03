@@ -30,7 +30,7 @@ public class LopsidedTest implements Measure {
 	}
 
 	private Boolean exceedsThreshold(Double result, Double threshold) {
-	    return result > threshold ? true : false;
+	    return result < threshold ? true : false;
 	}
 
 	@Override
@@ -44,6 +44,10 @@ public class LopsidedTest implements Measure {
 		if(state.getElectedParty() == Party.Democrat){
 		    pvalue = tTest(percents.get(Party.Democrat), percents.get(Party.Republican));
 		    passOrFail = !exceedsThreshold(pvalue, CommonConstants.TTEST_THRESHOLD);
+		}
+		else if(state.getElectedParty() == Party.Republican){
+			pvalue = tTest(percents.get(Party.Republican), percents.get(Party.Democrat));
+			passOrFail = !exceedsThreshold(pvalue, CommonConstants.TTEST_THRESHOLD);
 		}
 
 		results.addTestResult(passOrFail);
