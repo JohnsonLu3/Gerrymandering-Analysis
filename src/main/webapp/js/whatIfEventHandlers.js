@@ -309,6 +309,11 @@ function cancelSuperDistrictHandler(map){
         selectedState = null;
     }
 
+    map.data.forEach(feature => {
+    	if(feature.getProperty('isSuperDistrict'))
+    		map.data.remove(feature);
+	});
+
     listOfSuperDistricts = [];
     currentSuperDistrictIndex = null;
     startingNewSuperDistrict = false;
