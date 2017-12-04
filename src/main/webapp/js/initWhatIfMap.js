@@ -55,7 +55,7 @@ function initializeMap() {
             initStatesDropdown(data.response);
         }
     });
-
+    
     resetStyle();
     undoListener(map);
     resetSuperDistrictListener(map);
