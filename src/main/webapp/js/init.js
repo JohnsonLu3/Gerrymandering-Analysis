@@ -143,10 +143,11 @@ var x_1 = d3.scale.ordinal()
 var x_2 = d3.scale.ordinal();
 var y_1 = d3.scale.linear()
     .range([height2, 0]);
-var colorRange2 = d3.scale.category20();
 
+var colorRange2 = d3.scale.category20();
 var color2 = d3.scale.ordinal()
-    .range(colorRange2.range());
+    		.domain(["Republican", "Democrat"])
+            .range(["red", "blue"]);
 
 //distinguish what will be used to scale the x axis and its orientation
 var x_Axis = d3.svg.axis()
@@ -250,7 +251,17 @@ function enableStateSelect() {
             || selectedState == null) {
             center = {lat: feature.getProperty('CenterY'), lng: feature.getProperty('CenterX')};        	
             loadStateJson(stateName, selectedYear, function(response){
-                if (response.success === true) {
+                if (response.success === true) {                	
+                	var selectStateElement = document.getElementById('box1');
+                	var options = selectStateElement.options;
+                	var iteratorAsString;
+        			for(var option,i=0;option=options[i];i++){
+            			if(option.text==stateName){
+                			iteratorAsString=i.toString();
+                			selectStateElement.selectedIndex=iteratorAsString;
+                			break;
+            			}
+        			}
                     renderState(stateName, response.response.json, center);
                     renderMeasureResults(response.response);
                     displayStateWithDescription(stateName);
@@ -413,13 +424,14 @@ function selectYearByDropDown(element) {
         map.data.forEach(feature => {
             map.data.remove(feature);
         });
+        alert("All states being refreshed - this may take a few seconds.");
         $.ajax({
             type: 'GET',
             url: '/loadMap?year=' + selectedYear,
             dataType: "json",
             success: function(data){
                 if(data.success === true){
-                	alert("All states being refreshed - this may take a few seconds.");
+                	
                     geojson = data.response.json;
                     map.data.addGeoJson(geojson);                    
                     map.setZoom(setting.countryZoom);
@@ -461,15 +473,15 @@ function processStateByName(stateName){
 function displayStateWithDescription(stateName) {
     
     if (stateName === "New York") {
-        document.getElementById("selection").innerHTML = "State Chosen for " + stateName + ":" +
+        document.getElementById("selection").innerHTML = "State Chosen :"+ stateName + 
             "<p><br/>New York, one of the 13 original colonies, joined the Union in July 1788. However, the state did not choose electors in the first election due to an internal dispute. In the 1810 Census, New York became the nation’s most populous state, and had the most electoral votes from the 1812 election until the 1972 election, when it relinquished that distinction to California. <br><br>Like many other Northeastern states, New York’s electoral clout has diminished in recent years. In fact it has lost 2 or more electoral votes after the last 7 Censuses. Texas surpassed New York in electoral votes in 2004, and Florida will almost certainly do so after the next Census. New York has been primarily a “blue” state ever since the Great Depression, only siding with a losing Republican when it chose its then-current governor Thomas E. Dewey over Harry S. Truman in 1948. In 2016, Hillary Clinton easily defeated Donald Trump by 22% in the state.<br></p>";
     }
     else if (stateName === "North Carolina") {
-        document.getElementById("selection").innerHTML = "State Chosen for " + stateName + ":" +
+        document.getElementById("selection").innerHTML = "State Chosen :" + stateName  +
             "<p><br/>North Carolina, one of the original 13 colonies, entered the Union in November 1789. The state did not participate in the 1864 election due to secession. Like many other southern states, North Carolina voted almost exclusively Democratic from 1876 through 1964 and almost exclusively Republican beginning in 1968. The initial shift was largely in response to white conservative voter uneasiness with the civil rights legislation passed in the mid-1960s, which was effectively exploited by the Republicans “southern strategy.”<br><br>In 2008, Barack Obama reversed the trend of Republican dominance here (although just barely), defeating John McCain by about 14,000 votes out of 4.3 million cast (49.7% to 49.4%). In percentage terms, it was the 2nd closest race of the 2008 election (behind Missouri). In 2012, North Carolina was again the 2nd closest race (this time behind Florida) as the state flipped Republican. Mitt Romney beat Obama by about 2%. Donald Trump won the state by 3.6% over Hillary Clinton in 2016. Based on population projections,                the state may gain an additional electoral vote after the 2020 presidential election. <br></p>";
     }
     else if (stateName === "Virginia") {
-        document.getElementById("selection").innerHTML = "State Chosen for " + stateName + ":" +
+        document.getElementById("selection").innerHTML = "State Chosen :" + stateName +
             "<p><br/>Virginia, one of the original 13 colonies and birthplace of four of the first five U.S. presidents, joined the Union in June 1788. In 1792, Virginia controlled 15.9% of all electoral votes, the largest concentration in U.S. history. The Commonwealth did not participate in the 1864 and 1868 elections due to secession. From the post-Civil War Reconstruction period through 1948, Virginians almost always sided with the Democratic Party in elections. However, from 1952 through 2004, Virginia was reliably Republican (except for the landslide of Lyndon Johnson over Barry Goldwater in 1964). What changed? In the early 1950s, Virginia politics was controlled by Democratic Senator Harry F. Byrd, Sr., and his political machine. For the 1952 cycle, Byrd announced he would not be endorsing a candidate, saying “Silence is Golden.” People knew this meant that it would be okay to vote for the Republican Dwight Eisenhower. <br><br>Shifting demographics, including more rapid population growth around Washington D.C., have made the state a battleground in recent elections, perhaps one that now leans Democratic again. Barack Obama won here twice and Hillary Clinton made it three in a row for Democrats, winning by about 5.5% over Donald Trump in 2016.<br></p>";
     }
 }
@@ -586,7 +598,7 @@ function appendLopsidedWinsYAxis(svg1) {
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Vote Shares");
+        .text("Vote Percentages");
 }
 function appendLopsidedWinsCircles(data, svg1) {
     // appends circles to chart while rendering each circle's color property through the
@@ -720,7 +732,7 @@ function initConsistentAdvantageSVGContainer(data, svg) {
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Vote Shares");
+        .text("Vote Percentages");
 }
 
 function findConsistentAdvantageStateWinner(data) {
@@ -961,6 +973,181 @@ function displayConsistentAdvantageResultDescription(data) {
     }
     
 }
+//Start of Excessive Seats Methods
+function displayExcessiveSeatsTestResults(data,svg3){
+	findExcessiveSeatsStateWinner(data);
+    setDataSetForExcessiveSeatsChart();
+    setExcessiveSeatsChartDomains();
+    appendExcessiveSeatsAxis(svg3);
+    initExcessiveSeatsBarChart(svg3);
+    colorExcessiveSeatsBySeatsWon(svg3);
+    displayExcessiveSeatsResultDescription(data);
+}
+function findExcessiveSeatsStateWinner(data){
+	districts = data.json.features;
+    winnerArray = districts.map((e) => {
+        return e.properties.ElectedParty;
+    });
+
+    repDistrictCount=0;
+    demDistrictCount=0;
+    democratWonState=0;
+    republicanWonState=0;
+    for (var k = 0; k < winnerArray.length; k++) {
+        if (winnerArray[k] == "Republican") {
+        	repDistrictCount = repDistrictCount + 1;
+        }
+        else if (winnerArray[k] == "Democrat") {
+        	demDistrictCount = demDistrictCount + 1;
+        }
+    }
+    if (demDistrictCount > repDistrictCount) {
+        democratWonState = 1;
+    }
+    else if (demDistrictCount < repDistrictCount) {
+        republicanWonState = 1;
+    }
+    console.log("findExcessiveSeatsStateWinner-demDistrictCount: " + demDistrictCount);
+    console.log("findExcessiveSeatsStateWinner-repDistrictCount: " + repDistrictCount);
+    console.log("findExcessiveSeatsStateWinner-democratWonState: " + democratWonState);
+    console.log("findExcessiveSeatsStateWinner-republicanWonState" + republicanWonState);
+}
+function setDataSetForExcessiveSeatsChart(){
+	if (democratWonState == 1) {
+		var simulatedDemocratStateSeatCount=7;
+        var actualDemocratStateSeatCount=3;
+
+        dataset = [
+        	{label: "National Mean", "Democrat": simulatedDemocratStateSeatCount},
+        	{label: "Seats Won", "Democrat": actualDemocratStateSeatCount}
+    	];
+    }
+    if (republicanWonState == 1) {
+        var simulatedRepublicanStateSeatCount=8;
+        var actualRepublicanStateSeatCount=5;
+        dataset = [
+        	{label: "National Mean", "Republican": simulatedRepublicanStateSeatCount},
+        	{label: "Seats Won", "Republican": actualRepublicanStateSeatCount}
+    	];
+    }
+    
+    options = d3.keys(dataset[0]).filter(function (key) {
+        return key !== "label";
+    });
+
+}
+function setExcessiveSeatsChartDomains(){
+	var options = d3.keys(dataset[0]).filter(function (key) {
+        return key !== "label";
+    });
+    dataset.forEach(function (d) {
+        d.valores = options.map(function (name) {
+            return {name: name, value: +d[name]};
+        });
+    });
+    x_1.domain(dataset.map(function (d) {
+        return d.label;
+    }));
+    x_2.domain(options).rangeRoundBands([0, x_1.rangeBand()]);
+    y_1.domain([0, d3.max(dataset, function (d) {
+        return d3.max(d.valores, function (d) {
+            return d.value;
+        });
+    })]);
+}
+function appendExcessiveSeatsAxis(svg3){
+	// x-axis appended to HTML "g" element with the specified text "Democrat Vote Percentage"
+    svg3.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height2 + ")")
+        .call(x_Axis);
+        // y-axis appended to HTML "g" element with the specified text "Vote Shares"
+    svg3.append("g")
+        .attr("class", "y axis")
+        .call(y_Axis)
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Seats");
+}
+function initExcessiveSeatsBarChart(svg3){
+	// appends bars to chart while rendering each bars' color property through the
+            // color2 function that chooses 2 colors for the 2 respective parties and the r value that holds
+            // the radius of each circle
+            var bar = svg3.selectAll(".bar")
+              .data(dataset)
+              .enter().append("g")
+              .attr("class", "rect")
+              .attr("transform", function(d) {
+                return "translate(" + x_1(d.label) + ",0)";
+              });
+            bar.selectAll("rect")
+              .data(function(d) { 
+                return d.valores; 
+              })
+             .enter().append("rect")
+             .attr("width", x_2.rangeBand())
+             .attr("x", function(d) { 
+               return x_2(d.name);
+              })
+             .attr("y", function(d) { 
+                return y_1(d.value);
+              })
+              .attr("value", function(d){
+                return d.name;
+              })
+              .attr("height", function(d) { 
+                  return height2 - y_1(d.value);
+              })
+              .style("fill", function(d) {
+                return color2(d.name);
+              });
+}
+function colorExcessiveSeatsBySeatsWon(svg3){
+	// draw legend colored rectangles to identify which party wasted the displayed votes
+            var legend2 = svg3.selectAll(".legend")
+              .data(options.slice())
+              .enter().append("g")
+              .attr("class", "legend")
+              .attr("transform", function(d, i) { 
+                return "translate(0," + i * 20 + ")"; 
+              });
+            
+            legend2.append("rect")
+              .attr("x", width3 - 18)
+              .attr("width", 18)
+              .attr("height", 18)
+              .style("fill", color2);
+
+            legend2.append("text")
+              .attr("x", width3 - 24)
+              .attr("y", 9)
+              .attr("dy", ".35em")
+              .style("text-anchor", "end")
+              .text(function(d) {
+                return d; 
+              });
+}
+function displayExcessiveSeatsResultDescription(data){
+	passfail = document.getElementById('excessive-seats-pass-fail');
+    	if(data.measureResults[1].testResult == true){
+        	passfail.innerHTML = "PASS";
+        	passfail.className = "text-success";
+    	}
+    	else{
+        	passfail.innerHTML = "FAIL";
+        	passfail.className = "text-danger";
+    	}
+          //displays the test result description based on the overall winner of the state as well as the chosen state and year combination            
+        if(democratWonState==1){
+            document.getElementById("excessiveSeatsAnalysis").innerHTML = "In "+selectedState.name+"'s "+selectedYear+" election, Republicans won their districts with "+ usedToWinRepVotes+ " votes, and Democrats won their districts with "+ usedToWinDemVotes+ " votes. The Republicans unfortunately lost and therefore wasted all of their votes, while the Democrats wasted "+wastedDemVotes +" due to their win. The legislative threshhold was "+data.measureResults[1].legislativeThreshold+" and the efficiency gap was "+data.measureResults[1].efficiencyGap+". The difference between these two values indicates "+selectedState.name +" may " + (data.measureResults[1].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Democrats. <br><br>";
+        }
+        if(republicanWonState==1){
+           document.getElementById("excessiveSeatsAnalysis").innerHTML = "In "+selectedState.name+"'s "+selectedYear+" election, Republicans won their districts with "+ usedToWinRepVotes+ " votes, and Democrats won their districts with "+ usedToWinDemVotes+ " votes.  The Democrats unfortunately lost and therefore wasted all of their votes, while the Republicans wasted "+wastedRepVotes +" due to their win. The legislative threshhold was "+data.measureResults[1].legislativeThreshold+" and the efficiency gap was "+data.measureResults[1].efficiencyGap+". The difference between these two values indicates "+selectedState.name +" may " + (data.measureResults[1].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Republicans. <br><br>";
+        }   
+}
 //Start of Efficiency Gap Methods
 function displayEfficiencyGapTestResults(data, svg2) {
     findEfficiencyGapStateWinner(data);
@@ -1153,6 +1340,13 @@ function renderMeasureResults(filteredData){
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var svg3_Removal = d3.select("#visualExcessiveSeats");//excessive seats
+    svg3_Removal.selectAll("*").remove();
+    var svg3 = d3.select("#visualExcessiveSeats").append("svg")
+        .attr("width", width3 + margin2.left2 + margin2.right2)
+        .attr("height", height3 + margin2.bottom2)
+        .append("g")
+        .attr("transform", "translate(" + margin2.left2 + "," + margin2.top2 + ")");
     var svg2_Removal = d3.select("#visEfficiencyGap");//efficiency Gap chart
     svg2_Removal.selectAll("*").remove();
     var svg2 = d3.select("#visEfficiencyGap").append("svg")
@@ -1162,6 +1356,7 @@ function renderMeasureResults(filteredData){
         .attr("transform", "translate(" + margin2.left2 + "," + margin2.top2 + ")");
     displayLopsidedTestResults(filteredData, svg1);
     displayConsistentAdvantageTestResults(filteredData, svg);
+    displayExcessiveSeatsTestResults(filteredData,svg3);
     displayEfficiencyGapTestResults(filteredData, svg2);
 }
 
