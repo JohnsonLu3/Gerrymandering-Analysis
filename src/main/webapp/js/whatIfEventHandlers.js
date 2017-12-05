@@ -308,38 +308,18 @@ function createSuperDistrictHandler(map, undo){
         selectedArray.push(selected);//////////////// might be the answer - use this to keep track of districts when cancelling super district feature to then add one more district and then create the super district
         var combined = combineDistricts(selected);
         
-       // clickToShowFeatureArray.push(combined);/////////////////////////////////////////////new line
         features = map.data.addGeoJson(combined);
         features[0].setProperty("isSuperDistrict", true);
         if(!undo)
             previousColor = getRandomColor();
         map.data.overrideStyle(features[0],
             {fillColor: previousColor, strokeColor: 'black', zIndex: setting.superDistrictZoom, fillOpacity: 1.0});
+        features[0].setProperty('fillColor', previousColor);
         labelSuperDistrict(features[0], currentSuperdistrict);
         startingNewSuperDistrict = true;
-        //clickToShowFeatureArray.push(features[0]);/////////////////////////////////////////////new line
         if(!undo)
             clickHistory.push({type: 'super', feature: features[0]});        
 	});
-	//return features;///////////////////////////////////////////////////////////////////////// new line
-}
-function undoCreateSuperDistrictHandler(map,superDistrictFeature,undo){
-	
-	map.data.remove(superDistrictFeature);
-	selectedArray.pop();
-	/*
-	map.data.forEach(function(feature){
-		if(feature.getProperty('DistrictNo')!=null){
-			var currentSuperdistrict = listOfSuperDistricts[currentSuperDistrictIndex];
-			if(isSelected(feature.getProperty('DistrictNo'), currentSuperdistrict)){
-			 	map.data.overrideStyle(feature,
-            	{fillColor: 'grey', strokeColor: 'black', zIndex: setting.superDistrictZoom, fillOpacity: 1.0});
-			}
-		}
-		
-	});
-	*/
-	
 }
 
 function showDistrictHandler(map, feature, undo){//showDistrictHandler(map, event.feature, false);
@@ -348,25 +328,17 @@ function showDistrictHandler(map, feature, undo){//showDistrictHandler(map, even
     if(location.found == true)
     	currentSuperDistrictIndex = location.superdistrictIndex;
     console.log("currentSuperDistrictIndex: " + currentSuperDistrictIndex);
-    map.data.remove(feature);    
+    previousColor = feature.getProperty('fillColor');
+    map.data.remove(feature);
+    map.data.forEach(f => {
+        if(f.getProperty('isSuperDistrict') &&
+            f.getProperty('Districts').toString() === feature.getProperty('Districts').toString()){
+            map.data.remove(f);
+        }
+	});
     startingNewSuperDistrict = false;
     if(!undo)
         clickHistory.push({type: 'show', feature: feature});
-}
-function undoShowDistrictHandler(map,feature, undo){
-	var location = locateSuperDistrict(feature);
-	var selectedArrayIndex=0;
-    if(location.found == true)
-    	selectedArrayIndex = location.superdistrictIndex;
-	var combined = combineDistricts(selectedArray[selectedArrayIndex]);
-	var features = map.data.addGeoJson(combined);
-        features[0].setProperty("isSuperDistrict", true);
-        if(!undo)
-            previousColor = getRandomColor();
-        map.data.overrideStyle(features[0],
-            {fillColor: previousColor, strokeColor: 'black', zIndex: setting.superDistrictZoom, fillOpacity: 1.0});
-        labelSuperDistrict(features[0], currentSuperdistrict);
-        
 }
 function labelSuperDistrict(feature, districts){
     var districtNos = districts.map(d => {return d.getProperty('DistrictNo');});
