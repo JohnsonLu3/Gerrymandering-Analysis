@@ -242,7 +242,7 @@ function createSuperDistrictListener(map){
 	});
 	map.data.addListener('click',function(event){
 		if(event.feature.getProperty('isSuperDistrict')){
-			
+			console.log("event.feature.getProperty('fillColor'): " + event.feature.getProperty('fillColor'));
 			showDistrictHandler(map, event.feature, false);
 			
 		}
