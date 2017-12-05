@@ -54,7 +54,7 @@ def main():
     connectToDB()
 
     importSimulation()
-    #session.commit()
+    session.commit()
     return
 
 def getDistrictCount():
@@ -74,7 +74,7 @@ def importSimulation():
     stateDistricts = buildStateDistrictTuples()     # (stateId, year, districtCount)
     demVotes = getAllPartyData('Democrat')
     repVotes = getAllPartyData('Republican')
-    K = 250
+    K = 10000
     percent = 0.2
 
     for item in stateDistricts:
@@ -195,7 +195,7 @@ def getAllPartyData(party):
 
 
 def buildStateDistrictTuples():
-    s = "SELECT id, year FROM States WHERE States.Year = 2016"
+    s = "SELECT id, year FROM States"
     stateAndDistricts = []
 
     for row in session.execute(s):
