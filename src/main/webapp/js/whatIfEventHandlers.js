@@ -164,7 +164,8 @@ function addDistrictFeature(map,eventFeature,undo){
 	});
 	if(!undo){
         clickHistory.push({type: 'single', feature: eventFeature});
-	}			
+	}
+    $('#resetButton').removeAttr('disabled');
 }
 
 function undoListener(map){
@@ -192,23 +193,21 @@ function undoHandler(map){
 		else if(history.type === 'super'){
 			console.log("type:super");
             showDistrictHandler(map, history.feature, true);
-        	
 		}
 		else if(history.type === 'show'){
 			console.log("type:show");
             createSuperDistrictHandler(map, true);
-		    
 		}
 	}
 }
 
 function removeDistrictFeature(map, eventFeature, undo){
-	
 	var location = locateSelectedDistrict(eventFeature);
 	listOfSuperDistricts[location.superdistrictIndex].splice(location.districtIndex, 1);
 	if(listOfSuperDistricts[location.superdistrictIndex].length == 0){
 		listOfSuperDistricts.splice(location.superdistrictIndex, 1);
 		startingNewSuperDistrict = true;
+        $('#resetButton').attr('disabled', 'disabled');
 	}
 	map.data.overrideStyle(eventFeature, {fillColor: 'grey', strokeColor: 'black'});
     console.log("Feature removed");
@@ -216,13 +215,10 @@ function removeDistrictFeature(map, eventFeature, undo){
     console.log("listOfSuperDistricts length: " + listOfSuperDistricts.length);
     if(!undo)
         clickHistory.push({type: 'single', feature: eventFeature});
-
-	
 }
 
 function removeSuperDistrictFeature(map, eventFeature, undo){
 	var location = locateSuperDistrict(eventFeature);
-	
 	if(listOfSuperDistricts[location.superdistrictIndex].length == 0){
 		
 		startingNewSuperDistrict = true;
@@ -237,16 +233,12 @@ function removeSuperDistrictFeature(map, eventFeature, undo){
 }
 
 function createSuperDistrictListener(map){
-	
 	document.getElementById("createButton").addEventListener('click', function(){
-		
 		createSuperDistrictHandler(map, false);
 	});
 	map.data.addListener('click',function(event){
 		if(event.feature.getProperty('isSuperDistrict')){
-			
 			showDistrictHandler(map, event.feature, false);
-			
 		}
 	});
 }
@@ -278,6 +270,7 @@ function createSuperDistrictHandler(map, undo){
             clickHistory.push({type: 'super', feature: features[0]});  
         doneBuildingSuperdistrict=true; //////////////////////////////////////////////////////////////////////////////////////////     
 	});
+	$('#resetButton').attr('disabled', 'disabled');
 }
 
 
@@ -300,6 +293,7 @@ function showDistrictHandler(map, feature, undo){
     startingNewSuperDistrict = false;
     if(!undo)
         clickHistory.push({type: 'show', feature: feature});
+    $('#resetButton').removeAttr('disabled');
 }
 
 function labelSuperDistrict(feature, districts){
