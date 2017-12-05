@@ -26,7 +26,7 @@
                 <div class="collapse navbar-collapse" id="navbar-ex-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li class="active">
-                            <a href="#">Home</a>
+                            <a href="/">Home</a>
                         </li>
                         <li>
                             <a href="/editUsers">Edit Users</a>
@@ -83,18 +83,7 @@
                                         </label>
                                     </td>
                                     <td>
-                                        <select name="role_${user.id}">
-                                            <c:choose>
-                                                <c:when test="${user.role =='ROLE_ADMIN'}">
-                                                    <option value="ROLE_ADMIN" selected="selected">ROLE_ADMIN</option>
-                                                    <option value="ROLE_ADVANCE">ROLE_ADVANCE</option>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <option value="ROLE_ADMIN">ROLE_ADMIN</option>
-                                                    <option value="ROLE_ADVANCE" selected="selected">ROLE_ADVANCE</option>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </select>
+                                        <input name="role_${user.id}" size="35" value="${user.role}"/>
                                     </td>
                                     <td>
                                         <form name="f" action="/deleteUser" method="post" modelAttribute="users">

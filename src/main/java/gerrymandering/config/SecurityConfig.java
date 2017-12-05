@@ -21,20 +21,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/www/admin.html").hasRole("ADMIN")
                 .antMatchers("/resources/**", "/www/**").permitAll()
                 .antMatchers("/admin","/admin/**").hasRole("ADMIN")
-                .antMatchers("/editUsers","/editUsers/**").hasRole("ADMIN")
-                .and()
-            .formLogin()
-                .loginPage("/login")
-                .usernameParameter("username").passwordParameter("password")
-                .permitAll()
-                .and()
-            .logout()
-                .permitAll();
+                .antMatchers("/editUsers","/editUsers/**").hasRole("ADMIN");
 
         http
             .headers()
                 .frameOptions()
                 .sameOrigin();
+
+        http.formLogin()
+                .loginPage("/login")
+                .usernameParameter("username").passwordParameter("password")
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll();
     }
 
 

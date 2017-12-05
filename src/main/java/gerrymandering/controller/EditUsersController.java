@@ -55,11 +55,11 @@ public class EditUsersController {
 
             User userToUpdate = userService.findById(userId);
 
-//            Authorities auth = authoritiesService.findByUsername(userToUpdate.getUsername());
-//            if(auth != null && !role.equals(auth.getRole())){
-//                auth.setRole(role);
-//                authoritiesService.saveAuthorities(auth);
-//            }
+            Authorities auth = authoritiesService.findByUsername(userToUpdate.getUsername());
+            if(auth != null && !role.equals(auth.getRole())){
+                auth.setRole(role);
+                authoritiesService.saveAuthorities(auth);
+            }
             if(!username.equals("")){
                 userToUpdate.setUsername(username);
                 userService.saveUser(userToUpdate);
