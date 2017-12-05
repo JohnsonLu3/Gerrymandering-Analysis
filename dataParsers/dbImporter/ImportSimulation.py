@@ -2,7 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.automap import automap_base
-import pprint
+import numpy
+import random
 
 connection_string = ''
 engine = None
@@ -16,7 +17,6 @@ Boundaries = None
 States = None
 Districts = None
 Population = None
-pp = pprint.PrettyPrinter(depth=6)
 
 stateFPs = {}
 Neighbors = []
@@ -51,9 +51,8 @@ def connectToDB():
     totalDistrictCount = -1
 
 def main():
-    global totalDistrictCount
     connectToDB()
-    totalDistrictCount = getDistrictCount()
+
     importSimulation()
     #session.commit()
     return
@@ -73,18 +72,22 @@ def getDistrictCount():
 #    Save the mean to the Simulations table.
 def importSimulation():
     stateDistricts = buildStateDistrictTuples()     # (stateId, year, districtCount)
+    demVotes = getAllPartyData('Democrat')
+    repVotes = getAllPartyData('Republican')
+    K = 250
+    percent = 0.2
 
     for item in stateDistricts:
         N = item[2]
-        K = 250                  # What is K?
-        print item[0]
+                         # What is K?
+        print str(item[0]) + " : " + str(item[1])
+        # Reset Vars
         actualRepPercent = 0
         actualDemPercent = 0
         simulatedDemVotes = []
         simulatedRepVotes = []
 
-        percent = 0.2
-
+        # get actual vote count for that state and year
         repVotePercent = "SELECT sum(voteCount) /" \
                          " (SELECT sum(voteCount) " \
                          " FROM Votes, Districts, States " \
@@ -115,33 +118,22 @@ def importSimulation():
 
         for i in range(K):                          # Randomly select N districts from the district table for that year K times
 
+            randomDemVotes    = 0
+            randomRepVotes    = 0
             randomDemPercent  = 0
             randomRepPercent  = 0
 
-            simulateDemTotal = " SELECT voteCount "\
-                                    " FROM   Votes, Districts, States"\
-                                    " WHERE  Votes.DistrictId = Districts.StateId "\
-                                    " AND    Votes.Party = \"Democrat\" "\
-                                    " AND    Districts.StateId = States.Id"\
-                                    " AND    States.Year = " + str(item[1]) + " "\
-                                    " ORDER BY RAND() LIMIT " + str(N)
-
-            simulateRepTotal = " SELECT voteCount "\
-                                    " FROM   Votes, Districts, States"\
-                                    " WHERE  Votes.DistrictId = Districts.StateId "\
-                                    " AND    Votes.Party = \"Republican\" "\
-                                    " AND    Districts.StateId = States.Id"\
-                                    " AND    States.Year = " + str(item[1]) + " "\
-                                    " ORDER BY RAND() LIMIT " + str(N)
+            for i in range(N):
+                randomDemVotes += random.choice(demVotes)
+                randomRepVotes += random.choice(repVotes)
 
 
-            for row in session.execute(simulateDemTotal):
-                simulateDemTotal = row[0]    # add random districts percent for Democrats
+            simulateDemTotal = randomDemVotes/N                    # get random dem votes
 
-            for row in session.execute(simulateRepTotal):
-                simulateRepTotal = row[0]   # add random district percent for Republicans
+            simulateRepTotal = randomRepVotes/N                    # get random Rep votes
 
-            simulatedTotal = simulateDemTotal + simulateRepTotal
+            simulatedTotal = simulateDemTotal + simulateRepTotal    # find mean of simulated votes
+
             if simulatedTotal == 0:
                 randomDemPercent = 0
                 randomRepPercent = 0
@@ -156,15 +148,11 @@ def importSimulation():
                 simulatedRepVotes.append(simulateRepTotal)
 
         # By the end of the simulation, calculate the mean of the seats for each party.
-        simulatedDemVotesMean = 0
-        for i in simulatedDemVotes:
-            simulatedDemVotesMean = simulatedDemVotesMean + i
-        simulatedDemVotesMean = simulatedDemVotesMean / len(simulatedDemVotes)
+        simulatedDemVotesMean = int(numpy.mean(simulatedDemVotes, axis=0))
+        standardDeviationDem = numpy.std(simulatedDemVotes,axis=0)
 
-        simulatedRepVotesMean = 0
-        for i in simulatedRepVotes:
-            simulatedRepVotesMean = simulatedRepVotesMean + i
-        simulatedRepVotesMean = simulatedRepVotesMean / len(simulatedRepVotes)
+        simulatedRepVotesMean = int(numpy.mean(simulatedRepVotes, axis=0))
+        standardDeviationRep = numpy.std(simulatedRepVotes, axis=0)
 
         print "Actual Rep Percent        :" + str(actualRepPercent)
         print "Actual Dem Percent        :" + str(actualDemPercent)
@@ -176,38 +164,38 @@ def importSimulation():
         print "Simulated Dem Votes Mean  :" + str(simulatedRepVotesMean)
 
         # Save the mean to the Simulations table.
-        i = "INSERT Simulations(StateId, meanSeats, Party) " \
+        i = "INSERT Simulations(StateId, meanSeats, Party, standardDeviation) " \
             + " VALUES(" \
-            + str(item[0]) + " , " + str(simulatedDemVotesMean) + " , " + '\'Democrat\'' \
+            + str(item[0]) + " , " + str(simulatedDemVotesMean) + " , " + '\'Democrat\'' + " ," +  str(standardDeviationDem)\
             + ")"
 
         session.execute(i)
 
-        i = "INSERT Simulations(StateId, meanSeats, Party) " \
+        i = "INSERT Simulations(StateId, meanSeats, Party, standardDeviation) " \
             + " VALUES(" \
-            + str(item[0]) + " , " + str(simulatedRepVotesMean) + " , " + '\'Republican\'' \
+            + str(item[0]) + " , " + str(simulatedRepVotesMean) + " , " + '\'Republican\'' + " ," + str(standardDeviationRep)\
             + ")"
 
         session.execute(i)
 
     return
 
-def getRandomDistricts(state):
+def getAllPartyData(party):
 
-    randomDistrictsId = []
-    s = " SELECT   Districts.Id " \
-                     + " FROM   Districts , States " \
-                     + " WHERE  Districts.StateId = States.Id" \
-                     + " AND    States.Year = " + str(state[1]) \
-                     + " ORDER BY RAND() LIMIT + " + str(state[2])
+    partyVotes = []
+    getData = " SELECT Votes.voteCount "\
+            " FROM   Votes, Districts " \
+            " WHERE  Votes.DistrictId = Districts.Id "\
+            " AND    Votes.Party = \'" + party +"\'"\
 
-    for row in session.execute(s):
-        randomDistrictsId.append(row[0])  # add random districts
+    for row in session.execute(getData):
+        partyVotes.append(row[0])
 
-    return randomDistrictsId
+    return partyVotes
+
 
 def buildStateDistrictTuples():
-    s = "SELECT id, year FROM States"
+    s = "SELECT id, year FROM States WHERE States.Year = 2016"
     stateAndDistricts = []
 
     for row in session.execute(s):
