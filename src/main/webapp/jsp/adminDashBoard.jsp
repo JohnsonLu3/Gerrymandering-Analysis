@@ -21,13 +21,13 @@
                     <div class="collapse navbar-collapse" id="navbar-ex-collapse">
                         <ul class="nav navbar-nav navbar-right">
                             <li class="active">
-                                <a href="#">Home</a>
+                                <a href="/">Home</a>
                             </li>
                             <li>
                                 <a href="/editUsers">Edit Users</a>
                             </li>
                             <li>
-                                <a href="#">Invite Admins</a>
+                                <a href="/inviteAdmins">Invite Admins</a>
                             </li>
                             <li>
                                 <a href="#">Contacts</a>

@@ -60,11 +60,6 @@ public class AdminController {
         return "";
     }
 
-    @RequestMapping(value = "/sendInvite", method = RequestMethod.POST)
-    public String sendInvite(String email){
-        return "";
-    }
-
     @RequestMapping(value = "/sendNotification", method = RequestMethod.POST)
     public String sendNotification(String email, String notification){
         return "";

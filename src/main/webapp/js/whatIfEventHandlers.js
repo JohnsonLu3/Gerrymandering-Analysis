@@ -203,18 +203,61 @@ function undoHandler(map){
 
 function removeDistrictFeature(map, eventFeature, undo){
     var location = locateSelectedDistrict(eventFeature);
+    //remove clicked feature so the neighbors of the feature are left in the superdistrict array
+    //when only its neighbors are left, we can then compare each neighbor with the other neighbors to see if there are any cases
+      // where the neighbors dont share a boundary since the clicked feature was removed.
+    //if there is an instance where the neighbors don't share a boundary as a result of the clicked feature's removal, we throw an alert
+      // and add the removed feature back into the superdistrict array where it once was positioned 
+    //Otherwise, we continue removing the feature and coloring it grey and black.
+    //This removal check will only be implented on map clicks, when "undo" is false. When clicking the undo button, the method
+       // will skip the boundary check portion and simply pop the last element from the history array accordingly("undo" is true)
     listOfSuperDistricts[location.superdistrictIndex].splice(location.districtIndex, 1);
-    if(listOfSuperDistricts[location.superdistrictIndex].length == 0){
-        listOfSuperDistricts.splice(location.superdistrictIndex, 1);
-        startingNewSuperDistrict = true;
-        $('#resetButton').attr('disabled', 'disabled');
+    if(!undo){
+        var selectedFeatureSuperDistrict = listOfSuperDistricts[location.superdistrictIndex];
+        var isDiscontiguous=false;
+        for(var j=0;j<selectedFeatureSuperDistrict.length;j++){        
+            var tempFeature=selectedFeatureSuperDistrict[j];
+            var geom = tempFeature.getGeometry();
+            var polygons = [];
+            if(geom.getType() === "MultiPolygon"){
+                for(i = 0;i < geom.getLength();i++){
+                    p = geom.getAt(i);
+                    polygons.push(new google.maps.Polygon({paths: p.getAt(0).getArray()}));
+                }
+            }
+            else if(geom.getType() === "Polygon"){
+                polygons.push(new google.maps.Polygon({paths: geom.getAt(0).getArray()}));
+            }
+            for(var k=0;k<selectedFeatureSuperDistrict.length;k++){            
+                var tempFeature2=selectedFeatureSuperDistrict[k];
+                var geom2 = tempFeature2.getGeometry();            
+                geom2.forEachLatLng(function(LatLng){
+                    polygons.forEach(poly => {
+                        if(!google.maps.geometry.poly.containsLocation(LatLng, poly))
+                            isDiscontiguous=true;
+                    });
+                });                       
+            }      
+        }
     }
-    map.data.overrideStyle(eventFeature, {fillColor: 'grey', strokeColor: 'black'});
-    console.log("Feature removed");
-    console.log("startingNewSuperDistrict value: " + startingNewSuperDistrict);
-    console.log("listOfSuperDistricts length: " + listOfSuperDistricts.length);
-    if(!undo)
-        clickHistory.push({type: 'single', feature: eventFeature});
+    if(isDiscontiguous){
+        alert("Error: Superdistricts must be contiguous when being chosen.");
+        listOfSuperDistricts[location.superdistrictIndex].splice(location.districtIndex, 0,eventFeature);
+        isDiscontiguous=false;
+        return;
+    }else{    
+        if(listOfSuperDistricts[location.superdistrictIndex].length == 0){
+            listOfSuperDistricts.splice(location.superdistrictIndex, 1);
+            startingNewSuperDistrict = true;
+            $('#resetButton').attr('disabled', 'disabled');
+        }
+        map.data.overrideStyle(eventFeature, {fillColor: 'grey', strokeColor: 'black'});
+        console.log("Feature removed");
+        console.log("startingNewSuperDistrict value: " + startingNewSuperDistrict);
+        console.log("listOfSuperDistricts length: " + listOfSuperDistricts.length);
+        if(!undo)
+            clickHistory.push({type: 'single', feature: eventFeature});
+    }
 }
 
 function removeSuperDistrictFeature(map, eventFeature, undo){

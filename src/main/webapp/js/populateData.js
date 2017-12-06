@@ -21,6 +21,7 @@ function colorByPopulationDistribution(densityArray){
   var populatedDensityArray=populatePopulationDensityArray(densityArray);
   //normalized values would be density /sum of all densities
   var normalizedDensityArray=normalizeDensityArray(populatedDensityArray);
+  //addDensityDisplayTooltip(populatedDensityArray);
   //color districts
   var districtID;
   selectedState.features.forEach(feature => {
@@ -38,10 +39,11 @@ function colorByMinorityNormalDistribution(densityArray,selectedMinority){
   var populatedDensityArray=populateDensityArray(densityArray,selectedMinority);
   //normalized values would be density /sum of all densities
   var normalizedDensityArray=normalizeDensityArray(populatedDensityArray);
+  //addDensityDisplayTooltip(populatedDensityArray);
   //color districts
   var districtID;
   selectedState.features.forEach(feature => {
-     districtID=feature.getProperty('DistrictNo');
+     districtID=feature.getProperty('DistrictNo');     
      console.log("normalizedDensityArray[districtID-1]*255:"+normalizedDensityArray[districtID-1]*255);
      var colorProduct = Math.round(normalizedDensityArray[districtID-1]*255);
      var winner = feature.getProperty('ElectedParty');
@@ -133,4 +135,27 @@ function hexConversion(c){
 function rgbToHexidecimal(r,g,b){
   return "#"+hexConversion(r)+hexConversion(g)+hexConversion(b);
 }
+/*
+var infowindow;
+function addDensityDisplayTooltip(populatedDensityArray){
+  var districtID;
+  selectedState.features.forEach(feature => {
+    districtID=feature.getProperty('DistrictNo');
+    var dA = populatedDensityArray[districtID-1];
+    var sA = dA + '';
+    var dnA = parseFloat(sA);
+    map.data.addListener('click', function (event) {
+      if (infowindow != null) {
+        infowindow.close();
+        infowindow = null;
+      }
+      infowindow = new google.maps.InfoWindow({
+        content: dnA,
+        position: event.latLng
+      });
+      infowindow.open(map);
+    });
+  });
 
+}
+*/
