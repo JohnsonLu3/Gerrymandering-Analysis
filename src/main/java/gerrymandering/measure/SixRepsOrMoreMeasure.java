@@ -43,6 +43,8 @@ public class SixRepsOrMoreMeasure implements Measure {
 
     @Override
     public MeasureResults runMeasure(MultiDistrictRegion region) {
+
+
         return null;
     }
 }

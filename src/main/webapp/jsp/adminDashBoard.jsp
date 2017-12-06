@@ -27,7 +27,7 @@
                                 <a href="/editUsers">Edit Users</a>
                             </li>
                             <li>
-                                <a href="#">Invite Admins</a>
+                                <a href="/inviteAdmins">Invite Admins</a>
                             </li>
                             <li>
                                 <a href="#">Contacts</a>
