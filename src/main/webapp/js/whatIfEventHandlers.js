@@ -214,58 +214,67 @@ function removeDistrictFeature(map, eventFeature, undo){
     //This removal check will only be implented on map clicks, when "undo" is false. When clicking the undo button, the method
        // will skip the boundary check portion and simply pop the last element from the history array accordingly("undo" is true)
     listOfSuperDistricts[location.superdistrictIndex].splice(location.districtIndex, 1);
-    var stillContiguous=false;
-    if(!undo){
-        var selectedFeatureSuperDistrict = listOfSuperDistricts[location.superdistrictIndex];
-        for(var j=0;j<selectedFeatureSuperDistrict.length;j++){        
-            var tempFeature=selectedFeatureSuperDistrict[j];
-            var geom = tempFeature.getGeometry();
-            var polygons = [];
-            if(geom.getType() === "MultiPolygon"){
-                for(i = 0;i < geom.getLength();i++){
-                    p = geom.getAt(i);
-                    polygons.push(new google.maps.Polygon({paths: p.getAt(0).getArray()}));
-                }
-            }
-            else if(geom.getType() === "Polygon"){
-                polygons.push(new google.maps.Polygon({paths: geom.getAt(0).getArray()}));
-            }
-            for(var k=0;k<selectedFeatureSuperDistrict.length;k++){            
-                var tempFeature2=selectedFeatureSuperDistrict[k];
-                if(tempFeature.getProperty('DistrictNo')==tempFeature2.getProperty('DistrictNo')){
-                    continue;
-                }else{
-                    var geom2 = tempFeature2.getGeometry();            
-                    geom2.forEachLatLng(function(LatLng){
-                        polygons.forEach(poly => {
-                            if(google.maps.geometry.poly.containsLocation(LatLng, poly)){
-                                stillContiguous=true;
-                            }
-                        });
-                    });  
-                }
-                                       
-            }
-            if(!stillContiguous){
-                alert("Error: Superdistricts must still be contiguous after removing a district.");
-                listOfSuperDistricts[location.superdistrictIndex].splice(location.districtIndex, 0,eventFeature);
-                return;
-            }
-            stillContiguous=false;      
-        }
-        
-    }    
-    if(listOfSuperDistricts[location.superdistrictIndex].length == 0){
-        listOfSuperDistricts.splice(location.superdistrictIndex, 1);
-        startingNewSuperDistrict = true;
-        $('#resetButton').attr('disabled', 'disabled');
+    var superDistrictLength = listOfSuperDistricts[location.superdistrictIndex].length;
+    if(superDistrictLength==1){
+        map.data.overrideStyle(eventFeature, {fillColor: 'grey', strokeColor: 'black'});
+        console.log("Feature removed");
+        if(!undo)
+            clickHistory.push({type: 'single', feature: eventFeature});
     }
-    map.data.overrideStyle(eventFeature, {fillColor: 'grey', strokeColor: 'black'});
-    console.log("Feature removed");
-    console.log("startingNewSuperDistrict value: " + startingNewSuperDistrict);
-    console.log("listOfSuperDistricts length: " + listOfSuperDistricts.length);
-    if(!undo)
-        clickHistory.push({type: 'single', feature: eventFeature});
+    else{
+      var stillContiguous=false;
+        if(!undo){
+            var selectedFeatureSuperDistrict = listOfSuperDistricts[location.superdistrictIndex];
+            for(var j=0;j<selectedFeatureSuperDistrict.length;j++){        
+                var tempFeature=selectedFeatureSuperDistrict[j];
+                var geom = tempFeature.getGeometry();
+                var polygons = [];
+                if(geom.getType() === "MultiPolygon"){
+                    for(i = 0;i < geom.getLength();i++){
+                        p = geom.getAt(i);
+                        polygons.push(new google.maps.Polygon({paths: p.getAt(0).getArray()}));
+                    }
+                }
+                else if(geom.getType() === "Polygon"){
+                    polygons.push(new google.maps.Polygon({paths: geom.getAt(0).getArray()}));
+                }
+                for(var k=0;k<selectedFeatureSuperDistrict.length;k++){            
+                    var tempFeature2=selectedFeatureSuperDistrict[k];
+                    if(tempFeature.getProperty('DistrictNo')==tempFeature2.getProperty('DistrictNo')){
+                        continue;
+                    }else{
+                        var geom2 = tempFeature2.getGeometry();            
+                        geom2.forEachLatLng(function(LatLng){
+                            polygons.forEach(poly => {
+                                if(google.maps.geometry.poly.containsLocation(LatLng, poly)){
+                                    stillContiguous=true;
+                                }
+                            });
+                        });  
+                    }
+                                       
+                }
+                if(!stillContiguous){
+                    alert("Error: Superdistricts must still be contiguous after removing a district.");
+                    listOfSuperDistricts[location.superdistrictIndex].splice(location.districtIndex, 0,eventFeature);
+                    return;
+                }
+                stillContiguous=false;      
+            }
+        
+        }    
+        if(listOfSuperDistricts[location.superdistrictIndex].length == 0){
+            listOfSuperDistricts.splice(location.superdistrictIndex, 1);
+            startingNewSuperDistrict = true;
+            $('#resetButton').attr('disabled', 'disabled');
+        }
+        map.data.overrideStyle(eventFeature, {fillColor: 'grey', strokeColor: 'black'});
+        console.log("Feature removed");
+        console.log("startingNewSuperDistrict value: " + startingNewSuperDistrict);
+        console.log("listOfSuperDistricts length: " + listOfSuperDistricts.length);
+        if(!undo)
+            clickHistory.push({type: 'single', feature: eventFeature});
+    }
     
 }
 
