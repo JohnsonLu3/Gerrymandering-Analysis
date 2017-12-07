@@ -35,7 +35,10 @@ public class EditUsersController {
             for(User e: iterable) {
                 Authorities auth = authoritiesService.findByUsername(e.getUsername());
                 e.setRole(auth.getRole());
-                users.add(e);
+                if(e.getRole().equals("ROLE_ADVANCE")){
+                    users.add(e);
+                }
+
             }
         }
 
@@ -52,17 +55,28 @@ public class EditUsersController {
             long userId = Integer.parseInt(id);
             String username = request.getParameter("username_" + id);
             String role = request.getParameter("role_" + id);
+            Boolean enabled = request.getParameter("enabled_" + id) != null;
+
 
             User userToUpdate = userService.findById(userId);
 
             Authorities auth = authoritiesService.findByUsername(userToUpdate.getUsername());
-            if(auth != null && !role.equals(auth.getRole())){
-                auth.setRole(role);
-                authoritiesService.saveAuthorities(auth);
-            }
-            if(!username.equals("")){
-                userToUpdate.setUsername(username);
-                userService.saveUser(userToUpdate);
+            if(!role.equals("ROLE_ADMIN")) {
+                if (auth != null && !role.equals(auth.getRole())) {
+                    if(role.equals("ROLE_ADMIN") || role.equals("ROLE_ADVANCE")) {
+                        auth.setRole(role);
+                        authoritiesService.saveAuthorities(auth);
+                    }
+                }
+                if(userToUpdate.getEnabled() != enabled){
+                    userToUpdate.setEnabled(enabled);
+                    userService.saveUser(userToUpdate);
+                }
+
+                if (!username.equals("")) {
+                    userToUpdate.setUsername(username);
+                    userService.saveUser(userToUpdate);
+                }
             }
         }
         return showEditUsers(request, model);
@@ -71,12 +85,15 @@ public class EditUsersController {
     @RequestMapping(value="/deleteUser", method = RequestMethod.POST)
     public ModelAndView deleteUser(WebRequest request, Model model, @ModelAttribute("user")User user) {
         long id = -1;
-        if(user != null){
-            id = user.getId();
-        }
 
-        if(id != -1){
-            userService.deleteUserById(id);
+        if(user.getRole().equals("ROLE_ADMIN")) {
+            if (user != null) {
+                id = user.getId();
+            }
+
+            if (id != -1) {
+                userService.deleteUserById(id);
+            }
         }
 
         return showEditUsers(request, model);

@@ -101,8 +101,12 @@ public class RegistrationController {
                 System.out.println("SAVING authorities to DB");
                 authoritiesService.saveAuthorities(authorities);
 
-                if(!sendEmail(user, request)){
-                    return "error";
+                try {
+                    if (!sendEmail(user, request)) {
+                        return "error";
+                    }
+                }catch (Exception e){
+
                 }
 
                 return "registrationSent";

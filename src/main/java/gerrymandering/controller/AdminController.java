@@ -22,12 +22,6 @@ public class AdminController {
     @Autowired
     UserService userService;
 
-
-    @RequestMapping("/index")
-    public String index() {
-        return "redirect:/www/index.html";
-    }
-
     @RequestMapping("/login")
     public String login(){
         return "loginView";

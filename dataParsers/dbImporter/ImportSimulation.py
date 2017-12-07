@@ -82,10 +82,10 @@ def importSimulation():
                          # What is K?
         print str(item[0]) + " : " + str(item[1])
         # Reset Vars
-        actualRepPercent = 0
-        actualDemPercent = 0
-        simulatedDemVotes = []
-        simulatedRepVotes = []
+        actualRepPercent  = 0
+        actualDemPercent  = 0
+        simulatedDemCount = []
+        simulatedRepCount = []
 
         # get actual vote count for that state and year
         repVotePercent = "SELECT sum(voteCount) /" \
@@ -117,66 +117,71 @@ def importSimulation():
             actualDemPercent = float(row[0])
 
         for i in range(K):                          # Randomly select N districts from the district table for that year K times
+            simulatedDemRepVotes = []
+            randomDemVotes       = 0
+            randomRepVotes       = 0
+            randomDemPercent     = 0
+            randomRepPercent     = 0
 
-            randomDemVotes    = 0
-            randomRepVotes    = 0
-            randomDemPercent  = 0
-            randomRepPercent  = 0
+            while len(simulatedDemRepVotes) != N:
+                randomDemVotes = random.choice(demVotes)
+                randomRepVotes = random.choice(repVotes)
 
-            for i in range(N):
-                randomDemVotes += random.choice(demVotes)
-                randomRepVotes += random.choice(repVotes)
+                simulateDemTotal = randomDemVotes/N                    # get random dem votes
 
+                simulateRepTotal = randomRepVotes/N                    # get random Rep votes
 
-            simulateDemTotal = randomDemVotes/N                    # get random dem votes
+                simulatedTotal = simulateDemTotal + simulateRepTotal    # find mean of simulated votes
 
-            simulateRepTotal = randomRepVotes/N                    # get random Rep votes
+                if simulatedTotal == 0:
+                    randomDemPercent = 0
+                    randomRepPercent = 0
+                else:
+                    randomDemPercent = float(simulateDemTotal) / float(simulatedTotal)
+                    randomRepPercent = float(simulateRepTotal) / float(simulatedTotal)
 
-            simulatedTotal = simulateDemTotal + simulateRepTotal    # find mean of simulated votes
+                # if any combination of N districts are within 0.2% of the
+                # actual total percent votes of the party, save the number of seats won by each party
+                if -1 * percent <= float(randomRepPercent) - float(actualRepPercent) <= percent and -1 * percent <= float(randomDemPercent) - float(actualDemPercent) <= percent:
+                    simulatedDemRepVotes.append((simulateDemTotal, simulateRepTotal))
 
-            if simulatedTotal == 0:
-                randomDemPercent = 0
-                randomRepPercent = 0
-            else:
-                randomDemPercent = float(simulateDemTotal) / float(simulatedTotal)
-                randomRepPercent = float(simulateRepTotal) / float(simulatedTotal)
+            demWins = 0
+            repWins = 0
+            for district in simulatedDemRepVotes:
+                if district[0] > district[1]:
+                    demWins = demWins + 1
+                else:
+                    repWins = repWins +1
 
-            # if any combination of N districts are within 0.2% of the
-            # actual total percent votes of the party, save the number of seats won by each party
-            if -1 * percent <= float(randomRepPercent) - float(actualRepPercent) <= percent and -1 * percent <= float(randomDemPercent) - float(actualDemPercent) <= percent:
-                simulatedDemVotes.append(simulateDemTotal)
-                simulatedRepVotes.append(simulateRepTotal)
+            simulatedDemCount.append(demWins)
+            simulatedRepCount.append(repWins)
+
 
         # By the end of the simulation, calculate the mean of the seats for each party.
-        simulatedDemVotesMean = int(numpy.mean(simulatedDemVotes, axis=0))
-        standardDeviationDem = numpy.std(simulatedDemVotes,axis=0)
+        simulatedDemVotesMean = numpy.mean(simulatedDemCount, axis=0)
+        standardDeviationDem = numpy.std(simulatedDemCount,axis=0)
 
-        simulatedRepVotesMean = int(numpy.mean(simulatedRepVotes, axis=0))
-        standardDeviationRep = numpy.std(simulatedRepVotes, axis=0)
+        simulatedRepVotesMean = numpy.mean(simulatedRepCount, axis=0)
+        standardDeviationRep = numpy.std(simulatedRepCount, axis=0)
 
-        print "Actual Rep Percent        :" + str(actualRepPercent)
-        print "Actual Dem Percent        :" + str(actualDemPercent)
-        print "---"
-        print "Simulated Rep Mean Percent:" + str(float(simulatedRepVotesMean)/ float(simulatedDemVotesMean + simulatedRepVotesMean))
-        print "Simulated Dem Mean Percent:" + str(float(simulatedDemVotesMean) / float(simulatedDemVotesMean + simulatedRepVotesMean))
-        print "---"
-        print "Simulated Rep Votes Mean  :" + str(simulatedDemVotesMean)
-        print "Simulated Dem Votes Mean  :" + str(simulatedRepVotesMean)
+        print "Total district: " + str(N)
+        print "Dem Seat Mean : " + str(simulatedDemVotesMean)
+        print "Rep Seat Mean : " + str(simulatedRepVotesMean)
+        if simulatedDemVotesMean > simulatedRepVotesMean:
+            # Save the mean to the Simulations table.
+            i = "INSERT Simulations(StateId, meanSeats, Party, standardDeviation) " \
+                + " VALUES(" \
+                + str(item[0]) + " , " + str(simulatedDemVotesMean) + " , " + '\'Democrat\'' + " ," +  str(standardDeviationDem)\
+                + ")"
 
-        # Save the mean to the Simulations table.
-        i = "INSERT Simulations(StateId, meanSeats, Party, standardDeviation) " \
-            + " VALUES(" \
-            + str(item[0]) + " , " + str(simulatedDemVotesMean) + " , " + '\'Democrat\'' + " ," +  str(standardDeviationDem)\
-            + ")"
+            session.execute(i)
+        else:
+            i = "INSERT Simulations(StateId, meanSeats, Party, standardDeviation) " \
+                + " VALUES(" \
+                + str(item[0]) + " , " + str(simulatedRepVotesMean) + " , " + '\'Republican\'' + " ," + str(standardDeviationRep)\
+                + ")"
 
-        session.execute(i)
-
-        i = "INSERT Simulations(StateId, meanSeats, Party, standardDeviation) " \
-            + " VALUES(" \
-            + str(item[0]) + " , " + str(simulatedRepVotesMean) + " , " + '\'Republican\'' + " ," + str(standardDeviationRep)\
-            + ")"
-
-        session.execute(i)
+            session.execute(i)
 
     return
 

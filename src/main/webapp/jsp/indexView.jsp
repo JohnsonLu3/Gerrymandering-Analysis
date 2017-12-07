@@ -1,4 +1,5 @@
-<html><head>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -6,25 +7,25 @@
     <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="/resources/style/index.css" rel="stylesheet" type="text/css">
 </head>
-<body>
+<body  th:with="httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}">
 <div class="section">
     <div class="col-md-12 text-right">
-        <a href="/registration" class= "btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Register</a>
-        <c:if test="${pageContext.request.remoteUser}">
-            <a href="/login" class= "btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Login</a>
-        </c:if>
+        <a href="/registration" class= "btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px" sec:authorize="!isAuthenticated()"></i>Register</a>
+        <a href="/login" class= "btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px" sec:authorize="!isAuthenticated()"></i>Login</a>
         <a href="/admin" class="btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Administrators</a>
+        <div sec:authorize="isAuthenticated()">
+            <a href="/login?logout" class="btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Logout</a>
+        </div>
 
         <form name="f" action="/logout" method="post">
-            <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
+            <c:if test="${not empty pageContext.request.remoteUser}">
                 <div>
                     <button type="submit" class="btn">Log out</button>
                 </div>
 
-            </sec:authorize>
+            </c:if>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
-
 
         <div class="section">
             <div class="container">
@@ -41,7 +42,7 @@
                                     <ul class="nav nav-tabs">
                                         <li class="active"></li>
                                         <li class="active">
-                                            <a href="./basic user.html"><i class="fa fa-fw fa-angle-double-right"></i>Home</a>
+                                            <a href="/"><i class="fa fa-fw fa-angle-double-right"></i>Home</a>
                                         </li>
                                         <li>
                                             <a href="./analyze.html">Analyze a State</a>

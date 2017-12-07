@@ -13,11 +13,17 @@
         <a href="/registration" class= "btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px" sec:authorize="!isAuthenticated()"></i>Register</a>
         <a href="/login" class= "btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px" sec:authorize="!isAuthenticated()"></i>Login</a>
         <a href="/admin" class="btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Administrators</a>
+        <div sec:authorize="isAuthenticated()">
+          <a href="/login?logout" class="btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Logout</a>
+        </div>
 
-        <form name="f" action="/login?logout" method="post">
-            <div sec:authorize="isAuthenticated()">
+        <form name="f" action="/logout" method="post">
+          <c:if test="${not empty pageContext.request.remoteUser}">
+            <div>
               <button type="submit" class="btn">Log out</button>
             </div>
+
+          </c:if>
           <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
 

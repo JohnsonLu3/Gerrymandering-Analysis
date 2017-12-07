@@ -17,7 +17,7 @@
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </form>
 
-            <form name="f" action="/www/index.html">
+            <form name="f" action="/">
                 <button type="submit" class="btn">Back</button>
             </form>
         </div>

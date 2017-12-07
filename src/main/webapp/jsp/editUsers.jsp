@@ -67,11 +67,13 @@
                                     <th data-field="name">Account User</th>
                                     <th data-field="newName">New Email</th>
                                     <th data-field="role">User Role</th>
+                                    <th data-field="enable">Enabled</th>
                                     <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <c:forEach items="${users}" var="user">
+                                    <c:if test = "${user.role == 'ROLE_ADVANCE'}">
                                 <tr>
                                     <td>
                                         <c:out value ="${user.username}"/>
@@ -86,6 +88,18 @@
                                         <input name="role_${user.id}" size="35" value="${user.role}"/>
                                     </td>
                                     <td>
+                                        <c:if test="${user.enabled==true}">
+                                            <input type="checkbox" name="enabled_${user.id}" value="true" checked>
+
+                                        </c:if>
+
+                                        <c:if test="${user.enabled!=true}">
+                                            <input type="checkbox" name="enabled_${user.id}" value="false" >
+
+                                        </c:if>
+
+                                    </td>
+                                    <td>
                                         <form name="f" action="/deleteUser" method="post" modelAttribute="users">
                                             <input type="hidden" name="id" value="${user.id}" />
                                             <input type="submit" name ="deleteButton" value="Delete">
@@ -93,6 +107,7 @@
                                         </form>
                                     </td>
                                 </tr>
+                                    </c:if>
                                 </c:forEach>
                                 </tbody>
                             </table>
