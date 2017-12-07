@@ -14,9 +14,13 @@ public class Boundary {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Integer Id;
     @Column(name = "Shape", columnDefinition = "Polygon")
-    public Polygon shape;
+    private Polygon shape;
+
+    public Boundary(Polygon shape){
+        this.shape = shape;
+    }
 
     public Polygon getShape(){
         return shape;
-    };
+    }
 }

@@ -88,16 +88,16 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td><label>Geographic compactness threshold</label></td>
-                                <td><input type="number" name="compactnessThreshold" step=0.01 min=0 /></td>
+                                <td><label>Geographic compactness threshold :</label></td>
+                                <td><input type="number" name="compactnessThreshold" step=0.01 min=0 /><labeL>${user.compactnessThreshold}</labeL></td>
                             </tr>
                             <tr>
-                                <td><label>Lopsided Test p-value</label></td>
-                                <td><input type="number" name="pValue" step=0.01 min=0 /></td>
+                                <td><label>Lopsided Test p-value :</label></td>
+                                <td><input type="number" name="pValue" step=0.01 min=0 /><labeL></labeL></td>
                             </tr>
                             <tr>
-                                <td><label>Efficiency Gap legislative threshold</label></td>
-                                <td><input type="number" name="EfficiencyGap" step=0.01 min=0 /></td>
+                                <td><label>Efficiency Gap legislative threshold : "</label></td>
+                                <td><input type="number" name="EfficiencyGap" step=0.01 min=0/><labeL></labeL></td>
                             </tr>
 
                             </tbody>

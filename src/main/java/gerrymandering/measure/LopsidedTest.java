@@ -4,11 +4,25 @@ import gerrymandering.common.CommonConstants;
 import gerrymandering.common.Party;
 import gerrymandering.model.MultiDistrictRegion;
 import gerrymandering.model.State;
+import gerrymandering.model.User;
+import gerrymandering.service.UserService;
 import org.apache.commons.math3.stat.inference.TTest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.*;
 
 public class LopsidedTest implements Measure {
+
+	double threshold = CommonConstants.TTEST_THRESHOLD;
+
+	public LopsidedTest(UserService userService){
+		double userThreshold = getUserPValueThreshold(userService);
+		if(userThreshold != -1.0){
+			threshold = userThreshold;
+		}
+	}
+
 	private Map<Party, List<Double>> votesPercentages(State state){
 		Map<Party, List<Double>> result = new HashMap<>();
 		Arrays.stream(Party.values()).forEach(party -> {
@@ -43,16 +57,29 @@ public class LopsidedTest implements Measure {
 		Double pvalue = null;
 		if(state.getElectedParty() == Party.Democrat){
 		    pvalue = tTest(percents.get(Party.Democrat), percents.get(Party.Republican));
-		    passOrFail = !exceedsThreshold(pvalue, CommonConstants.TTEST_THRESHOLD);
+		    passOrFail = !exceedsThreshold(pvalue, threshold);
 		}
 		else if(state.getElectedParty() == Party.Republican){
 			pvalue = tTest(percents.get(Party.Republican), percents.get(Party.Democrat));
-			passOrFail = !exceedsThreshold(pvalue, CommonConstants.TTEST_THRESHOLD);
+			passOrFail = !exceedsThreshold(pvalue, threshold);
 		}
 
 		results.addTestResult(passOrFail);
 		results.setPvalue(pvalue);
-		results.setThreshold(CommonConstants.TTEST_THRESHOLD);
+		results.setThreshold(threshold);
 		return results;
 	}
+
+	private double getUserPValueThreshold(UserService userService){
+		double threshold = -1.0;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		User user = userService.findByUsername(auth.getName());
+		if(user.getPValue() != null){
+			threshold = user.getPValue();
+		}
+
+		return threshold;
+	}
+
 }

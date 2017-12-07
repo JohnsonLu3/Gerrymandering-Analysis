@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,6 +30,14 @@ public interface DistrictRepository extends CrudRepository<District, Integer> {
            nativeQuery = true)
     List<District> findByDistrictNoAndStateNameAndYear(Integer districtNo, String stateName,
                                                        Integer year);
+
+    @Query(value = "SELECT * FROM Districts d " +
+                    "INNER JOIN States s ON d.StateId = s.Id " +
+                    "WHERE s.StateName = ?1 " +
+                    "AND s.Year = ?2 " +
+                    "AND d.DistrictId IN ?3",
+           nativeQuery = true)
+    List<District> findByStateNameAndYearAndDistrictNoIn(String stateName, Integer year, Collection<Integer> districtNo);
 
     @Query(value = "SELECT * FROM Districts d " +
                    "INNER JOIN States s ON d.StateId = s.Id " +

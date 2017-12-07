@@ -7,5 +7,10 @@ public enum TestType {
     Lopsided,
     EfficiencyGap,
     ExcessiveSeats,
-    ConsistentAdvantage;
+    ConsistentAdvantage,
+    GeoCompactness,
+    SixRepsOrMore,
+    MinMax,
+    RepsVsVotes;
+
 }
