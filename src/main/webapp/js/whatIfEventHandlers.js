@@ -214,9 +214,9 @@ function removeDistrictFeature(map, eventFeature, undo){
     //This removal check will only be implented on map clicks, when "undo" is false. When clicking the undo button, the method
        // will skip the boundary check portion and simply pop the last element from the history array accordingly("undo" is true)
     listOfSuperDistricts[location.superdistrictIndex].splice(location.districtIndex, 1);
+    var stillContiguous=false;
     if(!undo){
         var selectedFeatureSuperDistrict = listOfSuperDistricts[location.superdistrictIndex];
-        var isDiscontiguous=false;
         for(var j=0;j<selectedFeatureSuperDistrict.length;j++){        
             var tempFeature=selectedFeatureSuperDistrict[j];
             var geom = tempFeature.getGeometry();
@@ -232,34 +232,41 @@ function removeDistrictFeature(map, eventFeature, undo){
             }
             for(var k=0;k<selectedFeatureSuperDistrict.length;k++){            
                 var tempFeature2=selectedFeatureSuperDistrict[k];
-                var geom2 = tempFeature2.getGeometry();            
-                geom2.forEachLatLng(function(LatLng){
-                    polygons.forEach(poly => {
-                        if(!google.maps.geometry.poly.containsLocation(LatLng, poly))
-                            isDiscontiguous=true;
-                    });
-                });                       
-            }      
+                if(tempFeature.getProperty('DistrictNo')==tempFeature2.getProperty('DistrictNo')){
+                    continue;
+                }else{
+                    var geom2 = tempFeature2.getGeometry();            
+                    geom2.forEachLatLng(function(LatLng){
+                        polygons.forEach(poly => {
+                            if(google.maps.geometry.poly.containsLocation(LatLng, poly)){
+                                stillContiguous=true;
+                            }
+                        });
+                    });  
+                }
+                                       
+            }
+            if(!stillContiguous){
+                alert("Error: Superdistricts must still be contiguous after removing a district.");
+                listOfSuperDistricts[location.superdistrictIndex].splice(location.districtIndex, 0,eventFeature);
+                return;
+            }
+            stillContiguous=false;      
         }
+        
+    }    
+    if(listOfSuperDistricts[location.superdistrictIndex].length == 0){
+        listOfSuperDistricts.splice(location.superdistrictIndex, 1);
+        startingNewSuperDistrict = true;
+        $('#resetButton').attr('disabled', 'disabled');
     }
-    if(isDiscontiguous){
-        alert("Error: Superdistricts must be contiguous when being chosen.");
-        listOfSuperDistricts[location.superdistrictIndex].splice(location.districtIndex, 0,eventFeature);
-        isDiscontiguous=false;
-        return;
-    }else{    
-        if(listOfSuperDistricts[location.superdistrictIndex].length == 0){
-            listOfSuperDistricts.splice(location.superdistrictIndex, 1);
-            startingNewSuperDistrict = true;
-            $('#resetButton').attr('disabled', 'disabled');
-        }
-        map.data.overrideStyle(eventFeature, {fillColor: 'grey', strokeColor: 'black'});
-        console.log("Feature removed");
-        console.log("startingNewSuperDistrict value: " + startingNewSuperDistrict);
-        console.log("listOfSuperDistricts length: " + listOfSuperDistricts.length);
-        if(!undo)
-            clickHistory.push({type: 'single', feature: eventFeature});
-    }
+    map.data.overrideStyle(eventFeature, {fillColor: 'grey', strokeColor: 'black'});
+    console.log("Feature removed");
+    console.log("startingNewSuperDistrict value: " + startingNewSuperDistrict);
+    console.log("listOfSuperDistricts length: " + listOfSuperDistricts.length);
+    if(!undo)
+        clickHistory.push({type: 'single', feature: eventFeature});
+    
 }
 
 function removeSuperDistrictFeature(map, eventFeature, undo){
@@ -469,11 +476,14 @@ function createAndColorSuperdistrict(randomFeature){
     var superDistrict=[];
     superDistrict.push(randomFeature);
     var returnedSuperDistrict=getExtraFeatures(superDistrict);
+    /*
     startingNewSuperDistrict=true;
     for(var j =0;j<returnedSuperDistrict.length;j++){
         addDistrictFeature(map,returnedSuperDistrict[j],false);
     }    
-    createSuperDistrictHandler(map,false); 
+    createSuperDistrictHandler(map,false);
+    */
+    colorRandomSuperDistrict(returnedSuperDistrict); 
 }
 function getExtraFeatures(superDistrict){
     console.log("getExtraFeatures-superDistrict.length:"+superDistrict.length);
@@ -522,6 +532,12 @@ function getExtraFeatures(superDistrict){
         }
     }
     return superDistrict; 
+}
+function colorRandomSuperDistrict(returnedSuperDistrict){
+    returnedSuperDistrict.forEach(feature => {
+        map.data.overrideStyle(feature, {fillColor: 'green', strokeColor: 'black'});
+    });
+    
 }
 /*
 function shuffle(array){
