@@ -1,5 +1,6 @@
 package gerrymandering.controller;
 
+import gerrymandering.model.User;
 import gerrymandering.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,11 +16,11 @@ public class EditUserSettingsController {
     @Autowired
     private UserService userService;
 
-//    @RequestMapping(value="/editUsers", method = RequestMethod.GET)
-//    public ModelAndView showEditUsers(WebRequest request, Model model) {
-//
-//        ModelAndView editSettings = new ModelAndView("editSettings");
-//        //editSettings.addObject("users", users);
-//        return editSettings;
-//    }
+    @RequestMapping(value="/editSettings", method = RequestMethod.GET)
+    public ModelAndView showEditUsers(WebRequest request, Model model) {
+        User user = new User();
+        ModelAndView editSettings = new ModelAndView("editSettings");
+        editSettings.addObject("user", user);
+        return editSettings;
+    }
 }

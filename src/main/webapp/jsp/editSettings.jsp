@@ -58,24 +58,65 @@
         <div class="row">
             <div class="col-md-12 text-center">
                 <form name="f" action="/saveChanges" method="post" modelAttribute="users">
-                    <h1>Edit Accounts</h1>
 
-                    <div>
-                        <table id="table" class="table table-bordered" style="background-color: ghostwhite">
+                    <div style="background-color: white;padding: 5%">
+                        <h1>Edit User Settings</h1>
+                        <table id="settingsTable" class="table table-bordered" style="border-color: transparent; border: none">
                             <tbody>
+                            <input type="hidden" name="id" value="${user.id}" />
                             <tr>
-
+                                <td><h3>Change Email</h3></td>
+                                <td></td>
                             </tr>
                             <tr>
-
+                                <td><label>Email:</label></td>
+                                <td><label>${user.username}</label></td>
                             </tr>
                             <tr>
-
+                                <td><label>New Email</label></td>
+                                <td><input name="username_${user.id}" size="35" /></td>
+                            </tr>
+                            <tr>
+                                <td><label>Confirm Email</label></td>
+                                <td><input name="username_${user.id}" size="35" /></td>
+                            </tr>
+                            <tr>
+                                <td><h3>Change Password</h3></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><label>New Password</label></td>
+                                <td><input type="password" name="password_${user.id}" size="35" /></td>
+                            </tr>
+                            <tr>
+                                <td><label>Confirm Password</label></td>
+                                <td><input type="password" name="password_${user.id}" size="35" /></td>
+                            </tr>
+                            <tr>
+                                <td><h3>Edit Test Settings</h3></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><label>Geographic compactness threshold</label></td>
+                                <td><input type="number" name="" size="35" /></td>
+                            </tr>
+                            <tr>
+                                <td><label>Lopsided Test p-value</label></td>
+                                <td><input type="number" name="" size="35" /></td>
+                            </tr>
+                            <tr>
+                                <td><label>Efficiency Gap legislative threshold</label></td>
+                                <td><input type="number" name="" size="35" /></td>
+                            </tr>
+                            <tr>
+                                <td><label>Setting geo compactness threshold</label></td>
+                                <td><input type="number" name="" size="35" /></td>
                             </tr>
                             <c:forEach items="${users}" var="user">
                             </c:forEach>
                             </tbody>
-                        <input type="submit" name ="saveButton"value="Save">
+                        </table>
+                        <input type="submit" name ="saveButton"value="Save Changes">
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </div>
 
