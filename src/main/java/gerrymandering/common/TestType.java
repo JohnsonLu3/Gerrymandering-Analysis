@@ -8,5 +8,9 @@ public enum TestType {
     EfficiencyGap,
     ExcessiveSeats,
     ConsistentAdvantage,
-    GeoCompactness;
+    GeoCompactness,
+    SixRepsOrMore,
+    MinMax,
+    RepsVsVotes;
+
 }
