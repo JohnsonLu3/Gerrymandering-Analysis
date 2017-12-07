@@ -15,6 +15,12 @@ public class User {
         private boolean enabled;
         @Column(name = "activationKey")
         private String activationKey;
+        @Column(name = "compactnessThreshold")
+        private Double compactnessThreshold;
+        @Column(name = "pValue")
+        private Double pValue;
+        @Column(name = "EfficienctGap")
+        private Double EfficienctGap;
 
         @Transient
         private String role;
@@ -68,4 +74,27 @@ public class User {
             this.role = role;
         }
 
+        public Double getCompactnessThreshold(){
+            return compactnessThreshold;
+        }
+
+        public void setCompactnessThreshold(Double compactnessThreshold){
+            this.compactnessThreshold = compactnessThreshold;
+        }
+
+        public Double getPValue(){
+            return pValue;
+        }
+
+        public void setPValue(Double pValue){
+            this.pValue = pValue;
+        }
+
+        public Double getEfficienctGap(){
+            return EfficienctGap;
+        }
+
+        public void setEfficienctGap(Double EfficienctGap){
+            this.EfficienctGap = EfficienctGap;
+        }
 }

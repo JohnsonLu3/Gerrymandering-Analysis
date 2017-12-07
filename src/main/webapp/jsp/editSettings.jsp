@@ -29,16 +29,6 @@
                         <a href="/">Home</a>
                     </li>
                     <li>
-                        <a href="/editUsers">Edit Users</a>
-                    </li>
-                    <li>
-                        <a href="/inviteAdmins">Invite Admins</a>
-                    </li>
-                    <li>
-                        <a href="#">Contacts</a>
-                    </li>
-
-                    <li>
                         <form name="f" action="/logout" method="post">
                             <c:if test="${not empty pageContext.request.remoteUser}">
                                 <div>
@@ -53,29 +43,66 @@
             </div>
         </div>
     </div>
+
     <div class="cover-image" style="background-image: url(https://unsplash.imgix.net/photo-1418065460487-3e41a6c84dc5?q=25&amp;fm=jpg&amp;s=127f3a3ccf4356b7f79594e05f6c840e);"></div>
     <div class="container">
         <div class="row">
-            <div class="col-md-12 text-center">
-                <form name="f" action="/saveChanges" method="post" modelAttribute="users">
-                    <h1>Edit Accounts</h1>
+            <div class="col-md-12 text-center" style="margin-top: 5%">
+                <form name="f" action="/saveUserSettings" method="post" modelAttribute="users">
 
-                    <div>
-                        <table id="table" class="table table-bordered" style="background-color: ghostwhite">
+                    <div style="background-color: white;padding: 5%">
+                        <h1>Edit User Settings</h1>
+                        <table id="settingsTable" class="table table-bordered" style="border-color: transparent; border: none">
                             <tbody>
+                            <input type="hidden" name="id" value="${user.id}" />
                             <tr>
-
+                                <td><h3>Change Email</h3></td>
+                                <td></td>
                             </tr>
                             <tr>
-
+                                <td><label>Email:</label></td>
+                                <td><label>${user.username}</label></td>
                             </tr>
                             <tr>
-
+                                <td><label>New Email</label></td>
+                                <td><input name="newUsername" size="35" /></td>
                             </tr>
-                            <c:forEach items="${users}" var="user">
-                            </c:forEach>
+                            <tr>
+                                <td><label>Confirm Email</label></td>
+                                <td><input name="confirmUsername" size="35" /></td>
+                            </tr>
+                            <tr>
+                                <td><h3>Change Password</h3></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><label>New Password</label></td>
+                                <td><input type="password" name="newPassword" size="35" /></td>
+                            </tr>
+                            <tr>
+                                <td><label>Confirm Password</label></td>
+                                <td><input type="password" name="confirmPassword" size="35" /></td>
+                            </tr>
+                            <tr>
+                                <td><h3>Edit Test Settings</h3></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><label>Geographic compactness threshold</label></td>
+                                <td><input type="number" name="compactnessThreshold" step=0.01 min=0 /></td>
+                            </tr>
+                            <tr>
+                                <td><label>Lopsided Test p-value</label></td>
+                                <td><input type="number" name="pValue" step=0.01 min=0 /></td>
+                            </tr>
+                            <tr>
+                                <td><label>Efficiency Gap legislative threshold</label></td>
+                                <td><input type="number" name="EfficiencyGap" step=0.01 min=0 /></td>
+                            </tr>
+
                             </tbody>
-                        <input type="submit" name ="saveButton"value="Save">
+                        </table>
+                        <input type="submit" name ="saveButton"value="Save Changes">
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </div>
 
