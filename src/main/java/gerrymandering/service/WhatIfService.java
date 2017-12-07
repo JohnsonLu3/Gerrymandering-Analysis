@@ -1,6 +1,7 @@
 package gerrymandering.service;
 
 import gerrymandering.measure.MeasureResults;
+import gerrymandering.model.CompleteWork;
 import gerrymandering.model.District;
 import gerrymandering.model.State;
 import gerrymandering.model.SuperDistrict;
@@ -29,4 +30,6 @@ public interface WhatIfService {
     public File downloadWork(State completedWork);
 
     public List<District> selectDistricts(FeatureCollection features, String stateName, Integer year);
+
+    public CompleteWork exportCurrentWork(FeatureCollection features, String stateName, Integer year);
 }

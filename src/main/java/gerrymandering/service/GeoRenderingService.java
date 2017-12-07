@@ -27,4 +27,6 @@ public interface GeoRenderingService {
     public Polygon latLngToCartesian(Polygon polygon);
 
     public SuperDistrict buildSuperdistrict(FeatureCollection fc);
+
+    public List<SuperDistrict> buildSuperdistricts(FeatureCollection fc);
 }

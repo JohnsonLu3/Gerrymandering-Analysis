@@ -4,13 +4,11 @@ import gerrymandering.measure.GeoCompactMeasure;
 import gerrymandering.measure.Measure;
 import gerrymandering.measure.MeasureResults;
 import gerrymandering.model.*;
+import gerrymandering.repository.CompleteWorkRepository;
 import gerrymandering.repository.DistrictRepository;
-import gerrymandering.repository.NeighborRepository;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.SimpleGraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.wololo.geojson.FeatureCollection;
 
 import java.io.File;
@@ -27,6 +25,8 @@ import java.util.stream.Collectors;
 public class WhatIfServiceImpl implements WhatIfService {
     @Autowired
     DistrictRepository districts;
+    @Autowired
+    CompleteWorkRepository completeWorks;
 
     @Override
     public List<MeasureResults> runHR3057Measures(SuperDistrict superDistrict, Integer year) {
@@ -75,6 +75,7 @@ public class WhatIfServiceImpl implements WhatIfService {
     }
 
     @Override
+    @Transactional
     public List<District> selectDistricts(FeatureCollection features, String stateName, Integer year) {
         Map<String, Object> properties = features.getFeatures()[0].getProperties();
         List<Integer> districtNos = (List<Integer>) properties.get("Districts");
@@ -85,5 +86,11 @@ public class WhatIfServiceImpl implements WhatIfService {
         if(result.size() == 0)
             return null;
         return result;
+    }
+
+    @Override
+    @Transactional
+    public CompleteWork exportCurrentWork(FeatureCollection features, String stateName, Integer year) {
+        return null;
     }
 }

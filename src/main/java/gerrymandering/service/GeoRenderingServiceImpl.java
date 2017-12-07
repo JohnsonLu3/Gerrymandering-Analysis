@@ -49,6 +49,12 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
     }
 
     @Override
+    public List<SuperDistrict> buildSuperdistricts(FeatureCollection fc) {
+        List<Feature> features = Arrays.asList(fc.getFeatures());
+        return null;
+    }
+
+    @Override
     public GeoJson buildGeoJson(List<State> states) {
         List<Feature> featureCollection =
             states.stream().map(this::buildState).collect(Collectors.toList());
