@@ -451,38 +451,89 @@ function pickRandomFeature(){
     console.log("maxDistrNo:"+maxDistrNo);
     var randomFeatureDistrictNo = Math.floor(Math.random() * maxDistrNo);
     console.log("randomFeatureDistrictNo:"+randomFeatureDistrictNo);
+    var randomlyChosenFeatureArray;
+    if(randomFeatureDistrictNo==0){
+        randomlyChosenFeatureArray = selectedStateForRedistricting.features.filter(function(feature){
+            return 1==feature.getProperty('DistrictNo');
+        });
+    }else{
+        randomlyChosenFeatureArray = selectedStateForRedistricting.features.filter(function(feature){
+            return randomFeatureDistrictNo==feature.getProperty('DistrictNo');
+        });
+    }
     
-    var randomlyChosenFeatureArray = selectedStateForRedistricting.features.filter(function(feature){
-        return randomFeatureDistrictNo==feature.getProperty('DistrictNo');
-    });
     return randomlyChosenFeatureArray[0];
 }
 
 function createAndColorSuperdistrict(randomFeature){    
     var superDistrict=[];
-    var selectedDistrictGeom = randomFeature.getGeometry();
-    selectedStateForRedistricting.features.forEach(districtFeature => {
-        var geom = districtFeature.getGeometry();
-        var polygons = [];
-        if(geom.getType() === "MultiPolygon"){
-            for(i = 0;i < geom.getLength();i++){
-                p = geom.getAt(i);
-                polygons.push(new google.maps.Polygon({paths: p.getAt(0).getArray()}));
-            }
-        }
-        else if(geom.getType() === "Polygon"){
-            polygons.push(new google.maps.Polygon({paths: geom.getAt(0).getArray()}));
-        }
-        selectedDistrictGeom.forEachLatLng(function(LatLng){
-            polygons.forEach(poly => {
-                if(google.maps.geometry.poly.containsLocation(LatLng, poly))
-                    superDistrict.push(districtFeature);
-            });
-        });
-    });    
-    colorSuperDistrict(superDistrict);
+    superDistrict.push(randomFeature);
+    var returnedSuperDistrict=getExtraFeatures(superDistrict);
+    colorSuperDistrict(returnedSuperDistrict);    
 }
-
+function getExtraFeatures(superDistrict){
+    console.log("getExtraFeatures-superDistrict.length:"+superDistrict.length);
+    var districtInList=false;
+    var extraFeatureArray=[];
+    var availableDistricts=[];
+    selectedStateForRedistricting.features.forEach(districtFeature => {
+        if(districtFeature.getProperty('DistrictNo')!=superDistrict[0].getProperty('DistrictNo')){
+            availableDistricts.push(districtFeature);
+        }
+    });
+    var matchedValue=0;
+    var foundNeighbor=false;
+    while(matchedValue!=4){
+        for(var m=0;m<availableDistricts.length;m++){
+            var availableFeature=availableDistricts[m];
+            var selectedDistrictGeom = availableFeature.getGeometry();
+            superDistrict.forEach(districtFeature => {
+                var geom = districtFeature.getGeometry();
+                var polygons = [];
+                if(geom.getType() === "MultiPolygon"){
+                    for(i = 0;i < geom.getLength();i++){
+                        p = geom.getAt(i);
+                        polygons.push(new google.maps.Polygon({paths: p.getAt(0).getArray()}));
+                    }
+                }
+                else if(geom.getType() === "Polygon"){
+                    polygons.push(new google.maps.Polygon({paths: geom.getAt(0).getArray()}));
+                }
+                selectedDistrictGeom.forEachLatLng(function(LatLng){
+                    polygons.forEach(poly => {
+                        if(google.maps.geometry.poly.containsLocation(LatLng, poly)){
+                            foundNeighbor=true;
+                        }
+                    });
+                });            
+            });
+            if(foundNeighbor){
+                superDistrict.push(availableFeature);
+                matchedValue++;
+                foundNeighbor=false;
+            }        
+            if(matchedValue==4){
+                break;
+            }        
+        }
+    }
+    return superDistrict; 
+}
+/*
+function shuffle(array){
+  var lastIndex = array.length;
+  var tempFeature;
+  var randomIndex;
+  while (lastIndex != 0) {
+    randomIndex = Math.floor(Math.random() * lastIndex);
+    lastIndex = lastIndex-1;
+    tempFeature = array[lastIndex];
+    array[lastIndex] = array[randomIndex];
+    array[randomIndex] = tempFeature;
+  }
+  return array;
+}
+*/
 function colorSuperDistrict(superDistrict){
     for(var j =0;j<superDistrict.length;j++){
        map.data.overrideStyle(superDistrict[j],{fillColor:'green',strokeColor:'black',clickable:'false'}); 
