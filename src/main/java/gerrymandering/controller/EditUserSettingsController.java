@@ -59,19 +59,37 @@ public class EditUserSettingsController {
             changesMade = true;
         }
 
-        if(compactnessThreshold != -1.0 && userToUpdate.getCompactnessThreshold() != compactnessThreshold){
+        Double userCompactnessThreshold = userToUpdate.getCompactnessThreshold();
+        if(userCompactnessThreshold == null){
             userToUpdate.setCompactnessThreshold(compactnessThreshold);
             changesMade = true;
+        }else{
+            if(compactnessThreshold != -1.0 && compactnessThreshold != userCompactnessThreshold){
+                userToUpdate.setCompactnessThreshold(compactnessThreshold);
+                changesMade = true;
+            }
         }
 
-        if(pValue != -1.0 && userToUpdate.getPValue() != pValue){
+        Double userPValue = userToUpdate.getPValue();
+        if(userPValue == null){
             userToUpdate.setPValue(pValue);
             changesMade = true;
+        }else {
+            if (pValue != -1.0 && pValue != userPValue) {
+                userToUpdate.setPValue(pValue);
+                changesMade = true;
+            }
         }
 
-        if(EfficiencyGap != -1.0 && userToUpdate.getEfficienctGap() != EfficiencyGap){
-            userToUpdate.setEfficienctGap(EfficiencyGap);
+        Double userEfficiencyGap = userToUpdate.getEfficienctGap();
+        if(userEfficiencyGap == null){
+            userToUpdate.setEfficienctGap(userEfficiencyGap);
             changesMade = true;
+        }else {
+            if (EfficiencyGap != -1.0 && EfficiencyGap != userEfficiencyGap) {
+                userToUpdate.setEfficienctGap(EfficiencyGap);
+                changesMade = true;
+            }
         }
 
         if(changesMade == true){

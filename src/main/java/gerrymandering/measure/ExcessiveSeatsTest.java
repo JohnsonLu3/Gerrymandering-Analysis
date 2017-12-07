@@ -4,6 +4,10 @@ import gerrymandering.common.Party;
 import gerrymandering.model.MonteCarloSeats;
 import gerrymandering.model.MultiDistrictRegion;
 import gerrymandering.model.State;
+import gerrymandering.model.User;
+import gerrymandering.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 
 /**
  * Created by yisuo on 12/6/17.

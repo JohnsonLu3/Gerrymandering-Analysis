@@ -29,6 +29,8 @@ public class GerrymanderMeasureServiceImpl implements GerrymanderMeasureService 
     private GeoRenderingService geoJson;
     @Autowired
     private MonteCarloSeatsRepository monteCarloSeatsRepository;
+    @Autowired
+    private UserService userService;
 
     @Override
     public List<MeasureResults> runStateWideMeasures(String stateName, Integer electionYear) {
@@ -41,8 +43,8 @@ public class GerrymanderMeasureServiceImpl implements GerrymanderMeasureService 
             MonteCarloSeats simulatedSeats =
                     monteCarloSeatsRepository.findFirstByStateId(state.getId())
                         .get(CommonConstants.FIRST_ELEMENT);
-            stateWideMeasures.add(new LopsidedTest());
-            stateWideMeasures.add(new EfficiencyGapTest());
+            stateWideMeasures.add(new LopsidedTest(userService));
+            stateWideMeasures.add(new EfficiencyGapTest(userService));
             stateWideMeasures.add(new ConsistentAdvantageTest());
             stateWideMeasures.add(new ExcessiveSeatsTest(simulatedSeats));
 
