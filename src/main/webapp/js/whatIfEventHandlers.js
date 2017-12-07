@@ -290,7 +290,7 @@ function createSuperDistrictListener(map){
 
 function createSuperDistrictHandler(map, undo){
     console.log("Create super district fired!")
-
+    console.log("createSuperDistrictHandler-listOfSuperDistricts[currentSuperDistrictIndex].length:"+listOfSuperDistricts[currentSuperDistrictIndex].length);
     var currentSuperdistrict = listOfSuperDistricts[currentSuperDistrictIndex];
     map.data.toGeoJson(function(json){
         console.log(json);
@@ -469,7 +469,11 @@ function createAndColorSuperdistrict(randomFeature){
     var superDistrict=[];
     superDistrict.push(randomFeature);
     var returnedSuperDistrict=getExtraFeatures(superDistrict);
-    colorSuperDistrict(returnedSuperDistrict);    
+    startingNewSuperDistrict=true;
+    for(var j =0;j<returnedSuperDistrict.length;j++){
+        addDistrictFeature(map,returnedSuperDistrict[j],false);
+    }    
+    createSuperDistrictHandler(map,false); 
 }
 function getExtraFeatures(superDistrict){
     console.log("getExtraFeatures-superDistrict.length:"+superDistrict.length);
@@ -534,9 +538,4 @@ function shuffle(array){
   return array;
 }
 */
-function colorSuperDistrict(superDistrict){
-    for(var j =0;j<superDistrict.length;j++){
-       map.data.overrideStyle(superDistrict[j],{fillColor:'green',strokeColor:'black',clickable:'false'}); 
-    }
-    
-}
+
