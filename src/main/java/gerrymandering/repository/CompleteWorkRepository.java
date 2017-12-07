@@ -9,5 +9,5 @@ import java.util.List;
  * Created by yisuo on 12/7/17.
  */
 public interface CompleteWorkRepository extends CrudRepository<CompleteWork, Integer> {
-    List<CompleteWork> findByCreatorId(Integer creatorId);
+    //List<CompleteWork> findByCreatorId(Integer creatorId);
 }

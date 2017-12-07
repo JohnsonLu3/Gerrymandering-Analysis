@@ -25,6 +25,7 @@ public class EditUserSettingsController {
     public ModelAndView showEditUsers(WebRequest request, Model model, Authentication authentication) {
 
         User user = userService.findByUsername(authentication.getName());
+        System.out.println(user.getPValue() + user.getEfficienctGap() + user.getCompactnessThreshold());
         ModelAndView editSettings = new ModelAndView("editSettings");
         editSettings.addObject("user", user);
         return editSettings;
