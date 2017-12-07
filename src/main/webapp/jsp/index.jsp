@@ -27,6 +27,10 @@
         </c:if>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
       </form>
+
+      <a href="/editSettings" class="btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Settings</a>
+
+
     </div>
     </sec:authorize>
 

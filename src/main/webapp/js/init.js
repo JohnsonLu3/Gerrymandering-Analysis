@@ -976,7 +976,7 @@ function displayConsistentAdvantageResultDescription(data) {
 //Start of Excessive Seats Methods
 function displayExcessiveSeatsTestResults(data,svg3){
 	findExcessiveSeatsStateWinner(data);
-    setDataSetForExcessiveSeatsChart();
+    setDataSetForExcessiveSeatsChart(data);
     setExcessiveSeatsChartDomains();
     appendExcessiveSeatsAxis(svg3);
     initExcessiveSeatsBarChart(svg3);
@@ -1012,24 +1012,21 @@ function findExcessiveSeatsStateWinner(data){
     console.log("findExcessiveSeatsStateWinner-democratWonState: " + democratWonState);
     console.log("findExcessiveSeatsStateWinner-republicanWonState" + republicanWonState);
 }
-function setDataSetForExcessiveSeatsChart(){
-	if (democratWonState == 1) {
-		var simulatedDemocratStateSeatCount=7;
-        var actualDemocratStateSeatCount=3;
-
+function setDataSetForExcessiveSeatsChart(data){
+	
+		var simulatedSeatCount=data.measureResults[3].simulatedMean;
+        var actualSeatCount=data.measureResults[3].actualSeats;
+    if(democratWonState==1){
         dataset = [
-        	{label: "National Mean", "Democrat": simulatedDemocratStateSeatCount},
-        	{label: "Seats Won", "Democrat": actualDemocratStateSeatCount}
+        	{label: "National Mean", "Democrat": simulatedSeatCount},
+        	{label: "Seats Won", "Democrat": actualSeatCount}
     	];
-    }
-    if (republicanWonState == 1) {
-        var simulatedRepublicanStateSeatCount=8;
-        var actualRepublicanStateSeatCount=5;
+    }else if(republicanWonState==1){
         dataset = [
-        	{label: "National Mean", "Republican": simulatedRepublicanStateSeatCount},
-        	{label: "Seats Won", "Republican": actualRepublicanStateSeatCount}
-    	];
-    }
+            {label: "National Mean", "Republican": simulatedSeatCount},
+            {label: "Seats Won", "Republican": actualSeatCount}
+        ];
+    }   
     
     options = d3.keys(dataset[0]).filter(function (key) {
         return key !== "label";
@@ -1132,7 +1129,7 @@ function colorExcessiveSeatsBySeatsWon(svg3){
 }
 function displayExcessiveSeatsResultDescription(data){
 	passfail = document.getElementById('excessive-seats-pass-fail');
-    	if(data.measureResults[1].testResult == true){
+    	if(data.measureResults[3].testResult == true){
         	passfail.innerHTML = "PASS";
         	passfail.className = "text-success";
     	}
@@ -1142,10 +1139,10 @@ function displayExcessiveSeatsResultDescription(data){
     	}
           //displays the test result description based on the overall winner of the state as well as the chosen state and year combination            
         if(democratWonState==1){
-            document.getElementById("excessiveSeatsAnalysis").innerHTML = "In "+selectedState.name+"'s "+selectedYear+" election, Republicans won their districts with "+ usedToWinRepVotes+ " votes, and Democrats won their districts with "+ usedToWinDemVotes+ " votes. The Republicans unfortunately lost and therefore wasted all of their votes, while the Democrats wasted "+wastedDemVotes +" due to their win. The legislative threshhold was "+data.measureResults[1].legislativeThreshold+" and the efficiency gap was "+data.measureResults[1].efficiencyGap+". The difference between these two values indicates "+selectedState.name +" may " + (data.measureResults[1].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Democrats. <br><br>";
+            document.getElementById("excessiveSeatsAnalysis").innerHTML = "In "+selectedState.name+"'s "+selectedYear+" election, Democrats won "+ data.measureResults[3].actualSeats+ " seats. The simulated national mean for seats of the democratic party was "+ data.measureResults[3].simulatedMean+" seats. Despite this value, the simulated national standard deviation for the democratic party was, in this case, "+data.measureResults[3].simulatedStandardDeviation+". The actual number of seats won by the democrats therefore indicates that "+selectedState.name +" may " + (data.measureResults[3].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Democrats. <br><br>";
         }
         if(republicanWonState==1){
-           document.getElementById("excessiveSeatsAnalysis").innerHTML = "In "+selectedState.name+"'s "+selectedYear+" election, Republicans won their districts with "+ usedToWinRepVotes+ " votes, and Democrats won their districts with "+ usedToWinDemVotes+ " votes.  The Democrats unfortunately lost and therefore wasted all of their votes, while the Republicans wasted "+wastedRepVotes +" due to their win. The legislative threshhold was "+data.measureResults[1].legislativeThreshold+" and the efficiency gap was "+data.measureResults[1].efficiencyGap+". The difference between these two values indicates "+selectedState.name +" may " + (data.measureResults[1].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Republicans. <br><br>";
+            document.getElementById("excessiveSeatsAnalysis").innerHTML = "In "+selectedState.name+"'s "+selectedYear+" election, Republicans won "+ data.measureResults[3].actualSeats+ " seats. The simulated national mean for seats of the republican party was "+ data.measureResults[3].simulatedMean+" seats. Despite this value, the simulated national standard deviation for the republican party was, in this case, "+data.measureResults[3].simulatedStandardDeviation+". The actual number of seats won by the republicans therefore indicates that "+selectedState.name +" may " + (data.measureResults[3].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Republicans. <br><br>";
         }   
 }
 //Start of Efficiency Gap Methods

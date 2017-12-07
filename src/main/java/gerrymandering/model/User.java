@@ -19,6 +19,12 @@ public class User {
         private String activationKey;
         @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
         private List<CompleteWork> savedWorks = new ArrayList<>();
+        @Column(name = "compactnessThreshold")
+        private Double compactnessThreshold;
+        @Column(name = "pValue")
+        private Double pValue;
+        @Column(name = "EfficienctGap")
+        private Double EfficienctGap;
 
         @Transient
         private String role;
@@ -81,5 +87,29 @@ public class User {
 
         public void setSavedWorks(List<CompleteWork> savedWorks) {
             this.savedWorks = savedWorks;
+        }
+
+        public Double getCompactnessThreshold(){
+            return compactnessThreshold;
+        }
+
+        public void setCompactnessThreshold(Double compactnessThreshold){
+            this.compactnessThreshold = compactnessThreshold;
+        }
+
+        public Double getPValue(){
+            return pValue;
+        }
+
+        public void setPValue(Double pValue){
+            this.pValue = pValue;
+        }
+
+        public Double getEfficienctGap(){
+            return EfficienctGap;
+        }
+
+        public void setEfficienctGap(Double EfficienctGap){
+            this.EfficienctGap = EfficienctGap;
         }
 }
