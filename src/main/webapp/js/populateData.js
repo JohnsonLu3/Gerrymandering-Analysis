@@ -21,12 +21,13 @@ function colorByPopulationDistribution(densityArray){
   var populatedDensityArray=populatePopulationDensityArray(densityArray);
   //normalized values would be density /sum of all densities
   var normalizedDensityArray=normalizeDensityArray(populatedDensityArray);
+  //addDensityDisplayTooltip(populatedDensityArray);
   //color districts
   var districtID;
   selectedState.features.forEach(feature => {
     districtID=feature.getProperty('DistrictNo');
     console.log("normalizedDensityArray[districtID-1]*255:"+normalizedDensityArray[districtID-1]*255);
-    var colorProduct = Math.round(normalizedDensityArray[districtID-1]*255);
+    var colorProduct = normalizedDensityArray[districtID-1]*255;//Math.round(normalizedDensityArray[districtID-1]*255);
     var winner = feature.getProperty('ElectedParty');
     var densityColor= generateDensityColor(winner,colorProduct);
     console.log("densityColor:"+densityColor);
@@ -38,12 +39,13 @@ function colorByMinorityNormalDistribution(densityArray,selectedMinority){
   var populatedDensityArray=populateDensityArray(densityArray,selectedMinority);
   //normalized values would be density /sum of all densities
   var normalizedDensityArray=normalizeDensityArray(populatedDensityArray);
+  //addDensityDisplayTooltip(populatedDensityArray);
   //color districts
   var districtID;
   selectedState.features.forEach(feature => {
-     districtID=feature.getProperty('DistrictNo');
+     districtID=feature.getProperty('DistrictNo');     
      console.log("normalizedDensityArray[districtID-1]*255:"+normalizedDensityArray[districtID-1]*255);
-     var colorProduct = Math.round(normalizedDensityArray[districtID-1]*255);
+     var colorProduct = normalizedDensityArray[districtID-1]*255;//Math.round(normalizedDensityArray[districtID-1]*255);
      var winner = feature.getProperty('ElectedParty');
      var densityColor= generateDensityColor(winner,colorProduct);
      console.log("densityColor:"+densityColor);
@@ -53,23 +55,24 @@ function colorByMinorityNormalDistribution(densityArray,selectedMinority){
 
 function populatePopulationDensityArray(densityArray){
   var totalPopulationDataArray=[];
+  var areaArray=[];
+  var area;
   selectedState.features.forEach(feature => {
+    area = feature.getProperty('Area');
+    areaArray.push(area);
     totalPopulation = getDistrictPopulationData(feature);
     totalPopulationDataArray.push(totalPopulation);
   });
-
-  var totalPopulationValue = totalPopulationDataArray.reduce(function(total,amount){
-    return total+amount;
-  },0);
   for(var i =0; i<totalPopulationDataArray.length;i++){
-   densityArray.push(totalPopulationDataArray[i]/totalPopulationValue);
+   densityArray.push(totalPopulationDataArray[i]/areaArray[i]);
   }
   return densityArray;
 }
 
 function populateDensityArray(densityArray,selectedMinority) {
     var minorityDensity;
-    selectedState.features.forEach(feature => {
+    
+    selectedState.features.forEach(feature => {        
         minorityDensity = calculateMinorityPopulationPercentage(selectedMinority, feature);
         densityArray.push(minorityDensity);
     });
@@ -95,7 +98,11 @@ function getDistrictPopulationData(feature){
 }
 
 function calculateMinorityPopulationPercentage(selectedMinority,feature){
-    return feature.getProperty("PercentPopulation")[selectedMinority];
+    var areaArray=[];
+    var area;
+    area = feature.getProperty('Area');
+    var populationByMinority=feature.getProperty("PercentPopulation")[selectedMinority];
+    return populationByMinority/area;
 }
 
 function generateDensityColor(winner,colorProduct){
@@ -108,16 +115,67 @@ function generateDensityColor(winner,colorProduct){
   if(winner=='Republican'){
     baseColor='red';
     
-    x = 255 //- colorProduct;
-    y= 255 - colorProduct * 10//+ (colorProduct*20);
-    z= 255 - colorProduct * 10//+ (colorProduct*20);
+    if(colorProduct<0.01){ //0.01 and less-->.0048
+      x = 255 //- colorProduct;
+      y= 255 - Math.round( (colorProduct *10000));//+ (colorProduct*20);
+      z= 255 - Math.round( (colorProduct * 10000));//+ (colorProduct*20);
+    }else if(colorProduct<0.1){//0.09 and less
+      x = 255 //- colorProduct;
+      y= 255 - Math.round( (colorProduct *1000));//+ (colorProduct*20);
+      z= 255 - Math.round( (colorProduct * 1000));//+ (colorProduct*20);
+    }else if(colorProduct<0.99){// 0.1-0.99
+      x = 255 //- colorProduct;
+      y= 255 - Math.round( (colorProduct *100));//+ (colorProduct*20);
+      z= 255 - Math.round( (colorProduct * 100));//+ (colorProduct*20);
+    }else if(colorProduct<10){//0.99-9.99
+      x = 255 //- colorProduct;
+      y= 255 - Math.round( (colorProduct *10));//+ (colorProduct*20);
+      z= 255 - Math.round( (colorProduct * 10));//+ (colorProduct*20);
+    }else if(colorProduct<20){//10-19.99
+      x = 255 //- colorProduct;
+      y= 255 - Math.round( (colorProduct *5));//+ (colorProduct*20);
+      z= 255 - Math.round( (colorProduct * 5));//+ (colorProduct*20);
+    }else if(colorProduct<120){//20-49.99
+      x = 255 //- colorProduct;
+      y= 255 - Math.round( (colorProduct *2));//+ (colorProduct*20);
+      z= 255 - Math.round( (colorProduct * 2));//+ (colorProduct*20);
+    }else if(colorProduct>240){
+      x = 255 //- colorProduct;
+      y= 255 - Math.round( colorProduct );//+ (colorProduct*20);
+      z= 255 - Math.round( colorProduct );//+ (colorProduct*20);
+    } 
     
   }else if(winner=='Democrat'){
     baseColor='blue';
-    
-    x = 255 - colorProduct * 10 //+(colorProduct*20);
-    y= 255 - colorProduct * 10//+(colorProduct*20);
-    z=255;//-colorProduct;
+    if(colorProduct<0.01){ //0.01 and less-->.0048
+      x = 255 - Math.round((colorProduct * 10000)); //+(colorProduct*20);
+      y= 255 - Math.round((colorProduct * 10000));//+(colorProduct*20);
+      z=255;//-colorProduct;
+    }else if(colorProduct<0.1){//0.01 - 0.09 
+      x = 255 - Math.round((colorProduct * 1000)); //+(colorProduct*20);
+      y= 255 - Math.round((colorProduct * 1000));//+(colorProduct*20);
+      z=255;//-colorProduct;
+    }else if(colorProduct<0.99){// 0.1-0.99
+      x = 255 - Math.round((colorProduct * 100)); //+(colorProduct*20);
+      y= 255 - Math.round((colorProduct * 100));//+(colorProduct*20);
+      z=255;//-colorProduct;
+    }else if(colorProduct<10){//0.99-9.99
+      x = 255 - Math.round((colorProduct * 10)); //+(colorProduct*20);
+      y= 255 - Math.round((colorProduct * 10));//+(colorProduct*20);
+      z=255;//-colorProduct;
+    }else if(colorProduct<20){//10-19.99
+      x = 255 - Math.round( (colorProduct *5));//+ (colorProduct*20);
+      y= 255 - Math.round( (colorProduct *5));//+ (colorProduct*20);
+      z= 255; //- colorProduct;
+    }else if(colorProduct<120){//20-49.99
+      x = 255  - Math.round( (colorProduct * 2));//+ (colorProduct*20);
+      y= 255 - Math.round( (colorProduct *2));//+ (colorProduct*20);
+      z= 255; //- colorProduct;
+    }else if(colorProduct>240){
+      x = 255  - Math.round( colorProduct );//+ (colorProduct*20);
+      y= 255 - Math.round( colorProduct );//+ (colorProduct*20);
+      z= 255; //- colorProduct;
+    } 
     
   }
   
@@ -133,4 +191,27 @@ function hexConversion(c){
 function rgbToHexidecimal(r,g,b){
   return "#"+hexConversion(r)+hexConversion(g)+hexConversion(b);
 }
+/*
+var infowindow;
+function addDensityDisplayTooltip(populatedDensityArray){
+  var districtID;
+  selectedState.features.forEach(feature => {
+    districtID=feature.getProperty('DistrictNo');
+    var dA = populatedDensityArray[districtID-1];
+    var sA = dA + '';
+    var dnA = parseFloat(sA);
+    map.data.addListener('click', function (event) {
+      if (infowindow != null) {
+        infowindow.close();
+        infowindow = null;
+      }
+      infowindow = new google.maps.InfoWindow({
+        content: dnA,
+        position: event.latLng
+      });
+      infowindow.open(map);
+    });
+  });
 
+}
+*/

@@ -26,6 +26,7 @@
     </script>
     <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="/resources/style/whatif.css" rel="stylesheet" type="text/css">
+    
   </head>
   <body>
   <div class="section">
@@ -89,30 +90,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-6">
-            <div class="col-md-6" id="map" style="width:575px;height:450px;"></div>
-            <div>
-              <a class="btn btn-lg btn-primary" style="; margin-bottom:5px;margin-right:50px">Download Image</a>
-            
-             <div class="col-md-6">              
-                
-              <select id="box1" onChange="selectStateByDropDown(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
-                <option value="98">New York</option>
-                <option value="7122">North Carolina</option>
-                <option value="142">Virginia</option>
-              </select>
-              <select id="box2" onChange="selectYearByDropDown(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
-                <option value="98">2016</option>
-                <option value="142">2014</option>
-                <option value="142">2012</option>
-                <option value="142">2010</option>
-                <option value="142">2008</option>
-                <option value="142">2006</option>
-                <option value="142">2004</option>
-                <option value="142">2002</option>
-                <option value="142">2000</option>
-              </select>              
-             </div>
-            </div>
+            <div class="col-md-6" id="map" style="width:575px;height:450px;"></div>            
           </div>
           <div class="col-md-6">
             <header class="main-header" role="banner"></header>
@@ -202,83 +180,187 @@
     <hr>
     <h1 contenteditable="true">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Recent Redistricting Attempts</h1>
     <div class="section">
+    
       <div class="container">
         <a target="_blank" href="/resources/img/efficiency_gap_ideal.jpg"> </a>
         <a class="left carousel-control" href="#carousel-example" data-slide="prev"><i class="icon-prev  fa fa-angle-left"></i></a>
         <a class="right carousel-control" href="#carousel-example" data-slide="next"><i class="icon-next  fa fa-angle-right"></i></a>
         <img src="/resources/img/efficiency_gap_ideal.jpg" alt="Forest" style="width:275px">
         <a target="_blank" href="/resources/img/consistent_advantage.png">
-  		<img src="/resources/img/consistent_advantage.png" alt="Forest" style="width:275px">
-		</a>
+  		    <img src="/resources/img/consistent_advantage.png" alt="Forest" style="width:275px">
+		    </a>
         <a target="_blank" href="/resources/img/lopsided3.png">
-  		<img src="/resources/img/lopsided3.png" alt="Forest" style="width:275px">
-		</a>
+  		    <img src="/resources/img/lopsided3.png" alt="Forest" style="width:275px">
+		    </a>
       </div>
-      </div>
+      
+  </div>
+<div id="accordion">
+ <hr />
+  <div class="accordion-toggle">    
+    <div class="section">
       <div class="section">
         <div class="container">
           <div class="row">
-            <div class="col-md-1">
-              <a href="./whatif.html"><i class="fa fa-5x fa-fw fa-toggle-on"></i></a>
+            <div class="col-md-1">            
+              <a href="#"><i class="fa fa-5x fa-fw fa-toggle-off"></i></a>          
             </div>
+            <!-- Lopsided wins and Consistent Advantage HTML Display Sections  -->
             <div class="col-md-5">
               <h1>Three Test Simulation</h1>
-            </div>
+            </div>             
             <div class="col-md-1">
-              <a href="./basic user redistricting with efficiency gap.html"><i class="fa fa-5x fa-fw fa-toggle-off"></i></a>
             </div>
+            <div class="col-md-6">            
+              Partisan gerrymandering has a very particular goal: amplify a political party's power far beyond what it deserves based on vote share alone. This process is accomplished by two complementary methods: cracking and packing. "Packing" occurs when as many supporters of the victim party as possible are crammed into a small number of districts, creating a few overwhelming wins for the victim party. 
+The remaining members of the victim party are then "cracked"so that they comprise a large but minority block of voters (typically 40 - 45%).
+              
+            </div>      
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-left:50px;">
+      <div class="text1">
+          <p id="p1">&nbsp;<span class="underline redtext">READ MORE</span></p>
+      </div>
+      <div class="text1" style="display: none;">
+        <p id="p1">&nbsp;<span class="underline redtext"> LESS</span></p>
+      </div>
+    </div>
+
+  </div>
+  <div class="accordion-content default" style="display: none;">
+    <div class="section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h1 class="text-primary">Lopsided Wins &nbsp;</h1>
+            <h2 id="lopsided-pass-fail" class="text-danger"></h2>
+            <p id="lopsidedWinsAnalysis"></p>
+            <a class="btn btn-lg btn-primary" href="./learn_tests.html">Read More</a>
+          </div>
+          <div class="col-md-6" id="visual"></div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="container">
+        <div class="row">
+           <p></p>
+           <div class="col-md-6" id="vis"></div>   
+           <div class="col-md-6">
+            <h1 class="text-primary">Consistent Advantage</h1>
+            <h2 id="consistent-advantage-pass-fail" class="text-danger"></h2>
+            <p id="consistentAdvantageAnalysis"></p>
+            <a class="btn btn-lg btn-primary" href="./learn_tests.html">Read More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h1 class="text-primary">Excessive Seats &nbsp;</h1>
+            <h2 id="excessive-seats-pass-fail" class="text-danger"></h2>
+            <p id="excessiveSeatsAnalysis"></p>
+            <a class="btn btn-lg btn-primary" href="./learn_tests.html">Read More</a>
+          </div>
+          <div class="col-md-6" id="visualExcessiveSeats"></div>
+        </div>
+      </div>
+    </div>    
+  </div>
+  <p id="p1" style="margin-left:50px;">&nbsp;<a href="#top"><span class="underline redtext">BACK TO TOP</span></a></p>
+  <hr/>
+  <div class="accordion-toggle1"> 
+    <div class="section">
+      <div class="section">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-1">            
+              <a href="#"><i class="fa fa-5x fa-fw fa-toggle-off"></i></a>
+            </div>
+            <!-- Efficiency Gap Display Sections  -->
             <div class="col-md-5">
               <h1>Efficiency Gap Simulation</h1>
             </div>
-          </div>
-        </div>
-      </div>
-      <hr>
-      <div class="section">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6">
-              <h1 class="text-primary">Test 1: Lopsided Wins</h1>
-              <h3>(T - test)</h3>
-              <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
-                ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis
-                dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies
-                nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
-                Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In
-                enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum
-                felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus
-                elementum semper nisi.</p>
-              <a class="btn btn-primary">Read More</a>
+            <div class="col-mid-1" id="div1" style="width:10px;">
             </div>
-            <div class="col-md-6">
-              <img src="/resources/img/lopsided3.png" alt="Forest" style="width:500px">
+            <div class="col-md-6" >
+            Given election results for a set of districts, usually statewide, the wasted votes for each party in each district are computed. All the votes for a losing candidate are wasted. Any votes in excess of those required to win are wasted. The Efficiency Gap is the difference in wasted votes as a percentage of the overall votes cast. Maptitude for Redistricting reports the Efficiency Gap of the first party with respect to the second. 
             </div>
           </div>
         </div>
       </div>
-      <hr>
-      <div class="section">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6">
-              <img src="/resources/img/consistent_advantage.png" alt="Forest" style="width:525px">
-            </div>
-            <div class="col-md-6">
-              <h1 class="text-primary">&nbsp; &nbsp;Test 2: Consistent Advantage</h1>
-              <h3>(Mean - Median Difference)</h3>
-              <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
-                ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis
-                dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies
-                nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
-                Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In
-                enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum
-                felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus
-                elementum semper nisi.</p>
-              <a class="btn btn-primary">Read More</a>
-            </div>
+    </div>
+    <div style="margin-left:50px;">
+      <div class="text1">
+          <p id="p1">&nbsp;<span class="underline redtext">READ MORE</span></p>
+      </div>
+      <div class="text1" style="display: none;">
+        <p id="p1">&nbsp;<span class="underline redtext"> LESS</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-content default" style="display: none;">
+    <div class="section">
+      <div class="container">
+        <div class="row">
+          <div class = "col-md-6" id="visEfficiencyGap">            
+        </div>
+        <div class="col-md-6">
+            <h1 class="text-primary">Did your state make the standard?</h1>
+            <h2 id="efficiency-gap-pass-fail" class="text-danger"></h2>
+            <p id="efficiencyGapAnalysis"></p>
+            <a class="btn btn-primary" href="./Learn more_how tests work.html">Read More</a>
           </div>
         </div>
       </div>
+    </div>
+</div>
+<p id="p1" style="margin-left:50px;">&nbsp;<a href="#top"><span class="underline redtext">BACK TO TOP</span></a></p>
+<hr />   
+      <!-- Trigger/Open The Modal -->
+            <button id="myBtn">Sources</button>
+            <!-- The Modal -->
+            <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+              <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2 class="text-left">Sources</h2>
+              </div>
+              <div class="modal-body"> 
+                <p class="text-left">
+                Brennan Center For Justice. “Gill v. Whitford: Gerrymandering at the Supreme Court.” Gill v. Whitford: Gerrymandering at the Supreme Court | Brennan Center for Justice, New York University School of Law, 2017, www.brennancenter.org/issues/whitford.
+                </p>
+                <p class="text-left">Brennan Center For Justice. “Benisek v. Lamone.” Benisek v. Lamone | Brennan Center for Justice, New York University School of Law, 2017, www.brennancenter.org/legal-work/benisek-v-lamone-amicus-brief.
+                </p>
+                <p class="text-left">
+                Brennan Center For Justice. “Harris v. Cooper (Amicus Brief).” Harris v. Cooper (Amicus Brief) | Brennan Center for Justice, New York University School of Law, 2017, www.brennancenter.org/legal-work/harris-v-mccrory.
+                </p>
+                <p class="text-left">
+                Brennan Center For Justice. “Common Cause v. Rucho.” Common Cause v. Rucho | Brennan Center for Justice, New York University School of Law, 7 Nov. 2017, www.brennancenter.org/legal-work/common-cause-v-rucho.
+                </p>
+                <p class="text-left">FairVote.org. “FairVote US House Projects: Monopoly Politics Remains the Right Name.” FairVote, www.fairvote.org/fairvote_us_house_projects_monopoly_politics_remains_the_right_name.</p>                
+                <p class="text-left">House - Judiciary; House Administration. “H.R.3057 - Fair Representation Act.” Congress.gov, Rep. Beyer, Donald S., Jr., 26 June 2017, www.congress.gov/bill/115th-congress/house-bill/3057.
+                </p>
+                <p class="text-left">Levitt, Justin . “Why does it matter?” All About Redistricting , Loyola Law School, 2017, redistricting.lls.edu/why.php.</p>
+                <p class="text-left">Stephanopoulos, Nicholas, and Eric McGhee. “Partisan Gerrymandering and the Efficiency Gap.” Http://Chicagounbound.uchicago.edu, University of Chicago Law School, 2014, chicagounbound.uchicago.edu/cgi/viewcontent.cgi?article=1946&context=public_law_and_legal_theory.</p>
+                <p class="text-left">Whitaker, Rob. “Princeton Gerrymandering Project | Run Tests.” Princeton University, The Trustees of Princeton University, 2017, gerrymander.princeton.edu/test.</p>                
+                <p class="text-left">Whitaker, Rob. “Princeton Gerrymandering Project | About the Tests.” Princeton University, The Trustees of Princeton University, 2017, gerrymander.princeton.edu/info.</p>
+                <p class="text-left">Youtube. “Gerrymandering, explained.”Online video clip.YouTube, 14 Nov 2017. Web.</p>         
+                
+              </div>
+              <div class="modal-footer">
+                <h3>Gerrymandering in the United States</h3>
+              </div>
+            </div>
+          </div>
+          <script src="/resources/static/worksCited.js"></script>
+          <link href="/resources/static/worksCited.css" rel="stylesheet" type="text/css">
       <footer class="section section-primary">
         <div class="container">
           <div class="row">

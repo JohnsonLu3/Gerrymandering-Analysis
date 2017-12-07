@@ -2,11 +2,9 @@ package gerrymandering.service;
 
 import gerrymandering.common.CommonConstants;
 import gerrymandering.measure.*;
-import gerrymandering.model.District;
-import gerrymandering.model.GeoJson;
-import gerrymandering.model.State;
-import gerrymandering.model.SuperDistrict;
+import gerrymandering.model.*;
 import gerrymandering.repository.DistrictRepository;
+import gerrymandering.repository.MonteCarloSeatsRepository;
 import gerrymandering.repository.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +27,8 @@ public class GerrymanderMeasureServiceImpl implements GerrymanderMeasureService 
     private DistrictRepository districts;
     @Autowired
     private GeoRenderingService geoJson;
+    @Autowired
+    private MonteCarloSeatsRepository monteCarloSeatsRepository;
 
     @Override
     public List<MeasureResults> runStateWideMeasures(String stateName, Integer electionYear) {
@@ -37,9 +37,14 @@ public class GerrymanderMeasureServiceImpl implements GerrymanderMeasureService 
             return null;
         else{
             List<Measure> stateWideMeasures = new ArrayList<>();
+            State state = found.get(CommonConstants.FIRST_ELEMENT);
+            MonteCarloSeats simulatedSeats =
+                    monteCarloSeatsRepository.findFirstByStateId(state.getId())
+                        .get(CommonConstants.FIRST_ELEMENT);
             stateWideMeasures.add(new LopsidedTest());
             stateWideMeasures.add(new EfficiencyGapTest());
             stateWideMeasures.add(new ConsistentAdvantageTest());
+            stateWideMeasures.add(new ExcessiveSeatsTest(simulatedSeats));
 
             return stateWideMeasures
                     .stream()

@@ -231,4 +231,8 @@ public class State extends MultiDistrictRegion implements Serializable {
 	public Integer getClickCount() {
 		return clickCount;
 	}
+
+	public Integer getId() {
+		return Id;
+	}
 }
