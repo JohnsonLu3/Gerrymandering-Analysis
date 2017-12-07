@@ -54,11 +54,6 @@ public class GerrymanderMeasureServiceImpl implements GerrymanderMeasureService 
     }
 
     @Override
-    public List<MeasureResults> runHR3057Measures(SuperDistrict superDistrict) {
-        return null;
-    }
-
-    @Override
     public GeoJson selectDistrict(Integer stateId, Integer districtId, Year electionYear) {
         List<District> found =
             districts.findByDistrictNoAndStateIdAndYear(districtId, stateId, electionYear.getValue());

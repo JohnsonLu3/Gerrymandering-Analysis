@@ -45,6 +45,8 @@ public class District extends BipartisanRegion implements Serializable {
             joinColumns = @JoinColumn(name = "DistrictId", referencedColumnName = "Id"),
             inverseJoinColumns = @JoinColumn(name = "BoundaryId", referencedColumnName = "Id"))
     private List<Boundary> boundaries = new ArrayList<>();
+    @ManyToMany(mappedBy = "districts")
+    private List<SuperDistrict> superDistricts = new ArrayList<>();
 
     @Override
     public List<Boundary> getBoundaries() {

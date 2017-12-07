@@ -1,9 +1,9 @@
 package gerrymandering.service;
 
-import gerrymandering.model.District;
-import gerrymandering.model.GeoJson;
-import gerrymandering.model.State;
-import gerrymandering.model.SuperDistrict;
+import com.vividsolutions.jts.geom.Polygon;
+import gerrymandering.model.*;
+import org.wololo.geojson.FeatureCollection;
+
 import java.util.List;
 
 /**
@@ -17,4 +17,14 @@ public interface GeoRenderingService {
     public GeoJson buildGeoJson(District district);
 
     public GeoJson buildGeoJson(SuperDistrict superDistrict);
+
+    public Double getArea(GeoRegion region);
+
+    public Double getArea(List<Boundary> boundaries);
+
+    public Double getArea(Polygon shape);
+
+    public Polygon latLngToCartesian(Polygon polygon);
+
+    public SuperDistrict buildSuperdistrict(FeatureCollection fc);
 }

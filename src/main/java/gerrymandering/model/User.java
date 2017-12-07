@@ -1,5 +1,7 @@
 package gerrymandering.model;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -15,10 +17,11 @@ public class User {
         private boolean enabled;
         @Column(name = "activationKey")
         private String activationKey;
+        @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+        private List<CompleteWork> savedWorks = new ArrayList<>();
 
         @Transient
         private String role;
-
 
         public long getId() {
             return id;
@@ -68,4 +71,15 @@ public class User {
             this.role = role;
         }
 
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public List<CompleteWork> getSavedWorks() {
+            return savedWorks;
+        }
+
+        public void setSavedWorks(List<CompleteWork> savedWorks) {
+            this.savedWorks = savedWorks;
+        }
 }

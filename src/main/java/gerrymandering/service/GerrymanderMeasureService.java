@@ -13,8 +13,6 @@ import java.util.List;
 public interface GerrymanderMeasureService {
     public List<MeasureResults> runStateWideMeasures(String stateName, Integer electionYear);
 
-    public List<MeasureResults> runHR3057Measures(SuperDistrict superDistrict);
-
     public GeoJson selectDistrict(Integer stateId, Integer districtId, Year electionYear);
 
     public GeoJson selectDistrict(String stateName, Integer districtId, Year electionYear);

@@ -1,12 +1,17 @@
 package gerrymandering.service;
 
 import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 import gerrymandering.common.CommonConstants;
 import gerrymandering.model.*;
+import gerrymandering.repository.DistrictRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.wololo.geojson.Feature;
-import org.wololo.geojson.FeatureCollection;
-import org.wololo.geojson.Geometry;
+import org.wololo.geojson.*;
+import org.wololo.jts2geojson.GeoJSONReader;
 import org.wololo.jts2geojson.GeoJSONWriter;
 
 import java.util.*;
@@ -18,7 +23,30 @@ import java.util.stream.Collectors;
 @Service("geoRenderingService")
 public class GeoRenderingServiceImpl implements GeoRenderingService {
     private GeoJSONWriter writer = new GeoJSONWriter();
+    private GeoJSONReader reader = new GeoJSONReader();
     GeometryFactory factory = new GeometryFactory();
+
+    @Override
+    public SuperDistrict buildSuperdistrict(FeatureCollection fc){
+        SuperDistrict sd = new SuperDistrict();
+        List<Feature> features = Arrays.asList(fc.getFeatures());
+
+        Geometry shape = features.stream().findFirst().map(feature -> reader.read(feature)).get();
+        List<Polygon> polygons = new ArrayList<>();
+        if(shape.getGeometryType().equals("Polygon"))
+            polygons.add((Polygon)shape);
+        else if(shape.getGeometryType().equals("MultiPolygon")){
+            Integer numPolygons = shape.getNumGeometries();
+            for(int i = 0;i < numPolygons;i++){
+                Polygon p = (Polygon)shape.getGeometryN(i);
+                polygons.add(p);
+            }
+        }
+
+        List<Boundary> boundaries = polygons.stream().map(p -> new Boundary(p)).collect(Collectors.toList());
+        sd.setBoundaries(boundaries);
+        return sd;
+    }
 
     @Override
     public GeoJson buildGeoJson(List<State> states) {
@@ -73,7 +101,7 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
     }
 
     private Feature buildFeature(List<Boundary> boundaries, Map<String, Object> properties){
-        Geometry converted = null;
+        org.wololo.geojson.Geometry converted = null;
         if(boundaries.size() == CommonConstants.CONTIGUOUS){
             Polygon polygon = boundaries.get(CommonConstants.FIRST_ELEMENT).getShape();
             converted = writer.write(polygon);
@@ -110,15 +138,32 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
         properties.put("CenterY", mainArea.getY());
     }
 
+    @Override
     public Double getArea(GeoRegion region){
-        return region
-                .getBoundaries()
+        return getArea(region.getBoundaries());
+    }
+
+    @Override
+    public Double getArea(List<Boundary> boundaries){
+        return boundaries
                 .stream()
                 .map(boundary -> boundary.getShape().getCoordinates())
                 .map(coordinates -> convertLatLongToCartisian(coordinates))
                 .map(coordinates -> factory.createPolygon(coordinates))
                 .mapToDouble(polygon -> polygon.getArea())
                 .sum();
+    }
+
+    @Override
+    public Double getArea(Polygon shape){
+        Coordinate[] coordinates = convertLatLongToCartisian(shape.getCoordinates());
+        return factory.createPolygon(coordinates).getArea();
+    }
+
+    @Override
+    public Polygon latLngToCartesian(Polygon polygon){
+        Coordinate[] cartesian = convertLatLongToCartisian(polygon.getCoordinates());
+        return factory.createPolygon(cartesian);
     }
 
     private Coordinate[] convertLatLongToCartisian(Coordinate[] latlng){
