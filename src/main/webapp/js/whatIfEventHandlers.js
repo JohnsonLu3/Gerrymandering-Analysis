@@ -5,6 +5,7 @@ var startingNewSuperDistrict=false;
 var clickHistory = [];
 var previousColor = null;
 var doneBuildingSuperdistrict=false;
+var selectedStateForRedistricting;
 
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -54,6 +55,7 @@ function selectDistrictByClickHandler(map,event,areaInfoWindow,demVotesArray,rep
 
 function superDistrictListener(map, selected){
     var features = selected.features;
+    selectedStateForRedistricting=selected;
  
     return map.data.addListener('click', function(event){
         console.log("In superDistrictListener- eventFeature.getProperty('isSuperDistrict'): "+event.feature.getProperty('isSuperDistrict'));
@@ -424,4 +426,66 @@ function combineDistricts(superdistrict){
     var combined = turf.union(...superdistrict);
     combined.properties = {};
     return combined;
+}
+
+function initRandomGeneratedSuperDistrict(){
+    //randomly picks 5 features that are added to 1 super district and displays that super district
+    // features must come together to make a contiguous super district
+    if(selectedStateForRedistricting==null){
+        alert("Please select a state before randomly generating a super-district.");
+        return;
+    }else{
+        selectedStateForRedistricting.features.forEach(feature => {
+            map.data.overrideStyle(feature,{fillColor:'grey',strokeColor:'black',clickable:'true'}); 
+        });
+        var randomFeature = pickRandomFeature();
+        createAndColorSuperdistrict(randomFeature);
+    }    
+}
+function pickRandomFeature(){
+    var maxDistrNo=0;
+    
+    selectedStateForRedistricting.features.forEach(feature => {
+        maxDistrNo=Math.max(maxDistrNo,feature.getProperty('DistrictNo'));
+    });
+    console.log("maxDistrNo:"+maxDistrNo);
+    var randomFeatureDistrictNo = Math.floor(Math.random() * maxDistrNo);
+    console.log("randomFeatureDistrictNo:"+randomFeatureDistrictNo);
+    
+    var randomlyChosenFeatureArray = selectedStateForRedistricting.features.filter(function(feature){
+        return randomFeatureDistrictNo==feature.getProperty('DistrictNo');
+    });
+    return randomlyChosenFeatureArray[0];
+}
+
+function createAndColorSuperdistrict(randomFeature){    
+    var superDistrict=[];
+    var selectedDistrictGeom = randomFeature.getGeometry();
+    selectedStateForRedistricting.features.forEach(districtFeature => {
+        var geom = districtFeature.getGeometry();
+        var polygons = [];
+        if(geom.getType() === "MultiPolygon"){
+            for(i = 0;i < geom.getLength();i++){
+                p = geom.getAt(i);
+                polygons.push(new google.maps.Polygon({paths: p.getAt(0).getArray()}));
+            }
+        }
+        else if(geom.getType() === "Polygon"){
+            polygons.push(new google.maps.Polygon({paths: geom.getAt(0).getArray()}));
+        }
+        selectedDistrictGeom.forEachLatLng(function(LatLng){
+            polygons.forEach(poly => {
+                if(google.maps.geometry.poly.containsLocation(LatLng, poly))
+                    superDistrict.push(districtFeature);
+            });
+        });
+    });    
+    colorSuperDistrict(superDistrict);
+}
+
+function colorSuperDistrict(superDistrict){
+    for(var j =0;j<superDistrict.length;j++){
+       map.data.overrideStyle(superDistrict[j],{fillColor:'green',strokeColor:'black',clickable:'false'}); 
+    }
+    
 }

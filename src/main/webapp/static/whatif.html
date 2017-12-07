@@ -40,7 +40,7 @@
           <div class="col-md-12">
             <ul class="nav nav-tabs">
               <li class="">
-                <a href="/">Home</a>
+                <a href="./index.html">Home</a>
               </li>
               <li>
                 <a href="./analyze.html">Analyze a State</a>
@@ -90,7 +90,12 @@
       <div class="container">
         <div class="row">
           <div class="col-md-6">
-            <div class="col-md-6" id="map" style="width:575px;height:450px;"></div>            
+            <div class="col-md-6" id="map" style="width:575px;height:450px;"></div>
+              <div>
+              <form action="">
+                <input id="randomGenerate" type="radio" onclick="initRandomGeneratedSuperDistrict()" value="randomGenerate"> Randomly Generate Superdistrict
+              </form>
+            </div>
           </div>
           <div class="col-md-6">
             <header class="main-header" role="banner"></header>
@@ -195,132 +200,7 @@
       </div>
       
   </div>
-<div id="accordion">
- <hr />
-  <div class="accordion-toggle">    
-    <div class="section">
-      <div class="section">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-1">            
-              <a href="#"><i class="fa fa-5x fa-fw fa-toggle-off"></i></a>          
-            </div>
-            <!-- Lopsided wins and Consistent Advantage HTML Display Sections  -->
-            <div class="col-md-5">
-              <h1>Three Test Simulation</h1>
-            </div>             
-            <div class="col-md-1">
-            </div>
-            <div class="col-md-6">            
-              Partisan gerrymandering has a very particular goal: amplify a political party's power far beyond what it deserves based on vote share alone. This process is accomplished by two complementary methods: cracking and packing. "Packing" occurs when as many supporters of the victim party as possible are crammed into a small number of districts, creating a few overwhelming wins for the victim party. 
-The remaining members of the victim party are then "cracked"so that they comprise a large but minority block of voters (typically 40 - 45%).
-              
-            </div>      
-          </div>
-        </div>
-      </div>
-    </div>
-    <div style="margin-left:50px;">
-      <div class="text1">
-          <p id="p1">&nbsp;<span class="underline redtext">READ MORE</span></p>
-      </div>
-      <div class="text1" style="display: none;">
-        <p id="p1">&nbsp;<span class="underline redtext"> LESS</span></p>
-      </div>
-    </div>
 
-  </div>
-  <div class="accordion-content default" style="display: none;">
-    <div class="section">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6">
-            <h1 class="text-primary">Lopsided Wins &nbsp;</h1>
-            <h2 id="lopsided-pass-fail" class="text-danger"></h2>
-            <p id="lopsidedWinsAnalysis"></p>
-            <a class="btn btn-lg btn-primary" href="./learn_tests.html">Read More</a>
-          </div>
-          <div class="col-md-6" id="visual"></div>
-        </div>
-      </div>
-    </div>
-    <div class="section">
-      <div class="container">
-        <div class="row">
-           <p></p>
-           <div class="col-md-6" id="vis"></div>   
-           <div class="col-md-6">
-            <h1 class="text-primary">Consistent Advantage</h1>
-            <h2 id="consistent-advantage-pass-fail" class="text-danger"></h2>
-            <p id="consistentAdvantageAnalysis"></p>
-            <a class="btn btn-lg btn-primary" href="./learn_tests.html">Read More</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="section">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6">
-            <h1 class="text-primary">Excessive Seats &nbsp;</h1>
-            <h2 id="excessive-seats-pass-fail" class="text-danger"></h2>
-            <p id="excessiveSeatsAnalysis"></p>
-            <a class="btn btn-lg btn-primary" href="./learn_tests.html">Read More</a>
-          </div>
-          <div class="col-md-6" id="visualExcessiveSeats"></div>
-        </div>
-      </div>
-    </div>    
-  </div>
-  <p id="p1" style="margin-left:50px;">&nbsp;<a href="#top"><span class="underline redtext">BACK TO TOP</span></a></p>
-  <hr/>
-  <div class="accordion-toggle1"> 
-    <div class="section">
-      <div class="section">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-1">            
-              <a href="#"><i class="fa fa-5x fa-fw fa-toggle-off"></i></a>
-            </div>
-            <!-- Efficiency Gap Display Sections  -->
-            <div class="col-md-5">
-              <h1>Efficiency Gap Simulation</h1>
-            </div>
-            <div class="col-mid-1" id="div1" style="width:10px;">
-            </div>
-            <div class="col-md-6" >
-            Given election results for a set of districts, usually statewide, the wasted votes for each party in each district are computed. All the votes for a losing candidate are wasted. Any votes in excess of those required to win are wasted. The Efficiency Gap is the difference in wasted votes as a percentage of the overall votes cast. Maptitude for Redistricting reports the Efficiency Gap of the first party with respect to the second. 
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div style="margin-left:50px;">
-      <div class="text1">
-          <p id="p1">&nbsp;<span class="underline redtext">READ MORE</span></p>
-      </div>
-      <div class="text1" style="display: none;">
-        <p id="p1">&nbsp;<span class="underline redtext"> LESS</span></p>
-      </div>
-    </div>
-  </div>
-  <div class="accordion-content default" style="display: none;">
-    <div class="section">
-      <div class="container">
-        <div class="row">
-          <div class = "col-md-6" id="visEfficiencyGap">            
-        </div>
-        <div class="col-md-6">
-            <h1 class="text-primary">Did your state make the standard?</h1>
-            <h2 id="efficiency-gap-pass-fail" class="text-danger"></h2>
-            <p id="efficiencyGapAnalysis"></p>
-            <a class="btn btn-primary" href="./Learn more_how tests work.html">Read More</a>
-          </div>
-        </div>
-      </div>
-    </div>
-</div>
-<p id="p1" style="margin-left:50px;">&nbsp;<a href="#top"><span class="underline redtext">BACK TO TOP</span></a></p>
 <hr />   
       <!-- Trigger/Open The Modal -->
             <button id="myBtn">Sources</button>

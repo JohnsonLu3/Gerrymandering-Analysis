@@ -19,18 +19,6 @@ public class SixRepsOrMoreMeasure implements Measure {
     }
 
     private int checkNumOfSuperDistricts(State state){
-
-        // Check the number of superdistricts plus the number of normal districts
-        // this should be less than the number of total representatives.
-        if((state.getSuperDistricts().size() + state.getDistricts().size()) < state.getDistricts().size()){
-            return -1;               // failed
-        }
-        // Check the number of non-super districts. If it is 0 then return a resultobject
-        // with the status as "failed" else continue
-        if(state.getDistricts().size() == 0){
-            return  -1;             // failed
-        }
-
         return 0;                   // continue
     }
 

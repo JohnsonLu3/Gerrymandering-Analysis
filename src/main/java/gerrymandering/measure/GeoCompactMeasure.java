@@ -1,34 +1,49 @@
 package gerrymandering.measure;
 
-import gerrymandering.model.District;
-import gerrymandering.model.MultiDistrictRegion;
-import gerrymandering.model.State;
-import gerrymandering.model.SuperDistrict;
+import com.vividsolutions.jts.geom.Polygon;
+import gerrymandering.common.CommonConstants;
+import gerrymandering.model.*;
+import gerrymandering.service.GeoRenderingService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.wololo.jts2geojson.GeoJSONReader;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by yisuo on 11/7/17.
  */
 public class GeoCompactMeasure implements Measure {
-    private List<SuperDistrict> findAllCombinations(List<District> selected, State state){
-        return null;
-    }
-
-    private Double calculateGeoCompactness(SuperDistrict s){
-        return 0.0;
-    }
-
-    private Boolean validateCompactness(Double compactness, List<SuperDistrict> allCombinations){
-        return false;
-    }
-
-    private Boolean containsASuperDistrict(State state){
-        return false;
-    }
-
+    @Autowired
+    GeoRenderingService geoRenderingService;
+    GeoJSONReader reader = new GeoJSONReader();
     @Override
     public MeasureResults runMeasure(MultiDistrictRegion region) {
-        return null;
+        GeoCompactResults results = new GeoCompactResults();
+        List<Boundary> boundaries = region.getBoundaries();
+        Polygon largest = boundaries.stream().map(b -> b.getShape()).max(new Comparator<Polygon>() {
+            @Override
+            public int compare(Polygon o1, Polygon o2) {
+                return geoRenderingService.getArea(o1) > geoRenderingService.getArea(o2) ? 1 : -1;
+            }
+        }).get();
+
+        Polygon cartesian = geoRenderingService.latLngToCartesian(largest);
+        Double g = polsbyPopper(cartesian);
+
+        results.setThreshold(CommonConstants.POLSBY_THRESHOLD);
+        results.setCompactness(g);
+
+        if(g < CommonConstants.POLSBY_THRESHOLD)
+            results.addTestResult(false);
+        else
+            results.addTestResult(true);
+        return results;
+    }
+
+    private Double polsbyPopper(Polygon shape){
+        Double area = shape.getArea();
+        Double perimeter = shape.getLength();
+        return 4 * Math.PI * area / Math.pow(perimeter, 2.0);
     }
 }

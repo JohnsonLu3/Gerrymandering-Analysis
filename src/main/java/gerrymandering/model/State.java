@@ -33,8 +33,6 @@ public class State extends MultiDistrictRegion implements Serializable {
                joinColumns = @JoinColumn(name = "StateId", referencedColumnName = "Id"),
 	           inverseJoinColumns = @JoinColumn(name = "BoundaryId", referencedColumnName = "Id"))
 	private List<Boundary> boundaries = new ArrayList<>();
-	@Transient
-	private List<SuperDistrict> superDistricts = new ArrayList<>();
 
 	public State() {
 		super();
@@ -199,18 +197,6 @@ public class State extends MultiDistrictRegion implements Serializable {
 	@Override
 	public List<Boundary> getBoundaries() {
 	    return boundaries;
-	}
-
-	public void addSuperDistrict(SuperDistrict s){
-		superDistricts.add(s);
-	}
-
-	public void addSuperDistricts(List<SuperDistrict> s){
-		superDistricts.addAll(s);
-	}
-
-	public List<SuperDistrict> getSuperDistricts(){
-		return superDistricts;
 	}
 
 	public Year getYear(){

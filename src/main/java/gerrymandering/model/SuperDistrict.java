@@ -4,15 +4,35 @@ import gerrymandering.common.CommonConstants;
 import gerrymandering.common.Party;
 import gerrymandering.common.PopulationGroup;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by yisuo on 11/7/17.
  */
-public class SuperDistrict extends MultiDistrictRegion {
-    private String stateName;
+@Entity
+@Table(name = "SuperDistricts")
+public class SuperDistrict extends MultiDistrictRegion implements Serializable {
+    @Id
+    @GeneratedValue
+    @Column(name = "Id")
+    private Integer Id;
+
+    @ManyToOne(targetEntity = CompleteWork.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "CompleteWorkId", referencedColumnName = "Id")
+    private CompleteWork savedWork;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @JoinTable(name = "BelongsTo",
+            joinColumns = @JoinColumn(name = "SuperDistrict_Id", referencedColumnName = "Id"),
+            inverseJoinColumns = @JoinColumn(name = "DistrictId", referencedColumnName = "Id"))
     private List<District> districts = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "SuperDistrictBoundaries",
+            joinColumns = @JoinColumn(name = "SuperDistrictId", referencedColumnName = "Id"),
+            inverseJoinColumns = @JoinColumn(name = "BoundaryId", referencedColumnName = "Id"))
     private List<Boundary> boundaries = new ArrayList<>();
 
     @Override
@@ -161,6 +181,18 @@ public class SuperDistrict extends MultiDistrictRegion {
     @Override
     public List<District> getDistricts() {
         return districts;
+    }
+
+    public CompleteWork getSavedWork() {
+        return savedWork;
+    }
+
+    public void setSavedWork(CompleteWork savedWork) {
+        this.savedWork = savedWork;
+    }
+
+    public void setDistricts(List<District> districts) {
+        this.districts = districts;
     }
 }
 
