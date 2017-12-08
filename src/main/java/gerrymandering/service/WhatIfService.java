@@ -30,7 +30,7 @@ public interface WhatIfService {
 
     public File downloadWork(State completedWork);
 
-    public List<District> selectDistricts(List<Feature> features, String stateName, Integer year);
+    public List<District> selectDistricts(FeatureCollection features, String stateName, Integer year);
 
     public CompleteWork exportCurrentWork(List<Feature> features, String stateName, Integer year);
 }

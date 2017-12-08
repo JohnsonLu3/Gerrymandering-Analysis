@@ -80,8 +80,9 @@ public class WhatIfServiceImpl implements WhatIfService {
 
     @Override
     @Transactional
-    public List<District> selectDistricts(List<Feature>features, String stateName, Integer year) {
-        Map<String, Object> properties = features.get(CommonConstants.FIRST_ELEMENT).getProperties();
+    public List<District> selectDistricts(FeatureCollection features, String stateName, Integer year) {
+        Map<String, Object> properties =
+                features.getFeatures()[0].getProperties();
         List<Integer> districtNos = (List<Integer>) properties.get("Districts");
         List<District> result =
                 districts.findByStateNameAndYearAndDistrictNoIn(stateName, year, districtNos);
