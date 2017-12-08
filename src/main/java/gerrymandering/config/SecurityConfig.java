@@ -22,7 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/resources/**", "/www/**").permitAll()
                 .antMatchers("/admin","/admin/**").hasRole("ADMIN")
                 .antMatchers("/editUsers","/editUsers/**").hasRole("ADMIN")
-                .antMatchers("/inviteAdmins","/inviteAdmins/**").hasRole("ADMIN");
+                .antMatchers("/inviteAdmins","/inviteAdmins/**").hasRole("ADMIN")
+                .antMatchers("/editSettings","/editSettings/**").hasAnyRole("ADMIN","ADVANCE");
 
         http
             .headers()
