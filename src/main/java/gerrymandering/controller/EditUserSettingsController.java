@@ -25,7 +25,7 @@ public class EditUserSettingsController {
     public ModelAndView showEditUsers(WebRequest request, Model model, Authentication authentication) {
 
         User user = userService.findByUsername(authentication.getName());
-        System.out.println(user.getPValue() + user.getEfficienctGap() + user.getCompactnessThreshold());
+        System.out.println(user.getPValue() + user.getEfficiencyGap() + user.getCompactnessThreshold());
         ModelAndView editSettings = new ModelAndView("editSettings");
         editSettings.addObject("user", user);
         return editSettings;
@@ -82,13 +82,13 @@ public class EditUserSettingsController {
             }
         }
 
-        Double userEfficiencyGap = userToUpdate.getEfficienctGap();
+        Double userEfficiencyGap = userToUpdate.getEfficiencyGap();
         if(userEfficiencyGap == null){
-            userToUpdate.setEfficienctGap(userEfficiencyGap);
+            userToUpdate.setEfficiencyGap(userEfficiencyGap);
             changesMade = true;
         }else {
             if (EfficiencyGap != -1.0 && EfficiencyGap != userEfficiencyGap) {
-                userToUpdate.setEfficienctGap(EfficiencyGap);
+                userToUpdate.setEfficiencyGap(EfficiencyGap);
                 changesMade = true;
             }
         }

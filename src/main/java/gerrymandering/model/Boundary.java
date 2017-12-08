@@ -16,6 +16,8 @@ public class Boundary {
     @Column(name = "Shape", columnDefinition = "Polygon")
     private Polygon shape;
 
+    public Boundary(){}
+
     public Boundary(Polygon shape){
         this.shape = shape;
     }

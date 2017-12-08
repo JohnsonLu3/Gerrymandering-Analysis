@@ -23,8 +23,8 @@ public class User {
         private Double compactnessThreshold;
         @Column(name = "pValue")
         private Double pValue;
-        @Column(name = "EfficienctGap")
-        private Double EfficienctGap;
+        @Column(name = "EfficiencyGap")
+        private Double EfficiencyGap;
 
         @Transient
         private String role;
@@ -105,11 +105,11 @@ public class User {
             this.pValue = pValue;
         }
 
-        public Double getEfficienctGap(){
-            return EfficienctGap;
+        public Double getEfficiencyGap(){
+            return EfficiencyGap;
         }
 
-        public void setEfficienctGap(Double EfficienctGap){
-            this.EfficienctGap = EfficienctGap;
+        public void setEfficiencyGap(Double EfficienctGap){
+            this.EfficiencyGap = EfficienctGap;
         }
 }

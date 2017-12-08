@@ -82,20 +82,21 @@ public class EfficiencyGapTest implements Measure {
     }
 
     private double getUserEffciencyGapThreshold(UserService userService){
-
         double threshold = -1.0;
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         User user = userService.findByUsername(username);
-        if(user.getEfficienctGap() != null){
-            threshold = user.getEfficienctGap();
-        }
 
+        if(user == null)
+            return threshold;
+        else{
+            if(user.getEfficiencyGap() != null){
+                threshold = user.getEfficiencyGap();
+            }
+        }
         return threshold;
     }
-
-
 }
 
 

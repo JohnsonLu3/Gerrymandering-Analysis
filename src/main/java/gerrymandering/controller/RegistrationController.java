@@ -75,7 +75,6 @@ public class RegistrationController {
                                         @RequestParam String username,
                                         @RequestParam String password,
                                         @RequestParam String passwordConfirm) {
-
         System.out.println(username);
         System.out.println(password);
         System.out.println(passwordConfirm);
@@ -132,7 +131,6 @@ public class RegistrationController {
             emailService.sendEmail(emailToSend);
 
         }catch (MailException ex){
-            System.err.println(ex.getMessage());
             return false;
         }
 

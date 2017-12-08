@@ -27,11 +27,13 @@ public class WhatIfServiceImpl implements WhatIfService {
     DistrictRepository districts;
     @Autowired
     CompleteWorkRepository completeWorks;
+    @Autowired
+    UserService userService;
 
     @Override
     public List<MeasureResults> runHR3057Measures(SuperDistrict superDistrict, Integer year) {
         List<Measure> measures = new ArrayList<>();
-        measures.add(new GeoCompactMeasure());
+        measures.add(new GeoCompactMeasure(userService));
 
         return measures
                 .stream()

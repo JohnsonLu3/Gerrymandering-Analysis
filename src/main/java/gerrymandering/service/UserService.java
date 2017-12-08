@@ -35,7 +35,6 @@ public class UserService {
         return userRepository.findByActivationKey(activationKey);
     }
 
-
     public void deleteUserById(long id){
         userRepository.delete(id);
     }
@@ -43,5 +42,4 @@ public class UserService {
     public void saveUser(User user) {
         userRepository.save(user);
     }
-
 }

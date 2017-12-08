@@ -75,11 +75,13 @@ public class LopsidedTest implements Measure {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 		User user = userService.findByUsername(auth.getName());
-		if(user.getPValue() != null){
-			threshold = user.getPValue();
+		if(user == null)
+			return threshold;
+		else{
+			if(user.getPValue() != null){
+				threshold = user.getPValue();
+			}
 		}
-
 		return threshold;
 	}
-
 }
