@@ -108,6 +108,14 @@
                 <input id="randomGenerate" type="radio" onclick="initRandomGeneratedSuperDistrict()" value="randomGenerate"> Randomly Generate Superdistrict Example
               </form>
             </div>
+            <div>
+              <a id = "createButton" class="btn btn-primary" style="; margin-bottom:5px;margin-right:50px">Create Superdistrict</a>
+              <a id = "resetButton" class="btn btn-primary" style="margin-bottom:5px;margin-right:40px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reset &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     </a>
+              <a  id = "undoButton" class="btn btn-primary" style="margin-bottom:5px;margin-right:10px">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Undo&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</a>
+              <a id = "saveButton" class="btn btn-primary disabled" style="margin-right:50px">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Save &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</a>
+              <a id = "cancelButton" class="btn btn-primary" style="margin-right:40px">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Cancel &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</a>
+              <a href = "https://github.com/ysuo85/Gerrymandering-Analysis" id = "sourceButton" class="btn btn-primary">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Source Code &nbsp; &nbsp; &nbsp; &nbsp;</a>
+            </div>
           </div>
           <div class="col-md-6">
             <header class="main-header" role="banner"></header>
@@ -171,13 +179,7 @@
               </li>
             </ul>
             <p></p>
-            <a id = "createButton" class="btn btn-primary" style="; margin-bottom:5px;margin-right:50px">Create Superdistrict</a>
-            <a id = "resetButton" class="btn btn-primary" style="margin-bottom:5px;margin-right:40px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reset &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     </a>
-            <a  id = "undoButton" class="btn btn-primary" style="margin-bottom:5px;margin-right:10px">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Undo&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</a>
-            <a id = "saveButton" class="btn btn-primary disabled" style="margin-right:50px">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Save &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</a>
-            <a id = "cancelButton" class="btn btn-primary" style="margin-right:40px">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Cancel &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</a>
-            <a href = "https://github.com/ysuo85/Gerrymandering-Analysis" id = "sourceButton" class="btn btn-primary">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Source Code &nbsp; &nbsp; &nbsp; &nbsp;</a>
-          </div>
+            </div>
          
           
         </div>

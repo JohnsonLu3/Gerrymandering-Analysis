@@ -53,6 +53,8 @@ public class LopsidedTest implements Measure {
 		LopsidedResults results = new LopsidedResults();
 
 		Map<Party, List<Double>> percents = votesPercentages(state);
+		if(percents.get(Party.Democrat).size() < 2 || percents.get(Party.Republican).size() < 2)
+			return results;
 		Boolean passOrFail = null;
 		Double pvalue = null;
 		if(state.getElectedParty() == Party.Democrat){

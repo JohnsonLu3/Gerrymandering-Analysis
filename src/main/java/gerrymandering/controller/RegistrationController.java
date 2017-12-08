@@ -119,13 +119,12 @@ public class RegistrationController {
 
         try{
             String subject = "Gerrymandering Analysis Registration Confirmation";
-            String emailBody = "Hello, You have registered on Gerrymandering Analysis. Please click this link to activate your account ";
-            String link = request.getScheme() + "://" + request.getServerName() + ":8080/registrationConfirmed?key=" + user.getActivationKey();
+            String emailBody = "Hello, You have registered on Gerrymandering Analysis. Please wait for an Admin to approve your account.";
 
             SimpleMailMessage emailToSend = new SimpleMailMessage();
             emailToSend.setTo(user.getUsername());
             emailToSend.setSubject(subject);
-            emailToSend.setText(emailBody + link);
+            emailToSend.setText(emailBody);
             emailToSend.setFrom("cse308sbu@gmail.com");
 
             emailService.sendEmail(emailToSend);

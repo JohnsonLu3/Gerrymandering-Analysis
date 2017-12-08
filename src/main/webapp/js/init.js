@@ -284,7 +284,8 @@ function enableDistrictSelect(selected) {
                 var voteSums = {
                     votes: feature.getProperty('Votes'),
                     totalVotes: feature.getProperty('TotalVotes'),
-                    percentVotes: feature.getProperty('PercentVotes')
+                    percentVotes: feature.getProperty('PercentVotes'),
+                    districtNo: feature.getProperty('DistrictNo')
                 };
                 renderDistrict(center, feature);
                 displayVoteSums(voteSums);
@@ -487,12 +488,24 @@ function displayStateWithDescription(stateName) {
 }
 
 function displayVoteSums(voteSums) {
-    document.getElementById("totalVotes").innerHTML = "Democratic Votes: " + voteSums.votes["Democrat"]
-        + "  |   Republican Votes: " + voteSums.votes["Republican"];
+    if(voteSums.districtNo === undefined){
+        document.getElementById("totalVotes").innerHTML =
+            "Democratic Votes: " + voteSums.votes["Democrat"]
+            + "  |   Republican Votes: " + voteSums.votes["Republican"];
+    }
+    else{
+        document.getElementById("totalVotes").innerHTML = "<legend>District " + voteSums.districtNo +
+            "</legend>Democratic Votes: " + voteSums.votes["Democrat"]
+            + "  |   Republican Votes: " + voteSums.votes["Republican"];
+    }
 }
 
 //Start of Lopsided Wins Methods
 function displayLopsidedTestResults(data, svg1) {
+    if(data.measureResults[0].testResult == null){
+        displayLopsidedWinsResultDescription(data);
+        return;
+    }
     calculateLopsidedWinsMean(data);
     findLopsidedWinsStateWinner(data);
     assignLopsidedWinsScales(data);
@@ -667,14 +680,22 @@ function indicateLopsidedWinsDistrictWinners(svg1) {
 }
 function displayLopsidedWinsResultDescription(data) {
     passfail = document.getElementById('lopsided-pass-fail');
+    var isSkipped = false;
+    if(data.measureResults[0].testResult == false){
+        passfail.innerHTML = "FAIL";
+        passfail.className = "text-danger";
+    }
     if(data.measureResults[0].testResult == true){
         passfail.innerHTML = "PASS";
         passfail.className = "text-success";
     }
     else{
-        passfail.innerHTML = "FAIL";
-        passfail.className = "text-danger";
+        passfail.innerHTML = "SKIPPED";
+        passfail.className = "";
+        isSkipped = true;
     }
+
+    if(isSkipped) return;
     //displays the test result description based on the overall winner of the state as well as the chosen state and year combination
     if (democratWonState == 1) {
         document.getElementById("lopsidedWinsAnalysis").innerHTML = "In " + selectedState.name + "'s " + selectedYear  + " election, Republicans won their districts with an average of " + republicanVotesMean + " votes, and Democrats won their districts with an average of " + democratVotesMean + " votes. The t-test performed compares the win margins of the two parties. In states that are gerrymandered, the party that benefits from the gerrymander will win many seats by small margins, while the opposing party wins a few seats by overwhelming margins. The p-value calculated for this simulation was "+data.measureResults[0].pvalue+" and the legislative threshhold for this particular test was "+data.measureResults[0].threshold+". The difference between the two parties’ win margins indicates " + selectedState.name  + " may " + (data.measureResults[0].testResult ? "not " : "") + "be gerrymandered to gain an advantage for Democrats. <br><br>";
@@ -1147,6 +1168,10 @@ function displayExcessiveSeatsResultDescription(data){
 }
 //Start of Efficiency Gap Methods
 function displayEfficiencyGapTestResults(data, svg2) {
+    if(data.measureResults[1].testResult == null){
+        displayEfficiencyGapResultDescription(data);
+        return;
+    }
     findEfficiencyGapStateWinner(data);
     setDataSetForEfficiencyGapChart();
     setEfficiencyGapChartDomains();
@@ -1305,6 +1330,10 @@ function initEfficiencyGapBarChart(svg2){
     }
     function displayEfficiencyGapResultDescription(data){
     	passfail = document.getElementById('efficiency-gap-pass-fail');
+    	if(data.measureResults[1].testResult == null){
+    	    passfail.innerHTML = 'SKIPPED';
+    	    passfail.className = "";
+        }
     	if(data.measureResults[1].testResult == true){
         	passfail.innerHTML = "PASS";
         	passfail.className = "text-success";

@@ -135,7 +135,6 @@
                 statewide performances. It causes partisan bias to diverge from the efficiency
                 gap, which is computed using the observed election results. The the parties’
                 wasted votes in the actual election are crucial input for this.&nbsp;</p>
-              <a class="btn btn-primary" href="./learn_home.html">Read More</a>
             </div>
             <div class="col-md-4">
               <h3 class="text-center text-primary">Three Tests of Gerrymandering</h3>
@@ -149,7 +148,6 @@
                 wins for the victim party.
                 <br>The remaining members of the victim party are then "cracked"so that they
                 comprise a large but minority block of voters (typically 40 - 45%).&nbsp;</p>
-              <a class="btn btn-primary" href="./learn_tests.html">Read More</a>
             </div>
             <div class="col-md-4">
               <h3 class="text-center text-primary">Legal Efforts</h3>
@@ -164,7 +162,6 @@
                 the outcome could shape American politics for decades to come.
                 <br><br/>
               </p>
-              <a class="btn btn-primary" href="./learn_legal.html">Read More</a>
             </div>
           </div>
         </div>
