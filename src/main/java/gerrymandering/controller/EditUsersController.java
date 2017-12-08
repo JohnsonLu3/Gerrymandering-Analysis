@@ -61,21 +61,23 @@ public class EditUsersController {
             User userToUpdate = userService.findById(userId);
 
             Authorities auth = authoritiesService.findByUsername(userToUpdate.getUsername());
-            if(!role.equals("ROLE_ADMIN")) {
-                if (auth != null && !role.equals(auth.getRole())) {
-                    if(role.equals("ROLE_ADMIN") || role.equals("ROLE_ADVANCE")) {
-                        auth.setRole(role);
-                        authoritiesService.saveAuthorities(auth);
+            if(userToUpdate != null && auth != null ) {
+                if (!auth.getRole().equals("ROLE_ADMIN")) {
+                    if (!role.equals(auth.getRole())) {
+                        if (role.equals("ROLE_ADMIN") || role.equals("ROLE_ADVANCE")) {
+                            auth.setRole(role);
+                            authoritiesService.saveAuthorities(auth);
+                        }
                     }
-                }
-                if(userToUpdate.getEnabled() != enabled){
-                    userToUpdate.setEnabled(enabled);
-                    userService.saveUser(userToUpdate);
-                }
+                    if (userToUpdate.getEnabled() != enabled) {
+                        userToUpdate.setEnabled(enabled);
+                        userService.saveUser(userToUpdate);
+                    }
 
-                if (!username.equals("")) {
-                    userToUpdate.setUsername(username);
-                    userService.saveUser(userToUpdate);
+                    if (!username.equals("")) {
+                        userToUpdate.setUsername(username);
+                        userService.saveUser(userToUpdate);
+                    }
                 }
             }
         }

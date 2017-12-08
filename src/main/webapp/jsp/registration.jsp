@@ -7,8 +7,8 @@
         <h1>Register Account</h1>
         <div class="col-md-12">
         <form action="/registration" method="post">
-            <label>Username:</label>
-            <input type="text" name="username" required><br><br>
+            <label>Email:</label>
+            <input type="email" name="username" required><br><br>
             <label>Password:</label>
             <input type="password" name="password"><br><br>
             <label>Confirm Password:</label>

@@ -22,8 +22,8 @@ public class SixRepsOrMoreMeasure implements StateMeasure {
         return 0;                   // continue
     }
 
-    private int checkNumOfSuperDistricts(MultiDistrictRegion region){
-        if(region != null){
+    private int checkNumOfSuperDistricts(CompleteWork completeWork){
+        if(completeWork != null){
 
         }else{
             return -1;              // failed
@@ -45,13 +45,21 @@ public class SixRepsOrMoreMeasure implements StateMeasure {
     @Override
     public MeasureResults runStateMeasure(CompleteWork completeWork) {
 
+        SixRepsOrMoreResults results = new SixRepsOrMoreResults();
+
         if(checkNumDistricts(completeWork.getState()) == -1){
             // SKIP TEST
+            return null;
         }else{
             // PERFORM TEST
+            if(checkNumOfSuperDistricts(completeWork) == 0){
+                //checkNumOfRepsPerSuperDistrict();
+            }else{
+                results.addTestResult(false);
+            }
         }
 
 
-        return null;
+        return results;
     }
 }

@@ -27,10 +27,15 @@ public class EditUserSettingsController {
         User user = userService.findByUsername(authentication.getName());
 
         ModelAndView editSettings = new ModelAndView("editSettings");
+
+        String pValue = checkIfNotSet(user.getPValue());
+        String compactness = checkIfNotSet(user.getCompactnessThreshold());
+        String efficiencyGap = checkIfNotSet(user.getEfficiencyGap());
+
         editSettings.addObject("user", user);
-        editSettings.addObject("pValue", user.getPValue());
-        editSettings.addObject("compactness", user.getCompactnessThreshold());
-        editSettings.addObject("efficiencyGap",user.getEfficiencyGap());
+        editSettings.addObject("pValue", pValue);
+        editSettings.addObject("compactness", compactness);
+        editSettings.addObject("efficiencyGap",efficiencyGap);
         return editSettings;
     }
 
@@ -111,5 +116,13 @@ public class EditUserSettingsController {
         }
 
         return testValue;
+    }
+
+    private String checkIfNotSet(Double value){
+        if(value == null){
+            return "Not Set";
+        }else{
+            return value.toString();
+        }
     }
 }

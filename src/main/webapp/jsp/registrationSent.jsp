@@ -5,7 +5,7 @@
 </head>
 <body>
 <h1>Register Received</h1>
-<form action="/" method="post" >
+<form action="/" method="get" >
     <p> Your registration has been received, please check your email for a confirmation link.</p>
     <input type="submit" value="Return to Home Page">
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
