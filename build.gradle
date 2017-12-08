@@ -12,8 +12,12 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
+springBoot {
+	executable = true
+}
+
 jar {
-	baseName = 'gs-serving-web-content'
+	baseName = 'gerrymander-measure'
 	version =  '0.1.0'
 }
 
