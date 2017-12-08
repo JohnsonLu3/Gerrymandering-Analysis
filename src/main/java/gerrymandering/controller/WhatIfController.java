@@ -1,5 +1,6 @@
 package gerrymandering.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gerrymandering.api.ApiResponse;
 import gerrymandering.model.District;
 import gerrymandering.model.GeoJson;
@@ -8,11 +9,16 @@ import gerrymandering.model.SuperDistrict;
 import gerrymandering.service.GeoRenderingService;
 import gerrymandering.service.WhatIfService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
+import org.wololo.geojson.GeoJSONFactory;
+import org.wololo.jts2geojson.GeoJSONReader;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -24,12 +30,21 @@ public class WhatIfController {
     WhatIfService whatIfService;
     @Autowired
     GeoRenderingService geoRenderingService;
-    @RequestMapping(value = "/superdistrict/validate", method = RequestMethod.POST)
+
+    GeoJSONReader reader = new GeoJSONReader();
+
+    @RequestMapping(value = "/whatif", method = RequestMethod.GET)
+    public String whatif(){
+        return "whatif";
+    }
+
+    @RequestMapping(value = "/superdistrict/validate", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ApiResponse validateSuperdistrict(
             @RequestParam("state") String state,
             @RequestParam("year") Integer year,
-            @RequestBody FeatureCollection superdistrict)
+            @RequestBody Feature superdistrict)
     {
         SuperDistrict sd = geoRenderingService.buildSuperdistrict(superdistrict);
         List<District> districts = whatIfService.selectDistricts(superdistrict, state, year);

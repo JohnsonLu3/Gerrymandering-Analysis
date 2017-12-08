@@ -1,4 +1,8 @@
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html><head>
+  <meta name="_csrf" content="${_csrf.token}"/>
+  <!-- default header name is X-CSRF-TOKEN -->
+  <meta name="_csrf_header" content="${_csrf.headerName}"/>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -26,7 +30,15 @@
     </script>
     <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="/resources/style/whatif.css" rel="stylesheet" type="text/css">
-    
+  <script>
+      $(function () {
+          var token = $("meta[name='_csrf']").attr("content");
+          var header = $("meta[name='_csrf_header']").attr("content");
+          $(document).ajaxSend(function(e, xhr, options) {
+              xhr.setRequestHeader(header, token);
+          });
+      });
+  </script>
   </head>
   <body>
   <div class="section">
@@ -40,33 +52,33 @@
           <div class="col-md-12">
             <ul class="nav nav-tabs">
               <li class="">
-                <a href="./index.html">Home</a>
+                <a href="/www/index.html">Home</a>
               </li>
               <li>
-                <a href="./analyze.html">Analyze a State</a>
+                <a href="/www/analyze.html">Analyze a State</a>
               </li>
               
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Learn More&nbsp;<i class="fa fa-caret-down"></i></a>
                 <ul class="dropdown-menu" role="menu">
                   <li>
-                    <a href="./learn_home.html">Home Page</a>
+                    <a href="/www/learn_home.html">Home Page</a>
                   </li>
                   <li class="divider"></li>
                   <li>
-                    <a href="./learn_tests.html">How Tests Work</a>
+                    <a href="/www/learn_tests.html">How Tests Work</a>
                   </li>
                   <li class="divider"></li>
                   <li>
-                    <a href="./learn_legal.html">Legal Efforts </a>
+                    <a href="/www/learn_legal.html">Legal Efforts </a>
                   </li>
                 </ul>
               </li>
               <li>
-                <a href="./contact.html">Contact</a>
+                <a href="/www/contact.html">Contact</a>
               </li>
               <li class="active">
-                <a href="./whatif.html"><i class="fa fa-fw fa-angle-double-right"></i>What If?</a>
+                <a href="./whatif.jsp"><i class="fa fa-fw fa-angle-double-right"></i>What If?</a>
               </li>
             </ul>
             <div style="height:35px;"></div>
@@ -114,51 +126,50 @@
               &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
               &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
               &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;H.R. 3057</h4>
-            <p class="text-danger" contenteditable="false">-All districts shall be contiguous unless it is necessary to include an
-              area surrounded by &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-              &nbsp;body of water
-              <br>&nbsp;-No district in the state elects exactly 3 representatives and Presidential
-              nominee received &nbsp; &nbsp; &nbsp; &nbsp; at least 75% of votes in 2
-              of the 3 most recent elections
-              <br>-No district in the state elects exactly 4 representatives and Presidential
-              nominee received &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;at least 80%
-              of votes in 2 of the 3 most recent elections
-              <br>&nbsp;-No district in the state elects exactly 5 representatives and Presidential
-              nominee received &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;at least 83% of votes
-              in 2 of the 3 most recent elections
-              <br>&nbsp;-The state shall minimize the number of districts electing 4 representatives
-              <br>-The state shall maximize the number of districts electing 5 representatives
-              <br>&nbsp;-The district boundaries shall minimize division of any community
-              of interest, municipality, &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;county,
-              or neighborhood, with the exception of relationships with political parties,
-              &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-              incumbent officeholders, or political candidates
-              <br>-The districts shall be geographically compact, meaning no nearby population
-              must be &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-              &nbsp; &nbsp; bypassed for more distant population
-              <br>&nbsp;-The boundaries of districts shall follow visible geographic features
-              <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-              &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-              &nbsp; &nbsp;State entitled to 6 or more representatives&nbsp;
-              <br>&nbsp;-It shall establish a number of districts less than the number of
-              representatives entitled
-              <br>-It shall not elect a representative at large (to represent the whole
-              state)
-              <br>-It shall ensure that districts shall each have equal population per representative
-              as nearly &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; as practical
-              <br>&nbsp;-It shall ensure that the number of representatives to be elected
-              per district shall be no &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-              &nbsp; &nbsp; &nbsp;fewer than 3, and no greater than 5
-              <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-              &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-              &nbsp; &nbsp; State entitled to 5 or fewer representatives
-              <br>-All representatives shall be elected at-large, thus eliminating the need
-              of drawing &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-              &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Congressional districts
-              within such state
-              <br>
-              <br>
-            </p>
+
+            <ul>
+              <li id="ContiguousTest" class="text-success">All districts shall be contiguous unless it is necessary to include an
+              area surrounded by body of water
+              </li>
+              <li id="RepsVsVotes">
+                <br>No district in the state elects exactly 3 representatives and Presidential
+                nominee received at least 75% of votes in 2 of the 3 most recent elections
+                <br>No district in the state elects exactly 4 representatives and Presidential
+                nominee received at least 80% of votes in 2 of the 3 most recent elections
+                <br>No district in the state elects exactly 5 representatives and Presidential
+                nominee received at least 83% of votes in 2 of the 3 most recent elections
+              </li>
+              <li id="MinMax">
+                <br>The state shall minimize the number of districts electing 4 representatives
+                <br>The state shall maximize the number of districts electing 5 representatives
+              </li>
+              <li>
+                <br>The district boundaries shall minimize division of any community
+                of interest, municipality, county, or neighborhood, with the exception of relationships with political parties incumbent
+                officeholders, or political candidates
+              </li>
+              <li id="GeoCompactness">
+                <br>The districts shall be geographically compact, meaning no nearby population
+                must be bypassed for more distant population
+                <br>The boundaries of districts shall follow visible geographic features
+              </li>
+
+              <li id="SixRepsOrMore">
+                <br>State entitled to 6 or more representatives
+                <br>It shall establish a number of districts less than the number representatives entitled
+                <br>It shall not elect a representative at large (to represent the whole state)
+                <br>It shall ensure that districts shall each have equal population per representative
+                as nearly as practical
+                <br>It shall ensure that the number of representatives to be elected
+                per district shall be no fewer than 3, and no greater than 5
+              </li>
+              
+              <li id="StateAtLarge">
+                State entitled to 5 or fewer representatives
+                <br>All representatives shall be elected at-large, thus eliminating the need
+                of drawing Congressional districts within such state
+              </li>
+            </ul>
             <p></p>
             <a id = "createButton" class="btn btn-primary" style="; margin-bottom:5px;margin-right:50px">Create Superdistrict</a>
             <a id = "resetButton" class="btn btn-primary" style="margin-bottom:5px;margin-right:40px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reset &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     </a>
@@ -192,11 +203,11 @@
         <a class="right carousel-control" href="#carousel-example" data-slide="next"><i class="icon-next  fa fa-angle-right"></i></a>
         <img src="/resources/img/efficiency_gap_ideal.jpg" alt="Forest" style="width:275px">
         <a target="_blank" href="/resources/img/consistent_advantage.png">
-  		    <img src="/resources/img/consistent_advantage.png" alt="Forest" style="width:275px">
-		    </a>
+          <img src="/resources/img/consistent_advantage.png" alt="Forest" style="width:275px">
+        </a>
         <a target="_blank" href="/resources/img/lopsided3.png">
-  		    <img src="/resources/img/lopsided3.png" alt="Forest" style="width:275px">
-		    </a>
+          <img src="/resources/img/lopsided3.png" alt="Forest" style="width:275px">
+        </a>
       </div>
       
   </div>

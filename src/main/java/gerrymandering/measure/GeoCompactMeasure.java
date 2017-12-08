@@ -17,13 +17,13 @@ import java.util.List;
  * Created by yisuo on 11/7/17.
  */
 public class GeoCompactMeasure implements Measure {
-    @Autowired
     GeoRenderingService geoRenderingService;
     GeoJSONReader reader = new GeoJSONReader();
     UserService userService;
 
-    public GeoCompactMeasure(UserService userSerivce){
+    public GeoCompactMeasure(UserService userSerivce, GeoRenderingService geoRenderingService){
         this.userService = userSerivce;
+        this.geoRenderingService = geoRenderingService;
     }
 
     @Override

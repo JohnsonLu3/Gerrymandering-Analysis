@@ -7,8 +7,6 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import gerrymandering.common.CommonConstants;
 import gerrymandering.model.*;
-import gerrymandering.repository.DistrictRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.wololo.geojson.*;
 import org.wololo.jts2geojson.GeoJSONReader;
@@ -27,11 +25,9 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
     GeometryFactory factory = new GeometryFactory();
 
     @Override
-    public SuperDistrict buildSuperdistrict(FeatureCollection fc){
+    public SuperDistrict buildSuperdistrict(Feature fc){
         SuperDistrict sd = new SuperDistrict();
-        List<Feature> features = Arrays.asList(fc.getFeatures());
-
-        Geometry shape = features.stream().findFirst().map(feature -> reader.read(feature)).get();
+        Geometry shape = reader.read(fc.getGeometry());
         List<Polygon> polygons = new ArrayList<>();
         if(shape.getGeometryType().equals("Polygon"))
             polygons.add((Polygon)shape);

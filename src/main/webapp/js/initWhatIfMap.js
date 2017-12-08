@@ -28,11 +28,11 @@ var selectedState;
 var selectedYear;
 
 function initializeMap() { 
-	map = new google.maps.Map(document.getElementById('map'), {
-		center: setting.center,
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: setting.center,
         zoom: setting.countryZoom,
-		mapTypeId: 'roadmap'
-	});
+        mapTypeId: 'roadmap'
+    });
 
     $.getJSON('/loadMap?year=' + selectedYear, function(data){
         if(data.success === true) {
@@ -64,27 +64,27 @@ function initializeMap() {
 }
 
 function initSearchbox(){
-	// Create the search box and link it to the UI element.
-	var input = document.getElementById('pac-input');
-	searchBox = new google.maps.places.SearchBox(input);
-	/*
-	searchGeocoder = new google.maps.Geocoder();
-	searchBox.addListener('places_changed', function() {
-		searchStateByZipCode(searchGeocoder,map);
-	});	
-	*/
-	map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);	
+    // Create the search box and link it to the UI element.
+    var input = document.getElementById('pac-input');
+    searchBox = new google.maps.places.SearchBox(input);
+    /*
+    searchGeocoder = new google.maps.Geocoder();
+    searchBox.addListener('places_changed', function() {
+        searchStateByZipCode(searchGeocoder,map);
+    }); 
+    */
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input); 
 
-	addBoundsChangedListener(map, searchBox);
-	addPlacesChangedListener(map, searchBox);
-	
-	// WHat is this?
-	/*function changeMap(city){
-		var c = coords[city].split(',');
-		map.setCenter(new google.maps.LatLng(c[0],c[1]));
-	}	*/
-	
-	
+    addBoundsChangedListener(map, searchBox);
+    addPlacesChangedListener(map, searchBox);
+    
+    // WHat is this?
+    /*function changeMap(city){
+        var c = coords[city].split(',');
+        map.setCenter(new google.maps.LatLng(c[0],c[1]));
+    }   */
+    
+    
 }
 
 /* functions for all respective handlers*/

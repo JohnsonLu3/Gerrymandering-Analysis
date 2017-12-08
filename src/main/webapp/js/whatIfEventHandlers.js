@@ -318,7 +318,9 @@ function createSuperDistrictHandler(map, undo){
                     isSelected(feature.properties.DistrictNo, currentSuperdistrict)
                 );
         var combined = combineDistricts(selected);
-        
+        labelSuperDistrict(combined, currentSuperdistrict);
+        validateSuperdistrict(combined);
+
         features = map.data.addGeoJson(combined);
         features[0].setProperty("isSuperDistrict", true);
         if(!undo)
@@ -326,7 +328,6 @@ function createSuperDistrictHandler(map, undo){
         map.data.overrideStyle(features[0],
             {fillColor: previousColor, strokeColor: 'black', zIndex: setting.superDistrictZoom, fillOpacity: 1.0});
         features[0].setProperty('fillColor', previousColor);
-        labelSuperDistrict(features[0], currentSuperdistrict);
         startingNewSuperDistrict = true;
         if(!undo)
             clickHistory.push({type: 'super', feature: features[0]});  
@@ -335,6 +336,25 @@ function createSuperDistrictHandler(map, undo){
     $('#resetButton').attr('disabled', 'disabled');
 }
 
+function validateSuperdistrict(superdistrict){
+    $.ajax({
+        url: "/superdistrict/validate?state=" + selectedState.name + "&year=" + selectedYear,
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(superdistrict),
+        dataType: "json",
+        success: function(result){
+            result.response.forEach(testResult => {
+                var type = testResult.testPerformed;
+                var result = testResult.testResult;
+                $('#' + type).attr("class", result ? "text-success" : "text-danger");
+            });
+        },
+        error: function(err){
+            console.log(err);
+        }
+    });
+}
 
 function showDistrictHandler(map, feature, undo){
     console.log("In showDistrictHandler function");
@@ -359,9 +379,9 @@ function showDistrictHandler(map, feature, undo){
     $('#resetButton').removeAttr('disabled');
 }
 
-function labelSuperDistrict(feature, districts){
+function labelSuperDistrict(geojson, districts){
     var districtNos = districts.map(d => {return d.getProperty('DistrictNo');});
-    feature.setProperty("Districts", districtNos);
+    geojson.properties.Districts = districtNos;
 }
 
 function isInListOfSuperDistricts(districtNo){

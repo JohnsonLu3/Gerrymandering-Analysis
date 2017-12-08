@@ -14,5 +14,5 @@ public class CommonConstants {
     public static Double EARTH_RADIUS_MI = 3959.00;
     public static Double FULL_CIRCLE = 360.00;
     public static Double EARTH_DEGREE_LENGTH = EARTH_RADIUS_MI * 2 * Math.PI / FULL_CIRCLE;
-    public static Double POLSBY_THRESHOLD = 0.5;
+    public static Double POLSBY_THRESHOLD = 0.2;
 }

@@ -2,6 +2,7 @@ package gerrymandering.service;
 
 import com.vividsolutions.jts.geom.Polygon;
 import gerrymandering.model.*;
+import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public interface GeoRenderingService {
 
     public Polygon latLngToCartesian(Polygon polygon);
 
-    public SuperDistrict buildSuperdistrict(FeatureCollection fc);
+    public SuperDistrict buildSuperdistrict(Feature fc);
 
     public List<SuperDistrict> buildSuperdistricts(FeatureCollection fc);
 }

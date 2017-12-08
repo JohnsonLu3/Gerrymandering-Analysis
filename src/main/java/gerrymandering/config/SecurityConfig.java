@@ -19,7 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests()
                 .antMatchers("/www/admin.html").hasRole("ADMIN")
-                .antMatchers("/resources/**", "/www/**").permitAll()
+                .antMatchers("/resources/**", "/www/**", "/superdistrict/**").permitAll()
                 .antMatchers("/admin","/admin/**").hasRole("ADMIN")
                 .antMatchers("/editUsers","/editUsers/**").hasRole("ADMIN")
                 .antMatchers("/inviteAdmins","/inviteAdmins/**").hasRole("ADMIN");

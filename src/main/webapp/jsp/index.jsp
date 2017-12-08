@@ -76,7 +76,7 @@
                       <a href="www/contact.html">Contact</a>
                     </li>
                     <li>
-                      <a href="www/whatif.html">What If?</a>
+                      <a href="/whatif">What If?</a>
                     </li>
                   </ul>
                   <div style="height:35px;"></div>

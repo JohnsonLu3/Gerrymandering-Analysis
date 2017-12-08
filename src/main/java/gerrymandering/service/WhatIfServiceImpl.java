@@ -1,6 +1,5 @@
 package gerrymandering.service;
 
-import gerrymandering.common.CommonConstants;
 import gerrymandering.measure.GeoCompactMeasure;
 import gerrymandering.measure.Measure;
 import gerrymandering.measure.MeasureResults;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wololo.geojson.Feature;
-import org.wololo.geojson.FeatureCollection;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,11 +29,13 @@ public class WhatIfServiceImpl implements WhatIfService {
     CompleteWorkRepository completeWorks;
     @Autowired
     UserService userService;
+    @Autowired
+    GeoRenderingService geoRenderingService;
 
     @Override
     public List<MeasureResults> runHR3057Measures(SuperDistrict superDistrict, Integer year) {
         List<Measure> measures = new ArrayList<>();
-        measures.add(new GeoCompactMeasure(userService));
+        measures.add(new GeoCompactMeasure(userService, geoRenderingService));
 
         return measures
                 .stream()
@@ -80,9 +80,8 @@ public class WhatIfServiceImpl implements WhatIfService {
 
     @Override
     @Transactional
-    public List<District> selectDistricts(FeatureCollection features, String stateName, Integer year) {
-        Map<String, Object> properties =
-                features.getFeatures()[0].getProperties();
+    public List<District> selectDistricts(Feature features, String stateName, Integer year) {
+        Map<String, Object> properties = features.getProperties();
         List<Integer> districtNos = (List<Integer>) properties.get("Districts");
         List<District> result =
                 districts.findByStateNameAndYearAndDistrictNoIn(stateName, year, districtNos);

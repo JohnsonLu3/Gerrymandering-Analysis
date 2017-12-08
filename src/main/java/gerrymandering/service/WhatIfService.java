@@ -6,7 +6,6 @@ import gerrymandering.model.District;
 import gerrymandering.model.State;
 import gerrymandering.model.SuperDistrict;
 import org.wololo.geojson.Feature;
-import org.wololo.geojson.FeatureCollection;
 
 import java.io.File;
 import java.util.Collection;
@@ -30,7 +29,7 @@ public interface WhatIfService {
 
     public File downloadWork(State completedWork);
 
-    public List<District> selectDistricts(FeatureCollection features, String stateName, Integer year);
+    public List<District> selectDistricts(Feature features, String stateName, Integer year);
 
     public CompleteWork exportCurrentWork(List<Feature> features, String stateName, Integer year);
 }
