@@ -4,8 +4,11 @@ import com.sun.prism.shader.Solid_TextureYV12_AlphaTest_Loader;
 import gerrymandering.model.Authorities;
 import gerrymandering.model.User;
 import gerrymandering.service.AuthoritiesService;
+import gerrymandering.service.EmailServiceImpl;
 import gerrymandering.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +31,11 @@ public class EditUsersController {
     @Autowired
     private AuthoritiesService authoritiesService;
 
+    @Autowired
+    private EmailServiceImpl emailService;
+
     @RequestMapping(value="/editUsers", method = RequestMethod.GET)
-    public ModelAndView showEditUsers(WebRequest request, Model model) {
+    public ModelAndView showEditUsers(HttpServletRequest request, Model model) {
         Iterable<User> iterable = userService.findAll();
         List<User> users = new ArrayList<User>();
         if(iterable != null) {
@@ -38,10 +45,8 @@ public class EditUsersController {
                 if(e.getRole().equals("ROLE_ADVANCE")){
                     users.add(e);
                 }
-
             }
         }
-
         ModelAndView editUsers = new ModelAndView("editUsers");
         editUsers.addObject("users", users);
 
@@ -49,7 +54,7 @@ public class EditUsersController {
     }
 
     @RequestMapping(value="/saveChanges", method = RequestMethod.POST)
-    public ModelAndView saveChanges(WebRequest request, Model model, @ModelAttribute("user")User user) {
+    public ModelAndView saveChanges(HttpServletRequest request, Model model, @ModelAttribute("user")User user) {
 
         for (String id : request.getParameterValues("id")) {
             long userId = Integer.parseInt(id);
@@ -72,6 +77,7 @@ public class EditUsersController {
                     if (userToUpdate.getEnabled() != enabled) {
                         userToUpdate.setEnabled(enabled);
                         userService.saveUser(userToUpdate);
+                        sendEmail(userToUpdate, request, enabled);
                     }
 
                     if (!username.equals("")) {
@@ -85,7 +91,7 @@ public class EditUsersController {
     }
 
     @RequestMapping(value="/deleteUser", method = RequestMethod.POST)
-    public ModelAndView deleteUser(WebRequest request, Model model, @ModelAttribute("user")User user) {
+    public ModelAndView deleteUser(HttpServletRequest request, Model model, @ModelAttribute("user")User user) {
 
         if(user != null) {
             long id = user.getId();
@@ -97,5 +103,36 @@ public class EditUsersController {
             }
         }
         return showEditUsers(request, model);
+    }
+
+
+
+    public boolean sendEmail(User user, HttpServletRequest request ,boolean enabled){
+
+        try{
+            String subject = "Gerrymandering Analysis Account Status";
+            String emailBody = "Your account " + user.getUsername() + " has been ";
+
+            if(enabled == true){
+                emailBody += "activatived by one of our admins. Click the link below to login to your account! \n";
+            }else{
+                emailBody += "de-activatived by one of our admins. \n";
+            }
+
+            String link = request.getScheme() + "://" + request.getServerName() + ":8080/login";
+
+            SimpleMailMessage emailToSend = new SimpleMailMessage();
+            emailToSend.setTo(user.getUsername());
+            emailToSend.setSubject(subject);
+            emailToSend.setText(emailBody + link);
+            emailToSend.setFrom("cse308sbu@gmail.com");
+
+            emailService.sendEmail(emailToSend);
+
+        }catch (MailException ex){
+            return false;
+        }
+
+        return true;
     }
 }
