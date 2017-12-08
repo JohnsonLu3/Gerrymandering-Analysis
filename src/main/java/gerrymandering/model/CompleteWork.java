@@ -19,12 +19,16 @@ public class CompleteWork implements Serializable {
     @Column(name = "Name")
     private String name;
 
-    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.REFRESH, CascadeType.PERSIST})
     @JoinColumn(name = "CreatorId", referencedColumnName = "Id")
     private User owner;
 
     @OneToMany(mappedBy = "savedWork", cascade = CascadeType.ALL)
     private List<SuperDistrict> superDistricts = new ArrayList<>();
+
+    @ManyToOne(targetEntity= State.class, fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.REFRESH})
+    @JoinColumn(name = "StateId", referencedColumnName = "Id")
+    private State state;
 
     public String getName() {
         return name;
@@ -49,4 +53,9 @@ public class CompleteWork implements Serializable {
     public void setSuperDistricts(List<SuperDistrict> superDistricts) {
         this.superDistricts = superDistricts;
     }
+
+    public State getState(){
+        return state;
+    }
+
 }
