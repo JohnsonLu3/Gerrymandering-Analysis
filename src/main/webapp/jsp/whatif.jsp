@@ -52,7 +52,7 @@
           <div class="col-md-12">
             <ul class="nav nav-tabs">
               <li class="">
-                <a href="/www/index.html">Home</a>
+                <a href="/">Home</a>
               </li>
               <li>
                 <a href="/www/analyze.html">Analyze a State</a>
