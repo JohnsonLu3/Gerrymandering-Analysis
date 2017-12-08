@@ -86,18 +86,16 @@ public class EditUsersController {
 
     @RequestMapping(value="/deleteUser", method = RequestMethod.POST)
     public ModelAndView deleteUser(WebRequest request, Model model, @ModelAttribute("user")User user) {
-        long id = -1;
 
-        if(user.getRole().equals("ROLE_ADMIN")) {
-            if (user != null) {
-                id = user.getId();
-            }
+        if(user != null) {
+            long id = user.getId();
+            User userToDelete = userService.findById(id);
+            Authorities auth = authoritiesService.findByUsername(userToDelete.getUsername());
 
-            if (id != -1) {
+            if (!auth.getRole().equals("ROLE_ADMIN")) {
                 userService.deleteUserById(id);
             }
         }
-
         return showEditUsers(request, model);
     }
 }
