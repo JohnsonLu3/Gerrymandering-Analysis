@@ -27,7 +27,7 @@ import java.util.*;
  7. If the criteria is met, the server returns a test result that contains the name of the test as "ValidateRepsVsVotes" and status of the test as "success". If the criteria is not met, the server returns a test result that contains the name of the test as ""ValidateRepsVsVotes"" and status of the test as ""failed"".
  8. The UI receives the test result and renders the bulleted line corresponding to this test as green if the test passed, or red if the test failed.
  */
-public class RepsVsVotesMeasure implements Measure {
+public class RepsVsVotesMeasure implements StateMeasure {
 
     @Autowired
     StateService stateService;
@@ -46,22 +46,7 @@ public class RepsVsVotesMeasure implements Measure {
     }
 
     @Override
-    public MeasureResults runMeasure(MultiDistrictRegion region) {
-        State state = region.getDistricts().get(0).getState();
-        List<District> districts = region.getDistricts();
-        List<Votes> votes = new ArrayList<Votes>();
-
-        boolean redistricted;
-        int numDistrictsCurrentYear = state.getDistricts().size();
-        // district count for last year, boy is that a lot of work to get a district count
-        int numDistrictsPerivousYear = stateService.findPerviousYearState(state, state.getYear().getValue()-2).get(0).getDistricts().size();
-        int numDistrictsThirdYear = stateService.findPerviousYearState(state, state.getYear().getValue()-4).get(0).getDistricts().size();
-
-        for(District district : districts){
-            // for each district get voting data from the past 3 years
-            district.getVotes();
-        }
-
+    public MeasureResults runStateMeasure(CompleteWork completeWork) {
         return null;
     }
 }

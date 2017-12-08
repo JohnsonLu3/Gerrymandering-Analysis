@@ -42,7 +42,7 @@ public class WhatIfServiceImpl implements WhatIfService {
     }
 
     @Override
-    public List<MeasureResults> runStatewideMeasures(List<SuperDistrict> superDistricts, Integer year) {
+    public List<MeasureResults> runStatewideMeasures(CompleteWork completeWork) {
         return null;
     }
 

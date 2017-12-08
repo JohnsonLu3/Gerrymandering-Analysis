@@ -17,7 +17,7 @@ import java.util.List;
 public interface WhatIfService {
     public List<MeasureResults> runHR3057Measures(SuperDistrict superDistricts, Integer year);
 
-    public List<MeasureResults> runStatewideMeasures(List<SuperDistrict> superDistricts, Integer year);
+    public List<MeasureResults> runStatewideMeasures(CompleteWork completeWork);
 
     public State combineDistrictsAuto(Collection<District> districts);
 

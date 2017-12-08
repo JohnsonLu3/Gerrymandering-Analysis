@@ -1,5 +1,6 @@
 package gerrymandering.measure;
 
+import gerrymandering.model.CompleteWork;
 import gerrymandering.model.MultiDistrictRegion;
 import gerrymandering.model.State;
 
@@ -9,7 +10,7 @@ import java.util.Map;
 /**
  * Created by yisuo on 11/7/17.
  */
-public class MinMaxMeasure implements Measure {
+public class MinMaxMeasure implements StateMeasure {
     private Map<Integer, Integer> composition;
 
     private Map<Integer, Integer> getOptimalComposition(State state){
@@ -21,7 +22,7 @@ public class MinMaxMeasure implements Measure {
     }
 
     @Override
-    public MeasureResults runMeasure(MultiDistrictRegion region) {
+    public MeasureResults runStateMeasure(CompleteWork completeWork) {
         return null;
     }
 }

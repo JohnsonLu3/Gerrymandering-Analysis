@@ -1,17 +1,11 @@
 package gerrymandering.measure;
 
-import com.sun.net.httpserver.Authenticator;
-import gerrymandering.model.District;
-import gerrymandering.model.MultiDistrictRegion;
-import gerrymandering.model.State;
-import gerrymandering.model.SuperDistrict;
-
-import java.sql.ResultSet;
+import gerrymandering.model.*;
 
 /**
  * Created by yisuo on 11/7/17.
  */
-public class SixRepsOrMoreMeasure implements Measure {
+public class SixRepsOrMoreMeasure implements StateMeasure {
 
     private int checkNumDistricts(SuperDistrict s){
         //Check if the number of representatives in the state is 6 or more. If it is less than 6
@@ -49,16 +43,7 @@ public class SixRepsOrMoreMeasure implements Measure {
     }
 
     @Override
-    public MeasureResults runMeasure(MultiDistrictRegion region) {
-
-        SixRepsOrMoreResults result = new SixRepsOrMoreResults();
-//
-//        if(checkNumDistricts(region) == 0){
-//
-//        }else{
-//            // return skipped, state is not big enough
-//            return null;
-//        }
-        return result;
+    public MeasureResults runStateMeasure(CompleteWork completeWork) {
+        return null;
     }
 }
