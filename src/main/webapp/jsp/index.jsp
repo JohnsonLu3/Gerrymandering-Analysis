@@ -1,4 +1,10 @@
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,15 +14,16 @@
   <link href="/resources/style/index.css" rel="stylesheet" type="text/css">
 </head>
 <body>
+
 <div class="section">
   <div class="col-md-12 text-right">
 
-    <sec:authorize access="isAnonymous()">
+    <c:if test="${empty pageContext.request.remoteUser}">
     <a href="/registration" class= "btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px" sec:authorize="!isAuthenticated()"></i>Register</a>
     <a href="/login" class= "btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px" sec:authorize="!isAuthenticated()"></i>Login</a>
-    </sec:authorize>
-    <a href="/admin" class="btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Administrators</a>
-    <sec:authorize access="isAuthenticated()">
+    </c:if>
+
+
     <div>
       <form name="f" action="/logout" method="post">
         <c:if test="${not empty pageContext.request.remoteUser}">
@@ -28,11 +35,14 @@
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
       </form>
 
-      <a href="/editSettings" class="btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Settings</a>
-
+      <c:if test="${not empty pageContext.request.remoteUser}">
+        <a href="/editSettings" class="btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Settings</a>
+      </c:if>
 
     </div>
-    </sec:authorize>
+
+
+    <a href="/admin" class="btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Administrators</a>
 
 
     <div class="section">
