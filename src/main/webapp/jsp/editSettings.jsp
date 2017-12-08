@@ -96,7 +96,7 @@
                                 <td><input type="number" name="pValue" step=0.01 min=0 /><label>${pValue}</label></td>
                             </tr>
                             <tr>
-                                <td><label>Efficiency Gap legislative threshold : "</label></td>
+                                <td><label>Efficiency Gap legislative threshold : </label></td>
                                 <td><input type="number" name="EfficiencyGap" step=0.01 min=0/><label>${efficiencyGap}</label></td>
                             </tr>
 

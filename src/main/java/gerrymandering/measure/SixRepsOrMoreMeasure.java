@@ -7,7 +7,7 @@ import gerrymandering.model.*;
  */
 public class SixRepsOrMoreMeasure implements StateMeasure {
 
-    private int checkNumDistricts(SuperDistrict s){
+    private int checkNumDistricts(State s){
         //Check if the number of representatives in the state is 6 or more. If it is less than 6
         //then return a resultobject with status as "skipped" else continue
 
@@ -22,8 +22,8 @@ public class SixRepsOrMoreMeasure implements StateMeasure {
         return 0;                   // continue
     }
 
-    private int checkNumOfSuperDistricts(MultiDistrictRegion region){
-        if(region != null){
+    private int checkNumOfSuperDistricts(CompleteWork completeWork){
+        if(completeWork != null){
 
         }else{
             return -1;              // failed
@@ -44,6 +44,22 @@ public class SixRepsOrMoreMeasure implements StateMeasure {
 
     @Override
     public MeasureResults runStateMeasure(CompleteWork completeWork) {
-        return null;
+
+        SixRepsOrMoreResults results = new SixRepsOrMoreResults();
+
+        if(checkNumDistricts(completeWork.getState()) == -1){
+            // SKIP TEST
+            return null;
+        }else{
+            // PERFORM TEST
+            if(checkNumOfSuperDistricts(completeWork) == 0){
+                //checkNumOfRepsPerSuperDistrict();
+            }else{
+                results.addTestResult(false);
+            }
+        }
+
+
+        return results;
     }
 }
