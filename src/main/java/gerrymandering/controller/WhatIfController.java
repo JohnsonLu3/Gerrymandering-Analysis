@@ -52,7 +52,9 @@ public class WhatIfController {
 
     @RequestMapping(value = "/saveCompletedWork", method = RequestMethod.POST)
     @ResponseBody
-    public GeoJson saveCompletedWork(@RequestParam State state){
+    public GeoJson saveCompletedWork(@RequestParam String stateName,
+                                     @RequestParam Integer year,
+                                     @RequestBody FeatureCollection features){
         return null;
     }
 

@@ -194,6 +194,7 @@ function undoHandler(map){
         }
         else if(history.type === 'super'){
             console.log("type:super");
+            doneBuildingSuperdistrict = true;
             showDistrictHandler(map, history.feature, true);
         }
         else if(history.type === 'show'){
@@ -352,6 +353,7 @@ function showDistrictHandler(map, feature, undo){
         }
     });
     startingNewSuperDistrict = false;
+    doneBuildingSuperdistrict = false;
     if(!undo)
         clickHistory.push({type: 'show', feature: feature});
     $('#resetButton').removeAttr('disabled');
