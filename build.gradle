@@ -11,12 +11,13 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'war'
 
 springBoot {
 	executable = true
 }
 
-jar {
+war {
 	baseName = 'gerrymander-measure'
 	version =  '0.1.0'
 }
@@ -33,7 +34,7 @@ targetCompatibility = 1.8
 
 dependencies {
 	compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-tomcat")
+	providedCompile("org.springframework.boot:spring-boot-starter-tomcat")
 	compile("org.springframework.boot:spring-boot-starter-mail")
     compile("org.apache.tomcat.embed:tomcat-embed-jasper")
 	compile("org.springframework.boot:spring-boot-devtools")
