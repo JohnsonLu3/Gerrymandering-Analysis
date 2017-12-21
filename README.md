@@ -54,24 +54,38 @@ Included is a folder containing 18 sql dump files.
 This folder contains all the KML and CSV parsing as well as database import scripts. They are written in Python.
 ####/src/main/java
 This is the Java application in the backend, it consists of the following packages`:  
-gerrymandering.api - This package contains wrapper class for returning HTTP response as a JSON.   
-gerrymandering.bean - This package contains some Spring beans used for authentication and authorization.
-gerrymandering.common - This package contains global constants and enums used throughout the project.
-gerrymandering.config - This package contains Spring related configurations such as Spring Security and URL mappings for static pages.
-gerrymandering.controller - This package contains web controllers that receive incoming HttpServletRequests and process them.  
-gerrymandering.measure - This package contains classes and interfaces for running HR3057 measures, the Three Test analysis from Princeton gerrymandering group,
+#####gerrymandering.api -
+This package contains wrapper class for returning HTTP response as a JSON.   
+#####gerrymandering.bean -
+This package contains some Spring beans used for authentication and authorization.
+#####gerrymandering.common - 
+This package contains global constants and enums used throughout the project.
+#####gerrymandering.config - 
+This package contains Spring related configurations such as Spring Security and URL mappings for static pages.
+#####gerrymandering.controller - 
+This package contains web controllers that receive incoming HttpServletRequests and process them.  
+#####gerrymandering.measure - 
+This package contains classes and interfaces for running HR3057 measures, the Three Test analysis from Princeton gerrymandering group,
 and efficiency gap test. It also contains classes and interfaces for storing the results of these measures.  
-gerrymandering.model - This package contains JPA entities that are used for database persistence.  
-gerrymandering.repository - This package contains Spring interfaces that get scanned in runtime to generate database access objects for the models.   
-gerrymandering.service - This package contains the application level logics that get called by the controller classes.
+#####gerrymandering.model - 
+This package contains JPA entities that are used for database persistence.  
+#####gerrymandering.repository - 
+This package contains Spring interfaces that get scanned in runtime to generate database access objects for the models.   
+#####gerrymandering.service - 
+This package contains the application level logics that get called by the controller classes.
 ####/src/main/resources
 This is where application.properties is located. This file is used to configure Spring Boot and Hibernate.
 ####/src/main/webapp
 This is where the front-end and JSP code resides. Everything inside this folder gets packaged into an embedded Tomcat server
 at runtime. It contains the following folders:  
-/img - This contains all the images used for the webpages. To access files in this folder, use the prefix /resources/img as specified in gerrymandering.config.StaticResourceHandler.   
-/js - This contains all Javascripts used for the webpages. The Google Map and D3 chart code is all in here. To access files in this folder, use the prefix /resources/img as specified in gerrymandering.config.StaticResourceHandler.  
-/jsp - This contains JSP pages rendered in the front-end. To access files in this folder, refer to the corresponding web controller in gerrymandering.controller.   
-/static - This contains the static pages rendered in the front-end. Note that Spring modified the URL mapping for this
+#####/img - 
+This contains all the images used for the webpages. To access files in this folder, use the prefix /resources/img as specified in gerrymandering.config.StaticResourceHandler.   
+#####/js - 
+This contains all Javascripts used for the webpages. The Google Map and D3 chart code is all in here. To access files in this folder, use the prefix /resources/img as specified in gerrymandering.config.StaticResourceHandler.  
+#####/jsp - 
+This contains JSP pages rendered in the front-end. To access files in this folder, refer to the corresponding web controller in gerrymandering.controller.   
+#####/static - 
+This contains the static pages rendered in the front-end. Note that Spring modified the URL mapping for this
  folder. To access files within, your webpage needs to refer to /www/\<filename\>.  
-/style - This contains the CSS files used in the front-end. To access files in this folder, use the prefix /resources/style as specified in gerrymandering.config.StaticResourceHandler.
+#####/style - 
+This contains the CSS files used in the front-end. To access files in this folder, use the prefix /resources/style as specified in gerrymandering.config.StaticResourceHandler.
