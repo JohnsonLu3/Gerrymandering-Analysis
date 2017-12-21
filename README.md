@@ -32,8 +32,9 @@ f) spring.mail.password - The password to log into the email server.
 7. Once the app is running, go to localhost:8080 in your browser and you should be able to view the homepage.  
 
 
-##Data Base Setup
+###Data Base Setup:
 These steps will instruct you on how to move the database to another mysql 5.7 server.
+
 1. Download and install MySqlWorkbench, [here](https://www.mysql.com/products/workbench/).
 2. From the main page of MySqlWorkbench add a new connection by clicking on the plus sign on the top right.
 a) connection type is TCP/IP.
@@ -41,8 +42,9 @@ b) Enter your hostname and port number to your database server.
 c) Enter your username associated with the database
 3. Once connected create a new schema using the side panel on the left
 
-##Importing Data into the Data Base
+###Importing Data into the Data Base:
 Included is a folder containing 18 sql dump files.
+
 1. In each sql dump file you must change the host and database fields to match your database host and database schema name.
     ```shell
     eg: Host: oldDatabase.com   Database: laconic (schema name)
