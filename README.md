@@ -33,7 +33,7 @@ f) spring.mail.password - The password to log into the email server.
 
 
 ###Data Base Setup:
-These steps will instruct you on how to move the database to another mysql 5.7 server.\
+These steps will instruct you on how to move the database to another mysql 5.7 server.
 
 1. Download and install MySqlWorkbench, [here](https://www.mysql.com/products/workbench/).
 2. From the main page of MySqlWorkbench add a new connection by clicking on the plus sign on the top right.  
@@ -46,11 +46,9 @@ c) Enter your username associated with the database.
 Included is a folder containing 18 sql dump files.
 
 1. In each sql dump file you must change the host and database fields to match your database host and database schema name.
-    ```shell
-    eg: Host: oldDatabase.com   Database: laconic (schema name)
+        eg: Host: oldDatabase.com   Database: laconic (schema name)
         to 
         Host: newDatabase.com   Database: ResearchGA
-    ```
 2. Once all the sql dump files headers are changed to the new database go back to MySqlWorkbench.
 3. Connect to your database that was setup above.
 4. Click 'Import/Restore' in the Managerment Tab on the left side.
