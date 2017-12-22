@@ -1,9 +1,14 @@
 package gerrymandering.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.*;
+import org.springframework.security.crypto.password.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import javax.sql.DataSource;
+
 /**
  * Created by yisuo on 10/30/17.
  */
@@ -14,41 +19,45 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests()
                 .antMatchers("/www/admin.html").hasRole("ADMIN")
-                .antMatchers("/resources/**", "/www/**").permitAll()
+                .antMatchers("/resources/**", "/www/**", "/superdistrict/**").permitAll()
                 .antMatchers("/admin","/admin/**").hasRole("ADMIN")
-                .and()
-            .formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .and()
-            .logout()
-//                .logoutUrl("redirect:/www/index.html")
-//                .logoutSuccessUrl("redirect:/www/index.html")
-//                .logoutSuccessHandler(logoutSuccessHandler)
-//                .invalidateHttpSession(true)
-//                .addLogoutHandler(logoutHandler)
-//                .deleteCookies(cookieNamesToClear)
-                .permitAll();
+                .antMatchers("/editUsers","/editUsers/**").hasRole("ADMIN")
+                .antMatchers("/inviteAdmins","/inviteAdmins/**").hasRole("ADMIN")
+                .antMatchers("/editSettings","/editSettings/**").hasAnyRole("ADMIN","ADVANCE");
 
         http
             .headers()
                 .frameOptions()
                 .sameOrigin();
+
+        http.formLogin()
+                .loginPage("/login")
+                .usernameParameter("username").passwordParameter("password")
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll();
     }
+
+
+    @Autowired
+    private DataSource dataSource;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+
         auth
-                .inMemoryAuthentication()
-                .withUser("ysuo").password("abc123").roles("ADMIN");
-        auth
-                .inMemoryAuthentication()
-                .withUser("bkestelman").password("abc123").roles("ADMIN");
-        auth
-                .inMemoryAuthentication()
-                .withUser("astaylor").password("abc123").roles("ADMIN");
-        auth
-                .inMemoryAuthentication()
-                .withUser("johnsonlu").password("abc123").roles("ADMIN");
+                .jdbcAuthentication()
+                .dataSource(dataSource)
+                .passwordEncoder(passwordEncoder())
+                .usersByUsernameQuery(
+                        "select username,password, enabled from users where username=?")
+                .authoritiesByUsernameQuery(
+                        "select username, authority from authorities where username=?");
+    }
+
+    @Bean(name="passwordEncoder")
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

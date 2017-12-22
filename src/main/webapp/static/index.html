@@ -1,14 +1,31 @@
-<html><head>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="/resources/style/index.css" rel="stylesheet" type="text/css">
-  </head><body>
+  </head>
+  <body  th:with="httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}">
     <div class="section">
       <div class="col-md-12 text-right">
+        <a href="/registration" class= "btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px" sec:authorize="!isAuthenticated()"></i>Register</a>
+        <a href="/login" class= "btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px" sec:authorize="!isAuthenticated()"></i>Login</a>
         <a href="/admin" class="btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Administrators</a>
+        <div sec:authorize="isAuthenticated()">
+          <a href="/login?logout" class="btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Logout</a>
+        </div>
+
+        <form name="f" action="/logout" method="post">
+          <c:if test="${not empty pageContext.request.remoteUser}">
+            <div>
+              <button type="submit" class="btn">Log out</button>
+            </div>
+
+          </c:if>
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </form>
 
         <div class="section">
           <div class="container">
@@ -25,7 +42,7 @@
                       <ul class="nav nav-tabs">
                         <li class="active"></li>
                         <li class="active">
-                          <a href="./basic user.html"><i class="fa fa-fw fa-angle-double-right"></i>Home</a>
+                          <a href="/"><i class="fa fa-fw fa-angle-double-right"></i>Home</a>
                         </li>
                         <li>
                           <a href="./analyze.html">Analyze a State</a>
@@ -51,10 +68,10 @@
                           <a href="./contact.html">Contact</a>
                         </li>
                         <li>
-                          <a href="./whatif.html">What If?</a>
+                          <a href="../jsp/whatif.jsp">What If?</a>
                         </li>
                       </ul>
-                      <a href="#"><i class="fa fa-fw fa-lg fa-toggle-off pull-left"></i></a>
+                      <div style="height:35px;"></div>
                     </div>
                   </div>
                 </div>
@@ -100,7 +117,9 @@
                     statewide performances. It causes partisan bias to diverge from the efficiency
                     gap, which is computed using the observed election results. The the parties’
                     wasted votes in the actual election are crucial input for this.&nbsp;</p>
+                    <!--
                   <a class="btn btn-primary" href="./learn_home.html">Read More</a>
+                  -->
                 </div>
                 <div class="col-md-4">
                   <h3 class="text-center text-primary">Three Tests of Gerrymandering</h3>
@@ -114,7 +133,9 @@
                     wins for the victim party.
                     <br>The remaining members of the victim party are then "cracked"so that they
                     comprise a large but minority block of voters (typically 40 - 45%).&nbsp;</p>
+                    <!--
                   <a class="btn btn-primary" href="./learn_tests.html">Read More</a>
+                  -->
                 </div>
                 <div class="col-md-4">
                   <h3 class="text-center text-primary">Legal Efforts</h3>
@@ -129,12 +150,54 @@
                     the outcome could shape American politics for decades to come.
                     <br><br/>
                   </p>
+                  <!--
                   <a class="btn btn-primary" href="./learn_legal.html">Read More</a>
+                  -->
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <!-- Trigger/Open The Modal -->
+            <button id="myBtn">Sources</button>
+            <!-- The Modal -->
+            <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+              <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2 class="text-left">Sources</h2>
+              </div>
+              <div class="modal-body"> 
+                <p class="text-left">
+                Brennan Center For Justice. “Gill v. Whitford: Gerrymandering at the Supreme Court.” Gill v. Whitford: Gerrymandering at the Supreme Court | Brennan Center for Justice, New York University School of Law, 2017, www.brennancenter.org/issues/whitford.
+                </p>
+                <p class="text-left">Brennan Center For Justice. “Benisek v. Lamone.” Benisek v. Lamone | Brennan Center for Justice, New York University School of Law, 2017, www.brennancenter.org/legal-work/benisek-v-lamone-amicus-brief.
+                </p>
+                <p class="text-left">
+                Brennan Center For Justice. “Harris v. Cooper (Amicus Brief).” Harris v. Cooper (Amicus Brief) | Brennan Center for Justice, New York University School of Law, 2017, www.brennancenter.org/legal-work/harris-v-mccrory.
+                </p>
+                <p class="text-left">
+                Brennan Center For Justice. “Common Cause v. Rucho.” Common Cause v. Rucho | Brennan Center for Justice, New York University School of Law, 7 Nov. 2017, www.brennancenter.org/legal-work/common-cause-v-rucho.
+                </p>
+                <p class="text-left">FairVote.org. “FairVote US House Projects: Monopoly Politics Remains the Right Name.” FairVote, www.fairvote.org/fairvote_us_house_projects_monopoly_politics_remains_the_right_name.</p>                
+                <p class="text-left">House - Judiciary; House Administration. “H.R.3057 - Fair Representation Act.” Congress.gov, Rep. Beyer, Donald S., Jr., 26 June 2017, www.congress.gov/bill/115th-congress/house-bill/3057.
+                </p>
+                <p class="text-left">Levitt, Justin . “Why does it matter?” All About Redistricting , Loyola Law School, 2017, redistricting.lls.edu/why.php.</p>
+                <p class="text-left">Stephanopoulos, Nicholas, and Eric McGhee. “Partisan Gerrymandering and the Efficiency Gap.” Http://Chicagounbound.uchicago.edu, University of Chicago Law School, 2014, chicagounbound.uchicago.edu/cgi/viewcontent.cgi?article=1946&context=public_law_and_legal_theory.</p>
+                <p class="text-left">Whitaker, Rob. “Princeton Gerrymandering Project | Run Tests.” Princeton University, The Trustees of Princeton University, 2017, gerrymander.princeton.edu/test.</p>                
+                <p class="text-left">Whitaker, Rob. “Princeton Gerrymandering Project | About the Tests.” Princeton University, The Trustees of Princeton University, 2017, gerrymander.princeton.edu/info.</p>
+                <p class="text-left">Youtube. “Gerrymandering, explained.”Online video clip.YouTube, 14 Nov 2017. Web.</p>         
+                
+              </div>
+              <div class="modal-footer">
+                <h3>Gerrymandering in the United States</h3>
+              </div>
+            </div>
+          </div>
+          <script src="/resources/static/worksCited.js"></script>
+          <link href="/resources/static/worksCited.css" rel="stylesheet" type="text/css">
+        <!-- footer -->
         <footer class="section section-primary">
           <div class="container">
             <div class="row">
@@ -170,6 +233,8 @@
               </div>
             </div>
           </div>
+          
+
         </footer>
       </div>
     </div>

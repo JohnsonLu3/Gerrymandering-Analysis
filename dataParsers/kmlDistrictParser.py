@@ -1,13 +1,11 @@
 input       = open('geoData/cb_2016_us_cd115_20m/cb_2016_us_cd115_20m.kml', 'r')
 output      = open('parsedFiles/DistrictGeo_2016.csv', 'w')
 outputLine  = ''
-
 stateFp = None
 congressionalNum = "\"CD115FP\""
 districtTag = "<SimpleData name=" + congressionalNum +">"
 name    = ''
 cord    = ''
-
 
 for line in input:
     if "<SimpleData name=\"STATEFP\">" in line:
@@ -48,10 +46,14 @@ for line in input:
                 cord += tempCord[0] + ' ' + tempCord[1]
             else:
                 cord += tempCord[0] + ' ' + tempCord[1] + ','
+<<<<<<< HEAD
 
 
         outputLine += '('+cord+')' + ';'
 
+=======
+        outputLine += '('+cord+')' + ';'
+>>>>>>> build-2
 
 input.close()
 output.close()

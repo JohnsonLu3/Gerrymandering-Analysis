@@ -21,11 +21,18 @@
                     <div class="collapse navbar-collapse" id="navbar-ex-collapse">
                         <ul class="nav navbar-nav navbar-right">
                             <li class="active">
-                                <a href="#">Home</a>
+                                <a href="/">Home</a>
+                            </li>
+                            <li>
+                                <a href="/editUsers">Edit Users</a>
+                            </li>
+                            <li>
+                                <a href="/inviteAdmins">Invite Admins</a>
                             </li>
                             <li>
                                 <a href="#">Contacts</a>
                             </li>
+
                             <li>
                                 <form name="f" action="/logout" method="post">
                                     <c:if test="${not empty pageContext.request.remoteUser}">
@@ -42,17 +49,6 @@
                 </div>
             </div>
             <div class="cover-image" style="background-image: url(https://unsplash.imgix.net/photo-1418065460487-3e41a6c84dc5?q=25&amp;fm=jpg&amp;s=127f3a3ccf4356b7f79594e05f6c840e);"></div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 text-center">
-                        <h1 class="text-inverse">Heading</h1>
-                        <p class="text-inverse">Lorem ipsum dolor sit amet, consectetur adipisici eli.</p>
-                        <br>
-                        <br>
-                        <a class="btn btn-lg btn-primary">Click me</a>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="section">
             <div class="container">

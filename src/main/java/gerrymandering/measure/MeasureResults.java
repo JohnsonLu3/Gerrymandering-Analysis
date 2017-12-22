@@ -1,19 +1,27 @@
 package gerrymandering.measure;
 
-import gerrymandering.model.District;
-import gerrymandering.model.MultiDistrictRegion;
+import gerrymandering.common.TestType;
 
-public class MeasureResults {
-	private MultiDistrictRegion measureRegion;
+public abstract class MeasureResults {
+	protected Boolean testResult;
+	protected TestType testPerformed;
 
 	public MeasureResults() {
 	}
 
-	public Boolean addPercentVotes(District districtA, District districtB){
-		return false;
+	public void addTestResult(Boolean result){
+	    this.testResult = result;
 	}
 
-	public Boolean addTestResult(Boolean result){
-		return false;
+	public Boolean getTestResult(){
+		return testResult;
+	}
+
+	public TestType getTestPerformed(){
+		return testPerformed;
+	}
+
+	public void setTestPerformed(TestType testPerformed){
+		this.testPerformed = testPerformed;
 	}
 }

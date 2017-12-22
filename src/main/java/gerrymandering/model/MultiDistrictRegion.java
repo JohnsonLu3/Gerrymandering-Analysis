@@ -1,26 +1,18 @@
 package gerrymandering.model;
 
+import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by yisuo on 11/7/17.
  */
-public abstract class MultiDistrictRegion extends BipartisanRegion {
-    private List<District> districts;
+@MappedSuperclass
+public abstract class MultiDistrictRegion extends BipartisanRegion implements Serializable {
 
     public MultiDistrictRegion(){
         super();
     }
 
-    public List<District> getDistricts(){
-        return null;
-    }
-
-    public void addDistrict(District district){
-
-    }
-
-    public void addDistricts(List<District> districts){
-
-    }
+    public abstract List<District> getDistricts();
 }

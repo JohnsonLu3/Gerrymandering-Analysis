@@ -1,18 +1,14 @@
 package gerrymandering.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by yisuo on 11/7/17.
  */
-public class GeoRegion {
-    private List<LatLong> shape;
-
+public abstract class GeoRegion implements Serializable {
     public GeoRegion(){
 
     }
-
-    public List<LatLong> getShape(){
-        return shape;
-    }
+    public abstract List<Boundary> getBoundaries();
 }

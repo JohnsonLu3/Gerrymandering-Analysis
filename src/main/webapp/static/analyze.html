@@ -1,63 +1,77 @@
-<html><head>
+<html>
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <script src="https://d3js.org/d3-path.v1.min.js"></script>
-    <script src="https://d3js.org/d3-shape.v1.min.js"></script>
-    <script src="http://d3js.org/d3.v3.min.js"></script>
-    <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css" rel="stylesheet" type="text/css">
-<!--
-<style>
-
-svg,
-canvas {
-  position: absolute;
-}
-
-</style>
--->
-<style>
-body {
-  font: 11px sans-serif;
-}
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-.dot {
-  stroke: #000;
-}
-
-.tooltip {
-  position: absolute;
-  width: 200px;
-  height: 28px;
-  pointer-events: none;
-}
-</style>
-
+      <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+      <script type="text/javascript" src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+      <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+      <script src="https://d3js.org/d3-path.v1.min.js"></script>
+      <script src="https://d3js.org/d3-shape.v1.min.js"></script>
+      <script src="http://d3js.org/d3.v3.min.js"></script>
+      <script src="/resources/js/data.js"></script>
+      <script src="/resources/js/accordionLayout.js"></script>
+      <script src="/resources/js/styling.js"></script>
+      <script src="/resources/js/eventHandlers.js"></script>
+      <script src="/resources/js/scatterData.js"></script>
+      <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEISuccfcM7cm-Kil-HufVS9mu3kNKrHM&libraries=places,geometry&callback=initializeMap">
+      </script>
+      <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+      <link href="http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css" rel="stylesheet" type="text/css">
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+      <link rel="stylesheet" href="/resources/style/searchbox.css">
+    <style>
+      td, th {
+        padding: 1px 50px;
+      }
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+      .dot {
+        stroke: #000;
+      }
+      .tooltip {
+        position: absolute;
+        width: 200px;
+        height: 28px;
+        pointer-events: none;
+      }
+     #p1 {
+        background-color: lightblue;
+      }
+      #div1{
+        background-color: lightblue;
+      }
+      
+     
+    </style>
   </head>
   <body>
+    <script src="/resources/js/init.js"></script>
+    <script src="/resources/js/populateData.js"></script>
+    <div class="section">
+      <div class="col-md-12 text-right">
+        <a href="/admin" class="btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Administrators</a>
+      </div>
+    </div>
+    <!-- design for basic navigation bar template-->
     <div class="section">
       <div class="container">
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-12 ">
             <ul class="nav nav-tabs">
               <li class="active"></li>
               <li>
-                <a href="./index.html">Home</a>
+                <a href="/">Home</a>
               </li>
               <li class="active">
                 <a href="./analyze.html"><i class="fa fa-fw fa-angle-double-right"></i>Analyze a State</a>
               </li>
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Learn More&nbsp;<i class="fa fa-caret-down"></i></a>
+               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Learn More&nbsp;<i class="fa fa-caret-down"></i></a>
                 <ul class="dropdown-menu" role="menu">
                   <li>
                     <a href="./learn_home.html">Home Page</a>
@@ -68,7 +82,7 @@ body {
                   </li>
                   <li class="divider"></li>
                   <li>
-                    <a href="./learn_legal.html">Legal Efforts </a>
+                   <a href="./learn_legal.html">Legal Efforts </a>
                   </li>
                 </ul>
               </li>
@@ -76,344 +90,190 @@ body {
                 <a href="./contact.html">Contact</a>
               </li>
               <li>
-                <a href="./whatif.html">What If?</a>
-              </li>
-            </ul>
-            <a href="#"><i class="fa fa-fw fa-lg fa-toggle-off"></i></a>
-          </div>
+               <a href="../jsp/whatif.jsp">What If?</a>
+               </li>
+          </ul>
         </div>
       </div>
     </div>
-    <div class="carousel slide" id="carousel-example" data-interval="false" data-ride="carousel">
-      <div class="carousel-inner">
-        <div class="item active">
-          <img src="https://ununsplash.imgix.net/photo-1413912623716-e6c688db0383?w=1024&amp;q=50&amp;fm=jpg&amp;s=2777ec88322e8725978f0fa956735021">
-          <div class="carousel-caption">
-            <h2>Gerrymandering in the United States</h2>
-          </div>
-        </div>
-        <div class="item">
-          <img src="https://ununsplash.imgix.net/photo-1413896235942-39c2eb7cd584?w=1024&amp;q=50&amp;fm=jpg&amp;s=82734c02c2c6a780dc31f24c54077dd6">
-          <div class="carousel-caption">
-            <h2>Title</h2>
-            <p>Description</p>
-          </div>
-        </div>
-        <div class="item">
-          <img src="https://ununsplash.imgix.net/uploads/14127101912749510b8ed/82743738?w=1024&amp;q=50&amp;fm=jpg&amp;s=2150993787c74416103059d6ebac09f5">
-          <div class="carousel-caption">
-            <h2>Title</h2>
-            <p>Description</p>
-          </div>
-        </div>
-        <div class="item">
-          <img src="https://unsplash.imgix.net/photo-1413920346627-a4389f0abd61?w=1024&amp;q=50&amp;fm=jpg&amp;s=cfd43f65c77577abb3bf29c0d6a0775f">
-          <div class="carousel-caption">
-            <h2>Title</h2>
-            <p>Description</p>
-          </div>
-        </div>
-        <div class="item">
-          <img src="https://unsplash.imgix.net/reserve/fqUehZ3ZRru2Kh11qDBT_IMG_0042.jpg?w=1024&amp;q=50&amp;fm=jpg&amp;s=e96c5bfe57acbd6cdfdbe7d84f37656d">
-          <div class="carousel-caption">
-            <h2>Title</h2>
-            <p>Description</p>
-          </div>
+  </div>
+  <!--basic carousel section for template : utilizes multiple photos found in /webapp folder-->
+  <div class="carousel slide" id="carousel-example" data-interval="false" data-ride="carousel">
+    <div class="carousel-inner">
+      <div class="item active">
+        <img src="https://ununsplash.imgix.net/photo-1413912623716-e6c688db0383?w=1024&amp;q=50&amp;fm=jpg&amp;s=2777ec88322e8725978f0fa956735021">
+        <div class="carousel-caption">
+          <h2>Gerrymandering in the United States</h2>
         </div>
       </div>
-      <a class="left carousel-control" href="#carousel-example" data-slide="prev"><i class="icon-prev  fa fa-angle-left"></i></a>
-      <a class="right carousel-control" href="#carousel-example" data-slide="next"><i class="icon-next fa fa-angle-right"></i></a>
+    <div class="item">
+      <img src="https://ununsplash.imgix.net/photo-1413896235942-39c2eb7cd584?w=1024&amp;q=50&amp;fm=jpg&amp;s=82734c02c2c6a780dc31f24c54077dd6">
+      <div class="carousel-caption">
+        <h2>Gerrymandering in the United States</h2>
+      </div>
     </div>
+    <div class="item">
+      <img src="https://ununsplash.imgix.net/uploads/14127101912749510b8ed/82743738?w=1024&amp;q=50&amp;fm=jpg&amp;s=2150993787c74416103059d6ebac09f5">
+        <div class="carousel-caption">
+          <h2>Gerrymandering in the United States</h2>
+        </div>
+      </div>
+      <div class="item">
+        <img src="https://unsplash.imgix.net/photo-1413920346627-a4389f0abd61?w=1024&amp;q=50&amp;fm=jpg&amp;s=cfd43f65c77577abb3bf29c0d6a0775f">
+        <div class="carousel-caption">
+          <h2>Gerrymandering in the United States</h2>
+        </div>
+      </div>
+      <div class="item">
+        <img src="https://unsplash.imgix.net/reserve/fqUehZ3ZRru2Kh11qDBT_IMG_0042.jpg?w=1024&amp;q=50&amp;fm=jpg&amp;=e96c5bfe57acbd6cdfdbe7d84f37656d">
+        <div class="carousel-caption">
+          <h2>Gerrymandering in the United States</h2>
+        </div>
+      </div>
+    </div>
+    <a class="left carousel-control" href="#carousel-example" data-slide="prev"><i class="icon-prev  fa fa-angle-left"></i></a>
+    <a class="right carousel-control" href="#carousel-example" data-slide="next"><i class="icon-next fa fa-angle-right"></i></a>
+  </div>
+  <div class="section">
     <div class="section">
-      <div class="section">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6">
-              <br>
-              
-              <iframe style="width: 100%; height:400px" src="/www/searchbox.html"></iframe> 
-               
-               
+      <div class="container">
+        <div class="row">
+          <br>
+            <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+            <div class="col-md-6" id="map" style="width:575px;height:450px;">
             </div>
             <div class="col-md-6">
-              <select id="box1" onChange="myFunction(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
-              <option value="98">New York</option>
-              <option value="7122">North Carolina</option>
-              <option value="142">Virginia</option>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;
+              <select id="box2" onChange="selectYearByDropDown(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
               </select>
-              <select id="box2" onChange="myNewFunction(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
-              <option value="98">2016</option>
-              <option value="142">2014</option>
-              <option value="142">2012</option>
-              <option value="142">2010</option>
-              <option value="142">2008</option>
-              <option value="142">2006</option>
-              <option value="142">2004</option>
-              <option value="142">2002</option>
-              <option value="142">2000</option>
+              <select id="box1" onChange="selectStateByDropDown(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
               </select>
-              <a class="btn btn-primary dropdown-toggle" href="./basic user redistricting.html">Make Super Districts&nbsp;</a>
+              <a class="btn btn-primary dropdown-toggle" href="/whatif">Make Super Districts&nbsp;</a>
               <div id="selection"></div>
-              
-               
-              
-              <p>
+              <div id="totalVotes"></div>     
+              <p id="p1">
                 <br/>
-                North Carolina, one of the original 13 colonies, entered the Union in
-                November 1789. The state did not participate in the 1864 election due to
-                secession. Like many other southern states, North Carolina voted almost
-                exclusively Democratic from 1876 through 1964 and almost exclusively Republican
-                beginning in 1968. The initial shift was largely in response to white conservative
-                voter uneasiness with the civil rights legislation passed in the mid-1960s,
-                which was effectively exploited by the Republicans “southern strategy.”
-                <br>
-                <br>In 2008, Barack Obama reversed the trend of Republican dominance here
-                (although just barely), defeating John McCain by about 14,000 votes out
-                of 4.3 million cast (49.7% to 49.4%). In percentage terms, it was the 2nd
-                closest race of the 2008 election (behind Missouri). In 2012, North Carolina
-                was again the 2nd closest race (this time behind Florida) as the state
-                flipped Republican. Mitt Romney beat Obama by about 2%. Donald Trump won
-                the state by 3.6% over Hillary Clinton in 2016. Based on population projections,
-                the state may gain an additional electoral vote after the 2020 presidential
-                election.
-                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                Choose Your Next State
               </p>
-              <a class="btn btn-primary btn-sm" contenteditable="true" style="margin-right:10px">&nbsp; &nbsp; &nbsp; Read &nbsp;More &nbsp; &nbsp;</a>
-              <a class="btn btn-primary btn-sm" style="margin-right:10px">&nbsp; &nbsp;Run Analysis- Congressional District&nbsp;</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                
+                <a href="https://www.270towin.com/states/" class="btn btn-primary btn-sm" contenteditable="false" style="margin-right:10px">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp; Read &nbsp;More &nbsp; &nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp; &nbsp; &nbsp;</a>
+            </div>
+          </div>
+          <div>
+
+            <form action="">
+              <div>
+                <select id="minorityPopulation" onChange="selectMinorityByDropDown(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
+                  <option value="98">White</option>
+                  <option value="7122">Black</option>
+                  <option value="142">AmericanIndian</option>
+                  <option value="142">Asian</option>
+                  <option value="142">PacificIslander</option>
+                  <option value="142">Other</option>
+                  <option value="142">Mixed</option>
+                  <option value="142">Hispanic</option>
+                </select>
+              </div>
+
+              <div>
+                <input id="population" type="button" onclick="initPopulationDensityMap()" value="Population Density Map">
+              </div>
+
+
+              <div>
+                <input id="originalDistricts" type="button" onclick="backToOriginalDistrictView()" value="original Districts">
+              </div>
+
+              <div>
+                <input id="originalCountryView" type="button" onclick="backToOriginalCountryView()" value="originalCountryView">
+              </div>
+
+              <div>
+                <input id="originalStateView" type="button" onclick="backToOriginalStateView()" value="originalStateView">
+              </div>
+            </form>
             </div>
           </div>
         </div>
       </div>
     </div>
+    
+<div id="accordion">
+ <hr />
+  <div class="accordion-toggle">    
     <div class="section">
       <div class="section">
         <div class="container">
           <div class="row">
-            <div class="col-md-1">
-              <a href="./analyze.html"><i class="fa fa-5x fa-fw fa-toggle-on"></i></a>
+            <div class="col-md-1">            
+              <a href="#"><i class="fa fa-5x fa-fw fa-toggle-off"></i></a>          
             </div>
+            <!-- Lopsided wins and Consistent Advantage HTML Display Sections  -->
             <div class="col-md-5">
               <h1>Three Test Simulation</h1>
-            </div>
+            </div>             
             <div class="col-md-1">
-              <a href="./efficiency_gap.html"><i class="fa fa-5x fa-fw fa-toggle-off"></i></a>
             </div>
-            <div class="col-md-5">
-              <h1>Efficiency Gap Simulation</h1>
-            </div>
+            <div class="col-md-6">            
+              Partisan gerrymandering has a very particular goal: amplify a political party's power far beyond what it deserves based on vote share alone. This process is accomplished by two complementary methods: cracking and packing. "Packing" occurs when as many supporters of the victim party as possible are crammed into a small number of districts, creating a few overwhelming wins for the victim party. 
+The remaining members of the victim party are then "cracked"so that they comprise a large but minority block of voters (typically 40 - 45%).
+              
+            </div>      
           </div>
         </div>
       </div>
     </div>
+    <div style="margin-left:50px;">
+      <div class="text">
+          <p id="p1">&nbsp;<span class="underline redtext">READ MORE</span></p>
+      </div>
+      <div class="text" style="display: none;">
+        <p id="p1">&nbsp;<span class="underline redtext"> LESS</span></p>
+      </div>
+    </div>
+
+  </div>
+  <div class="accordion-content default" style="display: none;">
     <div class="section">
       <div class="container">
         <div class="row">
           <div class="col-md-6">
             <h1 class="text-primary">Lopsided Wins &nbsp;</h1>
-            <h2 class="text-danger">FAIL</h2>
-            <p>In North Carolina's 2016 election, Republicans won their districts with
-              an average of 60.3% percent of the vote, and Democrats won their districts
-              with an average of 68.5% percent of the vote. The difference between the
-              two parties’ win margins indicates North Carolina may be gerrymandered
-              to gain an advantage for Republicans. The chance that this difference would
-              have arisen by nonpartisan processes alone is 0.28% (or 1 in 354).
-              <br>
-              <br>
-            </p>
+            <h2 id="lopsided-pass-fail" class="text-danger"></h2>
+            <p id="lopsidedWinsAnalysis"></p>
             <a class="btn btn-lg btn-primary" href="./learn_tests.html">Read More</a>
           </div>
-          <div class="col-md-6" style="width: 500px; height:400px">
-            
-<!--
-<script> 
-
-/* secure selections from user as a variable for the tests in display state use case */
-
-              var selectedState;
-              var selectedYear;
-              var selectedPair;
-
-              function myFunction(element) {
-                 selectedState = element.options[element.selectedIndex].text;
-              }
-              function myNewFunction(element) {
-                 selectedYear = element.options[element.selectedIndex].text;
-                 selectedPair=[
-                 ["State",selectedState],
-                 ["raceYear",selectedYear]
-                 ];
-                 document.getElementById("selection").innerHTML = "State Chosen for "+selectedPair[1][1]+" : "+selectedPair[0][1];
-                 
-              }
-
-/* end of securing selections*/
-
-
-/* creation of lopsided wins scatter plot*/
-
-
-var margin = {top: 20, right: 20, bottom: 30, left: 90},
-    width = 550 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
-
-/* 
- * value accessor - returns the value to encode for a given data object.
- * scale - maps value to a visual display encoding, such as a pixel position.
- * map function - maps from data value to display value
- * axis - sets up axis
- */ 
-
-// setup x 
-var xValue = function(d) { return d["Dem Vote %"];}, // data -> value
-    xScale = d3.scale.linear().range([0, width]), // value -> display
-    xMap = function(d) { return xScale(xValue(d));}, // data -> display
-    xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-
-// setup y
-var yValue = function(d) { return Number.parseInt(d["DemVotes"].replace(",","")); }, // data -> value
-    yScale = d3.scale.linear().range([height, 0]), // value -> display
-    yMap = function(d) { return yScale(yValue(d));}, // data -> display
-    yAxis = d3.svg.axis().scale(yScale).orient("left");
-
-//set up values for Republican Won districts
-var republicanValues = function(d) { 
-  return Number.parseInt(d["RepVotes"].replace(",",""));
-   }
-
-// setup fill color
-var cValue = function(d) { return d.Winner;},
-    color = d3.scale.category10();
-
-// add the graph canvas to the body of the webpage
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-// add the tooltip area to the webpage
-var tooltip = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
-
-//data chosen by user for display state use case 
-
-  var filters = [
-    ['State', 'New York'],
-    ['raceYear', '2012']
-  ];
- 
-   var counter;
-   var demVotePercentage;
-  d3.json("/resources/js/test.json", function(error, data) {
-  if (error) throw error;
-  data = data.filter(function(row) {
-
-        return row['State'] == filters[0][1] && row['raceYear']==filters[1][1];
-      
-    });
-  demVotePercentage = data.map((e) => {return e['Dem Vote %'];});
-
-  console.log("data.length: " + data.length);
-
-
-  // don't want dots overlapping axis, so add in buffer to data domain
-  console.log("data.length: " + data.length);
-  console.log(data);
-  console.log(data.map(function(d) { return Number.parseInt(d["DemVotes"].replace(",","")); } ));
-  xScale.domain([0, d3.max(data, xValue)+0.2]);
-  console.log("Max yValue: " + d3.max(data, function(d) { return Number.parseInt(d["DemVotes"].replace(",","")); } ));
-  console.log("yValue: " + yValue);
-  yScale.domain([0, d3.max(data, yValue )]);
-
-  // x-axis
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
-    .append("text")
-      .attr("class", "label")
-      .attr("x", width)
-      .attr("y", -6)
-      .style("text-anchor", "end")
-      .text("Democrat Vote Percentage");
-
-  // y-axis
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("class", "label")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Vote Shares");
-
-  // draw dots
-  svg.selectAll(".dot")
-      .data(data)
-    .enter().append("circle")
-      .attr("class", "dot")
-      .attr("r", 3.5)
-      .attr("cx", xMap)
-      .attr("cy", yMap)
-      .style("fill", function(d) { return color(cValue(d));}) 
-      .on("mouseover", function(d) {
-          tooltip.transition()
-               .duration(200)
-               .style("opacity", .9);
-          if(d.Winner=="D")
-          {
-            tooltip.html("District:"+d["AreaNumber"] + "<br/>Dem Vote %:" + xValue(d) 
-          + "<br/> Dem Votes: " + yValue(d) )
-               .style("left", (d3.event.pageX + 5) + "px")
-               .style("top", (d3.event.pageY - 28) + "px");
-          }else if(d.Winner=="R"){
-            tooltip.html("District:"+d["AreaNumber"] + "<br/> Dem Vote %:" + xValue(d) 
-          + "<br/> Rep Votes: " + republicanValues(d) )
-               .style("left", (d3.event.pageX + 5) + "px")
-               .style("top", (d3.event.pageY - 28) + "px");
-          }
-          
-      })
-      .on("mouseout", function(d) {
-          tooltip.transition()
-               .duration(500)
-               .style("opacity", 0);
-      });
-
-  // draw legend
-  var legend = svg.selectAll(".legend")
-      .data(color.domain())
-    .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-  // draw legend colored rectangles
-  legend.append("rect")
-      .attr("x", width - 18)
-      .attr("width", 18)
-      .attr("height", 18)
-      .style("fill", color);
-
-  // draw legend text
-  legend.append("text")
-      .attr("x", width - 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .style("text-anchor", "end")
-      .text(function(d) { return d;})
-
-    
-});
-
-
-
-</script>
--->
-
-            
+          <div class="col-md-6" id="visual"></div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="container">
+        <div class="row">
+           <p></p>
+           <div class="col-md-6" id="vis"></div>   
+           <div class="col-md-6">
+            <h1 class="text-primary">Consistent Advantage</h1>
+            <h2 id="consistent-advantage-pass-fail" class="text-danger"></h2>
+            <p id="consistentAdvantageAnalysis"></p>
+            <a class="btn btn-lg btn-primary" href="./learn_tests.html">Read More</a>
           </div>
         </div>
       </div>
@@ -421,343 +281,112 @@ var tooltip = d3.select("body").append("div")
     <div class="section">
       <div class="container">
         <div class="row">
-          <div class="col-md-6" style="width: 500px; height:400px">
-        
-    <!-- scatter zoom plot code -->  
-<svg width="500" height="400"></svg>
-<canvas width="500" height="400"></canvas>
-
-<script>
-var margin = {top: 20, right: 20, bottom: 30, left: 90},
-    width = 500 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
-
-/* 
- * value accessor - returns the value to encode for a given data object.
- * scale - maps value to a visual display encoding, such as a pixel position.
- * map function - maps from data value to display value
- * axis - sets up axis
- /*
-   demVotesArray = data.map((e) => {
-      return typeof e.DemVotes === 'string' ? parseInt(e.DemVotes.replace(",", "")) : e.DemVotes;
-    });
-  
- */ 
-
-// setup x 
-var xValue = function(d) {
-    return d["Dem Vote %"];
-    }, // data -> value
-    xScale = d3.scale.linear().range([0, width]), // value -> display
-    xMap = function(d) { return xScale(xValue(d));}, // data -> display
-    xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-
-// setup y
-var yValue = function(e) {
-      return typeof e.DemVotes === 'string' ? parseInt(e.DemVotes.replace(",", "")) : e.DemVotes; 
-     }, // data -> value
-    yScale = d3.scale.linear().range([height, 0]), // value -> display
-    yMap = function(d) { return yScale(yValue(d));}, // data -> display
-    yAxis = d3.svg.axis().scale(yScale).orient("left");
-
-//set up values for Republican Won districts
-var republicanValues = function(d) { 
-  return Number.parseInt(d["RepVotes"].replace(",",""));
-   }
-
-// setup fill color
-  var c = [ "#E41A1C", "#377EB8"];
-
-
-
-
-// add the graph canvas to the body of the webpage
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-// add the tooltip area to the webpage
-var tooltip = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
-
- 
-  var filters = [
-    ['State', 'Alabama'],
-    ['raceYear', '2012']
-  ];
-  
-  var mean;
-  var median;
-  var sum;
-  var counter;
-  var demVotePercentage;
-  var democratWonState=0;
-  var republicanWonState=0; 
-  var demVotesArray;
-  var repVotesArray;
-  var usedToWinDemVotes;
-  var wastedDemVotes;
-  var usedToWinRepVotes;
-  var wastedRepVotes;
-  var demDistrictCount=0;
-  var repDistrictCount=0;
-
-  d3.json("/resources/js/test.json", function(error, data) {
-  if (error) throw error;
-  data = data.filter(function(row) {
-
-        return row['State'] == filters[0][1] && row['raceYear']==filters[1][1];
-      
-    });
-  demVotePercentage = data.map((e) => {
-    return e['Dem Vote %'];
-  });
-
-//calculate mean and median for watermarks on graph
-   sum = demVotePercentage.reduce(function(total,amount){
-
-        return total + amount;
-      });
-
-    mean = sum/ demVotePercentage.length;
-     demVotePercentage.sort();
-     if(demVotePercentage.length%2==0)
-     {
-        var elementA = (demVotePercentage.length/2)-1 ; 
-        var elementB = elementA+1;
-        var elementSum=demVotePercentage[elementA] + demVotePercentage[elementB];
-        median = elementSum/2;
-     }
-     else{
-        var element = parseInt(demVotePercentage.length/2) ; 
-
-        median = demVotePercentage[element];
-
-     } 
-  
-  
-  console.log("data.length: " + data.length);
-
-  // don't want dots overlapping axis, so add in buffer to data domain
-  console.log("data.length: " + data.length);
-  console.log(data);
-  
-
-  /*
-  console.log(
-    data.map(function(d) {
-     return Number.parseInt(d["DemVotes"].replace(",",""));
-    })
-    );
-*/
-  xScale.domain([0, d3.max(data, xValue)+0.2]);
-/*
-  console.log("Max yValue: " + d3.max(data, function(d) {
-      return Number.parseInt(d["DemVotes"].replace(",",""));
-    })
-  );
-  console.log("yValue: " + yValue);
-*/
-  yScale.domain([0, d3.max(data, yValue )]);
-
-  // x-axis
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
-    .append("text")
-      .attr("class", "label")
-      .attr("x", width)
-      .attr("y", -6)
-      .style("text-anchor", "end")
-      .text("Vote Percentage");
-
-  // y-axis
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("class", "label")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Vote Shares");
-
-  /* calculate total democratic votes and republican votes in the state for each party to find the overall winner of the state*/
-    demVotesArray = data.map((e) => {
-      return typeof e.DemVotes === 'string' ? parseInt(e.DemVotes.replace(",", "")) : e.DemVotes;
-    });
-    
-    repVotesArray = data.map((e) => {
-      return typeof e.RepVotes === 'string' ? parseInt(e.RepVotes.replace(",", "")) : e.RepVotes;
-    });
-    
-
-for(var i=0; i<demVotePercentage.length; i++)
-{
-  if(demVotesArray[i]>repVotesArray[i])
-  {
-    demDistrictCount = demDistrictCount+1;
-  }
-  else if(demVotesArray[i] < repVotesArray[i])
-  {
-    repDistrictCount = repDistrictCount+1;
-  }
-}
-  if(demDistrictCount>repDistrictCount)
-  {
-    democratWonState=1;
-  }
-  else if(demDistrictCount < repDistrictCount)
-  {
-    republicanWonState=1;
-  }
-
-  if(democratWonState==1)
-  {
-    // draw dots
-  svg.selectAll(".dot")
-      .data(data)
-      .enter().append("circle")
-      .attr("class", "dot")
-      .attr("r", 3.5)
-      .attr("cx", xMap)
-      .attr("cy", yMap)
-      .style("fill", function(d) { 
-        return c[1];
-      }) 
-      .on("mouseover", function(d) {
-          tooltip.transition()
-               .duration(200)
-               .style("opacity", .9);
-          tooltip.html(d["AreaNumber"] + "<br/> (" + xValue(d) 
-          + ", " + yValue(d) + ")")
-               .style("left", (d3.event.pageX + 5) + "px")
-               .style("top", (d3.event.pageY - 28) + "px");
-      })
-      .on("mouseout", function(d) {
-          tooltip.transition()
-               .duration(500)
-               .style("opacity", 0);
-      });
-
-  // draw legend
-  /*
-  var legend = svg.selectAll(".legend")
-    .data(c[1])//.data(color.domain())
-    .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 30 + ")"; });
-*/
-  // draw legend colored rectangles
-  /*
-  legend.append("rect")
-      .attr("x", width - 18)
-      .attr("width", 18)
-      .attr("height", 18)
-      .style("fill", c[1]);
-*/
-  // draw legend text
-/*
-  legend.append("text")
-      .attr("x", width - 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .style("text-anchor", "end")
-      .text(function(d) { return d;}) 
-  */
-
-  }
-
-  if(republicanWonState==1)
-  {
-     // draw dots
-  svg.selectAll(".dot")
-      .data(data)
-      .enter().append("circle")
-      .attr("class", "dot")
-      .attr("r", 3.5)
-      .attr("cx", xMap)
-      .attr("cy", yMap)
-      .style("fill", function(d) { 
-        return c[0];
-      }) 
-      .on("mouseover", function(d) {
-          tooltip.transition()
-               .duration(200)
-               .style("opacity", .9);
-          tooltip.html("District:"+d["AreaNumber"] + "<br/> Dem Vote %:" + xValue(d) 
-          + "<br/> Rep Votes: " + republicanValues(d) )
-               .style("left", (d3.event.pageX + 5) + "px")
-               .style("top", (d3.event.pageY - 28) + "px");
-      })
-      .on("mouseout", function(d) {
-          tooltip.transition()
-               .duration(500)
-               .style("opacity", 0);
-      });
-
-  // draw legend
-  /*
-  var legend = svg.selectAll(".legend")
-      .data(c[0])//.data(color.domain())
-      .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 30 + ")"; });
-*/
-
-  // draw legend colored rectangles
-  /*
-  legend.append("rect")
-      .attr("x", width - 18)
-      .attr("width", 18)
-      .attr("height", 18)
-      .style("fill", c[0]);
-  */
-
-  // draw legend text
-  /*
-  legend.append("text")
-      .attr("x", width - 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .style("text-anchor", "end")
-      .text(function(d) { return d;})
-    */
-  }
- 
-});
-
-</script>
-
-          </div>
           <div class="col-md-6">
-            <h1 class="text-primary">Consistent Advantage</h1>
-            <h2 class="text-danger">FAIL</h2>
-            <p>In North Carolina in 2016, the median Democratic vote share was 41.6%,
-              the average Democratic vote share was 46.4%, and the difference is 4.8%.
-              This difference suggests North Carolina is gerrymandered to gain an advantage
-              for Republicans. The chance that this difference would have arisen by nonpartisan
-              processes alone is 3.4%.
-              <br>
-            </p>
+            <h1 class="text-primary">Excessive Seats &nbsp;</h1>
+            <h2 id="excessive-seats-pass-fail" class="text-danger"></h2>
+            <p id="excessiveSeatsAnalysis"></p>
             <a class="btn btn-lg btn-primary" href="./learn_tests.html">Read More</a>
+          </div>
+          <div class="col-md-6" id="visualExcessiveSeats"></div>
+        </div>
+      </div>
+    </div>    
+  </div>
+  <p id="p1" style="margin-left:50px;">&nbsp;<a href="#top"><span class="underline redtext">BACK TO TOP</span></a></p>
+  <hr/>
+  <div class="accordion-toggle1"> 
+    <div class="section">
+      <div class="section">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-1">            
+              <a href="#"><i class="fa fa-5x fa-fw fa-toggle-off"></i></a>
+            </div>
+            <!-- Efficiency Gap Display Sections  -->
+            <div class="col-md-5">
+              <h1>Efficiency Gap Simulation</h1>
+            </div>
+            <div class="col-mid-1" id="div1" style="width:10px;">
+            </div>
+            <div class="col-md-6" >
+            Given election results for a set of districts, usually statewide, the wasted votes for each party in each district are computed. All the votes for a losing candidate are wasted. Any votes in excess of those required to win are wasted. The Efficiency Gap is the difference in wasted votes as a percentage of the overall votes cast. Maptitude for Redistricting reports the Efficiency Gap of the first party with respect to the second. 
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <div style="margin-left:50px;">
+      <div class="text1">
+          <p id="p1">&nbsp;<span class="underline redtext">READ MORE</span></p>
+      </div>
+      <div class="text1" style="display: none;">
+        <p id="p1">&nbsp;<span class="underline redtext"> LESS</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-content default" style="display: none;">
+    <div class="section">
+      <div class="container">
+        <div class="row">
+          <div class = "col-md-6" id="visEfficiencyGap">            
+        </div>
+        <div class="col-md-6">
+            <h1 class="text-primary">Did your state make the standard?</h1>
+            <h2 id="efficiency-gap-pass-fail" class="text-danger"></h2>
+            <p id="efficiencyGapAnalysis"></p>
+            <a class="btn btn-primary" href="./Learn more_how tests work.html">Read More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+<p id="p1" style="margin-left:50px;">&nbsp;<a href="#top"><span class="underline redtext">BACK TO TOP</span></a></p>
+<hr />    
+<!-- Trigger/Open The Modal -->
+            <button id="myBtn">Sources</button>
+            <!-- The Modal -->
+            <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+              <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2 class="text-left">Sources</h2>
+              </div>
+              <div class="modal-body"> 
+                <p class="text-left">
+                Brennan Center For Justice. “Gill v. Whitford: Gerrymandering at the Supreme Court.” Gill v. Whitford: Gerrymandering at the Supreme Court | Brennan Center for Justice, New York University School of Law, 2017, www.brennancenter.org/issues/whitford.
+                </p>
+                <p class="text-left">Brennan Center For Justice. “Benisek v. Lamone.” Benisek v. Lamone | Brennan Center for Justice, New York University School of Law, 2017, www.brennancenter.org/legal-work/benisek-v-lamone-amicus-brief.
+                </p>
+                <p class="text-left">
+                Brennan Center For Justice. “Harris v. Cooper (Amicus Brief).” Harris v. Cooper (Amicus Brief) | Brennan Center for Justice, New York University School of Law, 2017, www.brennancenter.org/legal-work/harris-v-mccrory.
+                </p>
+                <p class="text-left">
+                Brennan Center For Justice. “Common Cause v. Rucho.” Common Cause v. Rucho | Brennan Center for Justice, New York University School of Law, 7 Nov. 2017, www.brennancenter.org/legal-work/common-cause-v-rucho.
+                </p>
+                <p class="text-left">FairVote.org. “FairVote US House Projects: Monopoly Politics Remains the Right Name.” FairVote, www.fairvote.org/fairvote_us_house_projects_monopoly_politics_remains_the_right_name.</p>                
+                <p class="text-left">House - Judiciary; House Administration. “H.R.3057 - Fair Representation Act.” Congress.gov, Rep. Beyer, Donald S., Jr., 26 June 2017, www.congress.gov/bill/115th-congress/house-bill/3057.
+                </p>
+                <p class="text-left">Levitt, Justin . “Why does it matter?” All About Redistricting , Loyola Law School, 2017, redistricting.lls.edu/why.php.</p>
+                <p class="text-left">Stephanopoulos, Nicholas, and Eric McGhee. “Partisan Gerrymandering and the Efficiency Gap.” Http://Chicagounbound.uchicago.edu, University of Chicago Law School, 2014, chicagounbound.uchicago.edu/cgi/viewcontent.cgi?article=1946&context=public_law_and_legal_theory.</p>
+                <p class="text-left">Whitaker, Rob. “Princeton Gerrymandering Project | Run Tests.” Princeton University, The Trustees of Princeton University, 2017, gerrymander.princeton.edu/test.</p>                
+                <p class="text-left">Whitaker, Rob. “Princeton Gerrymandering Project | About the Tests.” Princeton University, The Trustees of Princeton University, 2017, gerrymander.princeton.edu/info.</p>
+                <p class="text-left">Youtube. “Gerrymandering, explained.”Online video clip.YouTube, 14 Nov 2017. Web.</p>         
+                
+              </div>
+              <div class="modal-footer">
+                <h3>Gerrymandering in the United States</h3>
+              </div>
+            </div>
+          </div>
+          <script src="/resources/static/worksCited.js"></script>
+          <link href="/resources/static/worksCited.css" rel="stylesheet" type="text/css">
     <footer class="section section-primary">
       <div class="container">
         <div class="row">
           <div class="col-sm-6">
             <h1>Gerrymandering of the U.S.</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisici elit,
-              <br>sed eiusmod tempor incidunt ut labore et dolore magna aliqua.
-              <br>Ut enim ad minim veniam, quis nostrud</p>
+            "Gerrymandering is one of the great political curses of our single-member district plurality system and one that can only truly be lifted by adopting proportional representation."<br/>-- Professor Douglass Amy, Real Choices, New Voices, Columbia University Press, <br/>New York, 1993
           </div>
           <div class="col-sm-6">
             <p class="text-info text-right">
@@ -783,5 +412,6 @@ for(var i=0; i<demVotePercentage.length; i++)
           </div>
         </div>
       </div>
-    </footer>
-</body></html>
+    </footer>    
+</body>
+</html>
