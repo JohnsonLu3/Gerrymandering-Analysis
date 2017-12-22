@@ -1,9 +1,9 @@
-##Gerrymandering Analysis 
+# Gerrymandering Analysis 
 
-###About:
+### About:
 This project was created by Johnson Lu, Yi Sou, and Ashley Taylor. This was created as a senior project at Stony Brook University. The projects goal was to take voting and geo data to see if a state's districts have been gerrymandered. Districts are run though a range of test to determine if they were gerrymandered.
 
-###Setup Instructions: 
+### Setup Instructions: 
 1. Clone the project from the repository. 
 2. From the project root path, open src/main/resources/application.properties
 3. In application.properties, specify the following info in the fields enclosed by brackets <>:  
@@ -28,7 +28,7 @@ gerrymander-measure-0.1.0.war file. Type the following command to start the serv
 7. Once the app is running, go to localhost:8080 in your browser and you should be able to view the homepage.
 
 
-###Data Base Setup:
+### Data Base Setup:
 These steps will instruct you on how to move the database to another mysql 5.7 server.
 
 1. Download and install MySqlWorkbench, [here](https://www.mysql.com/products/workbench/).
@@ -38,7 +38,7 @@ b) Enter your hostname and port number to your database server.
 c) Enter your username associated with the database.  
 3. Once connected create a new schema using the side panel on the left. 
 
-###Importing Data into the Data Base:
+### Importing Data into the Data Base:
 Included is a folder containing 18 sql dump files.
 
 1. In each sql dump file you must change the host and database fields to match your database host and database schema name.
@@ -53,43 +53,43 @@ Included is a folder containing 18 sql dump files.
 7. Click start importing.
 8. Now you should see that all the tables and data have been imported into your database schema.
     
-###Project Structure:
-####/dataParsers
+### Project Structure:
+#### /dataParsers
 This folder contains all the KML and CSV parsing as well as database import scripts. They are written in Python.
-####/src/main/java
+#### /src/main/java
 This is the Java application in the backend, it consists of the following packages`:  
-#####gerrymandering.api -
+##### gerrymandering.api -
 This package contains wrapper class for returning HTTP response as a JSON.   
-#####gerrymandering.bean -
+##### gerrymandering.bean -
 This package contains some Spring beans used for authentication and authorization.
-#####gerrymandering.common - 
+##### gerrymandering.common - 
 This package contains global constants and enums used throughout the project.
-#####gerrymandering.config - 
+##### gerrymandering.config - 
 This package contains Spring related configurations such as Spring Security and URL mappings for static pages.
-#####gerrymandering.controller - 
+##### gerrymandering.controller - 
 This package contains web controllers that receive incoming HttpServletRequests and process them.  
-#####gerrymandering.measure - 
+##### gerrymandering.measure - 
 This package contains classes and interfaces for running HR3057 measures, the Three Test analysis from Princeton gerrymandering group,
 and efficiency gap test. It also contains classes and interfaces for storing the results of these measures.  
-#####gerrymandering.model - 
+##### gerrymandering.model - 
 This package contains JPA entities that are used for database persistence.  
-#####gerrymandering.repository - 
+##### gerrymandering.repository - 
 This package contains Spring interfaces that get scanned in runtime to generate database access objects for the models.   
-#####gerrymandering.service - 
+##### gerrymandering.service - 
 This package contains the application level logics that get called by the controller classes.
-####/src/main/resources
+#### /src/main/resources
 This is where application.properties is located. This file is used to configure Spring Boot and Hibernate.
-####/src/main/webapp
+#### /src/main/webapp
 This is where the front-end and JSP code resides. Everything inside this folder gets packaged into an embedded Tomcat server
 at runtime. It contains the following folders:  
-#####/img - 
+##### /img - 
 This contains all the images used for the webpages. To access files in this folder, use the prefix /resources/img as specified in gerrymandering.config.StaticResourceHandler.   
-#####/js - 
+##### /js - 
 This contains all Javascripts used for the webpages. The Google Map and D3 chart code is all in here. To access files in this folder, use the prefix /resources/img as specified in gerrymandering.config.StaticResourceHandler.  
-#####/jsp - 
+##### /jsp - 
 This contains JSP pages rendered in the front-end. To access files in this folder, refer to the corresponding web controller in gerrymandering.controller.   
-#####/static - 
+##### /static - 
 This contains the static pages rendered in the front-end. Note that Spring modified the URL mapping for this
  folder. To access files within, your webpage needs to refer to /www/\<filename\>.  
-#####/style - 
+##### /style - 
 This contains the CSS files used in the front-end. To access files in this folder, use the prefix /resources/style as specified in gerrymandering.config.StaticResourceHandler.
