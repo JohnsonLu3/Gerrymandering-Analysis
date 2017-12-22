@@ -1,4 +1,8 @@
 ##Gerrymandering Analysis 
+
+###About:
+This project was created by Johnson Lu, Yi Sou, and Ashley Taylor. This was created as a senior project at Stony Brook University. The projects goal was to take voting and geo data to see if a state's districts have been gerrymandered. Districts are run though a range of test to determine if they were gerrymandered.
+
 ###Setup Instructions: 
 1. Clone the project from the repository. 
 2. From the project root path, open src/main/resources/application.properties
